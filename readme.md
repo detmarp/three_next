@@ -25,3 +25,8 @@ class Person {
     console.log(`Hello, my name is ${this.name}`);
   }
 }
+
+
+https://threejsfundamentals.org/threejs/resources/threejs/r122/build/three.module.js
+
+https://threejsfundamentals.org/threejs/resources/threejs/r122/examples/jsm/controls/OrbitControls.js

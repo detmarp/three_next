@@ -8,10 +8,19 @@
 
 Let's get started on some more [`three.js`](https://threejs.org/) programs.
 
-[zero](zero/index.html)
+[zero](zero/index.html) - a simple scene.
 
-[one](one/index.html)
+[one](one/index.html) - multiple source files, and own copy of three.js.
 
+[two](two/index.html) - start using classes.
+
+[four](four/index.html) - experiment with a scene/engine paradigm.
+
+## localhost
+
+TODO - add notes
+
+## blah
 https://javascript.info/
 
 let and const

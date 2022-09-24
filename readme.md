@@ -10,7 +10,7 @@ Let's get started on some more [`three.js`](https://threejs.org/) programs.
 
 [zero](zero/index.html)
 
-[one](zero/one.html)
+[one](one/index.html)
 
 https://javascript.info/
 

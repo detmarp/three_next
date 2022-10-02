@@ -8,7 +8,36 @@ export class Tiler {
     this.yScale = .25;
     this.grid = 10;
     this.materials = [
-      new three.MeshPhongMaterial({ color: 0x00aa00 }),
+      new three.MeshPhongMaterial({ color: 0x000066,
+        polygonOffset: true,
+        polygonOffsetFactor: 1, // positive value pushes polygon further away
+        polygonOffsetUnits: 1
+      }),
+      new three.MeshPhongMaterial({ color: 0x00aa00,
+        polygonOffset: true,
+        polygonOffsetFactor: 1,
+        polygonOffsetUnits: 1
+      }),
+      new three.MeshPhongMaterial({ color: 0x998855,
+        polygonOffset: true,
+        polygonOffsetFactor: 1,
+        polygonOffsetUnits: 1
+      }),
+      new three.MeshPhongMaterial({ color: 0x773300,
+        polygonOffset: true,
+        polygonOffsetFactor: 1,
+        polygonOffsetUnits: 1
+      }),
+      new three.MeshPhongMaterial({ color: 0x444444,
+        polygonOffset: true,
+        polygonOffsetFactor: 1,
+        polygonOffsetUnits: 1
+      }),
+      new three.MeshPhongMaterial({ color: 0xccccff,
+        polygonOffset: true,
+        polygonOffsetFactor: 1,
+        polygonOffsetUnits: 1
+      }),
     ]
   }
 
@@ -20,6 +49,9 @@ export class Tiler {
     */
     // make our own local vert list first.
     // verts with origin in lower left.  We will move these to coord later.
+    let group = new three.Object3D();
+    let material = params.material ?? 3;
+
     let vs = [
       [0, 0, 0],
       [this.grid, 0, 0],
@@ -57,14 +89,22 @@ export class Tiler {
 
     geo.computeFaceNormals();
 
-    let mat = this.makeMaterial(0);
+    let mat = this.makeMaterial(material);
 
     let mesh = new three.Mesh(geo, mat);
 
-    //mesh.rotation.x = Math.PI * -0.5;
+    group.add(mesh);
 
-    this.add(mesh);
-    return mesh;
+    ////
+    let gg = new three.WireframeGeometry(geo); // or WireframeGeometry
+    var mm = new three.LineBasicMaterial( { color: 0xffffff,
+    } );
+    var ee = new three.LineSegments( gg, mm );
+    group.add(ee);
+    ////
+
+    this.myscene.root.add(group);
+    return group;
   }
 
   makeVert(coord, position) {
@@ -101,9 +141,5 @@ export class Tiler {
       mesh.rotation.z = params.rot[2];
     }
     return mesh;
-  }
-
-  add(mesh) {
-    this.myscene.root.add(mesh);
   }
 }

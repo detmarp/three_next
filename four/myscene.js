@@ -20,7 +20,7 @@ export class MyScene {
     const ambient = new three.AmbientLight(0x667788);
     this.root.add(ambient);
 
-    const directional = new three.DirectionalLight(0xffffff, 1);
+    const directional = new three.DirectionalLight(0xeeeeee, 1);
     directional.position.set ( 5, 20, 10);
     this.root.add(directional);
 

@@ -1,5 +1,5 @@
 import * as three from '../threejs/build/three.module.js';
-import {OrbitControls} from '../threejs/examples/jsm/controls/orbitcontrols.js';
+import {Cameraman} from './cameraman.js';
 
 export class MyScene {
   // A rough approximation of a 3d engine.
@@ -24,17 +24,8 @@ export class MyScene {
     directional.position.set ( 5, 20, 10);
     this.root.add(directional);
 
-    this.camera = new three.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-    this.camera.position.set(0, 2, 4);
-
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-
-    let floor = new three.Mesh(
-      new three.PlaneGeometry(6, 6),
-      new three.MeshPhongMaterial({ color: 0x007700 }));
-    floor.position.set(0, 0, 0);
-    floor.rotation.x = Math.PI * -0.5;
-    this.root.add(floor);
+    this.cameraman = new Cameraman(this);
+    this.cameraman.init();
   }
 
    resize() {
@@ -43,17 +34,16 @@ export class MyScene {
     const height = canvas.clientHeight;
 
     this.renderer.setSize(width, height, false);
-    this.camera.aspect = width / height;
-    this.camera.updateProjectionMatrix();
-
     this.renderer.setSize( window.innerWidth, window.innerHeight );
 
-    this.controls.update();
+    this.cameraman.resize();
   }
 
    update() {
     this.resize();
-    this.renderer.render(this.root, this.camera);
+    this.renderer.render(this.root, this.cameraman.camera);
+    this.cameraman.work();
+    // Callback next frame.
     requestAnimationFrame(() => { this.update(); });
   }
 

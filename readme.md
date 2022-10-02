@@ -16,6 +16,8 @@ Let's get started on some more [`three.js`](https://threejs.org/) programs.
 
 [four](four/index.html) - experiment with a scene/engine paradigm.
 
+[five](five/index.html) - more with a world grid
+
 ## localhost
 
 TODO - add notes

@@ -43,8 +43,20 @@ export class Program {
     ];
     tiles.forEach(t => {
       t.form = 'tile';
-      this.factory.make(t);
+      //this.factory.make(t);
     });
+
+    for  (let y = -20; y < 20; y++) {
+      for  (let x = -40; x < 40; x++) {
+        let i = Math.floor(x / 4);
+        let j = Math.floor(y / 4);
+        let k = (x & 3) + 4 * (y & 3);
+        let t = tiles[k];
+        t.coord = [x, y];
+
+        this.factory.make(t);
+      }
+    }
 
     this.myscene.run();
   }

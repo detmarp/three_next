@@ -5,7 +5,7 @@ export class Tiler {
   constructor(myscene) {
     this.myscene = myscene;
     this.size = 10;
-    this.yScale = .25;
+    this.yScale = .05;
     this.grid = 10;
     this.materials = [
       new three.MeshPhongMaterial({ color: 0x000066,

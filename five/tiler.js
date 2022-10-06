@@ -1,4 +1,5 @@
 import * as three from '../threejs/build/three.module.js';
+import Delaunator from '../lib/delaunator.js';
 
 // A system for making ground tiles.
 export class Tiler {
@@ -41,7 +42,45 @@ export class Tiler {
     ]
   }
 
+  mmm(coord, params={}) {
+    let group = new three.Object3D();
+
+    let geo = new three.Geometry();
+
+    let vs = [];
+    for (let i = 0; i < 256; i++) {
+      let v = [
+        Math.random() * this.grid,
+        Math.random() * 50,
+        Math.random() * this.grid,
+      ];
+      vs.push(v);
+    }
+    vs.forEach(v => {
+      geo.vertices.push(this.makeVert(coord, v));
+    });
+
+    let delaunay = Delaunator.from(vs, v => v[0], v => v[2]);
+    let t = delaunay.triangles;
+    for (let i = 0; i < t.length; i+=3) {
+      geo.faces.push(new three.Face3(t[i], t[i+1], t[i+2]));
+    }
+
+    geo.computeFaceNormals();
+
+    let mat = this.makeMaterial(Math.floor(Math.random() * 6));
+
+    let mesh = new three.Mesh(geo, mat);
+
+    group.add(mesh);
+
+    this.myscene.root.add(group);
+    return group;
+
+  }
+
   make(coord, params={}) {
+    return this.mmm(coord, params);
     /*
       params:
         verts: list of [x,y,z], where x and z are range [0,10]

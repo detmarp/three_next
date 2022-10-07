@@ -25,21 +25,8 @@ export class Program {
         let j = Math.floor(y / 4);
         let tile = {
           form: 'tile',
-          coord:[x-16,y-8],
-          verts:[
-            [0,h(x*2, y*2),0],
-            [10,h(x*2+2, y*2),0],
-            [0,h(x*2, y*2+2),10],
-            [10,h(x*2+2, y*2+2),10],
-            [5,h(x*2+1, y*2+1),5],
-          ],
-          faces: [
-            [0,4,1],
-            [1,4,3],
-            [4,2,3],
-            [4,0,2],
-          ],
-          material:1,
+          coord: [x-16,y-8],
+          verts: this.getVerts(x, y),
         };
         this.factory.make(tile);
       }
@@ -47,4 +34,37 @@ export class Program {
 
     this.myscene.run();
   }
+
+  getVerts(x, y) {
+    let v = [];
+    for (let i = 0; i < 256; i++) {
+      let x1 = Math.random();
+      let y1 = Math.random();
+      let x2 = (x + x1) / 32;
+      let y2 = (y + y1) / 16;
+      let t = (y + Math.random()) / 16;
+      let h = this.getHeight(x2, y2);
+      let x3 = x1 * 10;
+      let y3 = y1 * 10;
+      let c = 0;
+      if (h > 0) {
+        c = 1;
+      }
+      if (h > 150) {
+        c = 4;
+      }
+      if (h > 200) {
+        c = 5;
+      }
+      v.push([x3, h, y3, c]);
+    }
+    return v;
+  }
+
+  getHeight(s, t) {
+    let i = Math.min(Math.floor(s * 512), 511);
+    let j = Math.min(Math.floor(t * 256), 256);
+    let k = j * 512 + i;
+    return heightMap[k];
+}
 }

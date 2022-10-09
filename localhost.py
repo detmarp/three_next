@@ -1,13 +1,40 @@
-#Use to create local host
-import http.server
-import socketserver
+#!/usr/bin/env python3
 
-PORT = 8000
+# Start a web server
+class Program(object):
+  def __init__(self):
+    pass
 
-Handler = http.server.SimpleHTTPRequestHandler
-Handler.extensions_map.update({
-      ".js": "application/javascript",
-});
+  def run(self):
+    import http.server
+    import socketserver
 
-httpd = socketserver.TCPServer(("", PORT), Handler)
-httpd.serve_forever()
+    port = 8000
+
+    Handler = http.server.SimpleHTTPRequestHandler
+    Handler.extensions_map.update({
+          ".js": "application/javascript",
+    });
+
+    httpd = socketserver.TCPServer(("", port), Handler)
+
+    print('Created')
+    print('Connect with\n  http://localhost:{}'.format(port))
+    httpd.serve_forever()
+
+import os
+import sys
+
+def main():
+  # get this script's folder
+  here = sys.path[0]
+  print('Start a localhost web server from\n  {}'.format(here))
+
+  # cd to here
+  os.chdir(here)
+
+  program = Program()
+  program.run()
+
+if __name__ == "__main__":
+  main()

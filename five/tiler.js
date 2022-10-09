@@ -1,5 +1,5 @@
 import * as three from '../threejs/build/three.module.js';
-import Delaunator from '../lib/delaunator.js';
+import { MakeTris } from './maketris.js';
 
 // A system for making ground tiles.
 export class Tiler {
@@ -53,19 +53,20 @@ export class Tiler {
 
     let sets = new Map();
 
-    let delaunay = Delaunator.from(vs, v => v[0], v => v[2]);
-    let t = delaunay.triangles;
-    for (let i = 0; i < t.length; i+=3) {
-      let c = vs[t[i]][3];
+    let makeTris = new MakeTris();
+    let t = makeTris.make3(vs);
+
+    for (let i = 0; i < t.length; i++) {
+      let tri = t[i];
+      let c = vs[tri[0]][3];
       if (!sets.has(c)) {
         let g = new three.Geometry();
         g.vertices = vertices;
         sets.set(c, g);
       }
-      sets.get(c).faces.push(new three.Face3(t[i], t[i+1], t[i+2]));
+      sets.get(c).faces.push(new three.Face3(tri[0], tri[1], tri[2]));
     }
     sets.forEach((v, k) => {
-      console.log(k, v);
       v.computeFaceNormals();
       let mat = this.makeMaterial(k);
       let mesh = new three.Mesh(v, mat);

@@ -1,0 +1,50 @@
+/*
+  Detmar 2022
+  v1.0
+
+  Goals:
+  * large enough to see on phones, especially Android
+  * Smaller, normal, on tablet
+  * Normal on desktop
+  * Add padding within those little iOS buttons
+
+  Bugs:
+  * when I rotate iPhone to wide, it zooms in!?
+  * android phone in wide mode is seen as iPad
+*/
+
+/* format for phones */
+body {
+  font-family: sans-serif;
+  font-size: 4vmin;
+  overflow: hidden;
+  position: absolute;
+  margin: 1rem;
+  line-height: 1;
+}
+button {
+  margin: 0.2rem 0 0.2rem 0;
+  padding: 0.3rem;
+  font-family: sans-serif;
+  font-size: 4vmin;
+}
+
+/* detect ipad */
+@media (min-device-width:768px) {
+  body {
+    font-size: 1.2rem;
+  }
+  button {
+    font-size: 1.0rem;
+  }
+}
+
+/* detect desktop */
+@media (min-device-width: 1200px) {
+  body {
+    font-size: 1.0rem;
+  }
+  button {
+    font-size: 1.0rem;
+  }
+}

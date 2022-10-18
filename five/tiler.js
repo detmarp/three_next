@@ -9,31 +9,49 @@ export class Tiler {
     this.yScale = .01;
     this.grid = 10;
     this.materials = [
+      // 0 sea
       new three.MeshPhongMaterial({ color: 0x000066,
         polygonOffset: true,
         polygonOffsetFactor: 1, // positive value pushes polygon further away
         polygonOffsetUnits: 1
       }),
+      // 1 green A
       new three.MeshPhongMaterial({ color: 0x00aa00,
         polygonOffset: true,
         polygonOffsetFactor: 1,
         polygonOffsetUnits: 1
       }),
+      // 2 green B
+      new three.MeshPhongMaterial({ color: 0x009900,
+        polygonOffset: true,
+        polygonOffsetFactor: 1,
+        polygonOffsetUnits: 1
+      }),
+      // 1 green C
+      new three.MeshPhongMaterial({ color: 0x007700,
+        polygonOffset: true,
+        polygonOffsetFactor: 1,
+        polygonOffsetUnits: 1
+      }),
+      // 4 sand
       new three.MeshPhongMaterial({ color: 0x998855,
         polygonOffset: true,
         polygonOffsetFactor: 1,
         polygonOffsetUnits: 1
       }),
+      // 5 dirt
       new three.MeshPhongMaterial({ color: 0x773300,
         polygonOffset: true,
         polygonOffsetFactor: 1,
         polygonOffsetUnits: 1
       }),
+      // 6 rock
       new three.MeshPhongMaterial({ color: 0x444444,
         polygonOffset: true,
         polygonOffsetFactor: 1,
         polygonOffsetUnits: 1
       }),
+      // 7 ice
       new three.MeshPhongMaterial({ color: 0xccccff,
         polygonOffset: true,
         polygonOffsetFactor: 1,
@@ -54,11 +72,11 @@ export class Tiler {
     let sets = new Map();
 
     let makeTris = new MakeTris();
-    let t = makeTris.make3(vs);
+    let t = makeTris.make(vs);
 
     for (let i = 0; i < t.length; i++) {
       let tri = t[i];
-      let c = vs[tri[0]][3];
+      let c = this.getMaterial(vs[tri[0]][3], vs[tri[1]][3], vs[tri[2]][3]);
       if (!sets.has(c)) {
         let g = new three.Geometry();
         g.vertices = vertices;
@@ -76,6 +94,15 @@ export class Tiler {
     this.myscene.root.add(group);
     return group;
 
+  }
+
+  getMaterial(c0, c1, c2) {
+    let sea = (c0 == 0 && c0 == c1 && c0 == c2);
+    let c = (c1 == c2) ? c1 : c0;
+    if (c == 0 && !sea) {
+      c = 4;
+    }
+    return c;
   }
 
   make(coord, params={}) {

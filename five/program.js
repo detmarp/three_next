@@ -1,6 +1,7 @@
 import {MyScene} from './myscene.js';
 import {Factory} from './factory.js';
 import {heightMap} from './heightmap.js';
+import {colorMap} from './colormap.js';
 
 export class Program {
   constructor() {
@@ -26,19 +27,14 @@ export class Program {
         let tile = {
           form: 'tile',
           coord: [x-16,y-8],
-          //verts: this.getVerts(x, y),
-          verts: this.getVerts5(x, y),
+          verts: this.getVerts(x, y),
+          //verts: this.getVerts5(x, y),
         };
         this.factory.make(tile);
       }
     }
 
     this.myscene.run();
-  }
-
-  getHeight(wx, wy) {
-    // find height for this world position, [wx, wy] in the range [0-1]
-    return 0.5;
   }
 
   getVert(tx, ty, fx, fy) {
@@ -63,12 +59,20 @@ export class Program {
   getVerts(x, y) {
     // x, y are the tile coords
     let v = [];
-    let n = 40;
+    let n = 12;
     for (let i = 0; i <=n; i++) {
       for (let j = 0; j <=n; j++) {
         // coords within the tile, 0-10 scale
         let x3 = i * 10 / n;
         let y3 = j * 10 / n;
+
+        // noise
+        if (i > 0 && i < (n-1) && j > 0 && j < (n-1)) {
+          let d = 1;
+          x3 += (Math.random() - 0.5) * d;
+          y3 += (Math.random() - 0.5) * d;
+        }
+
         // coords with the tile, on the unit scale
         let x1 = x3 / 10;
         let y1 = y3 / 10;
@@ -76,25 +80,8 @@ export class Program {
         let x2 = (x + x1) / 32;
         let y2 = (y + y1) / 16;
 
-        if (i > 0 && i < (n-1)) {
-          x3 += Math.random() * 0.9
-        }
-        if (j > 0 && j < (n-1)) {
-          y3 += Math.random() * 0.9
-        }
-
-
         let h = this.getHeight(x2, y2);
-        let c = 0;
-        if (h > 0) {
-          c = 1;
-        }
-        if (h > 150) {
-          c = 4;
-        }
-        if (h > 200) {
-          c = 5;
-        }
+        let c = this.getColor(x2, y2);
         v.push([x3, h, y3, c]);
       }
     }
@@ -106,5 +93,16 @@ export class Program {
     let j = Math.min(Math.floor(t * 256), 255);
     let k = j * 512 + i;
     return heightMap[k];
-}
+  }
+
+  getColor(s, t) {
+    let i = Math.min(Math.floor(s * 512), 511);
+    let j = Math.min(Math.floor(t * 256), 255);
+    let k = j * 512 + i;
+    let c = colorMap[k];
+    if (c < 8) {
+      return c;
+    }
+    return 7;
+  }
 }

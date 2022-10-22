@@ -9,6 +9,17 @@ export class Program {
   run() {
     this.myscene.init();
 
+    const loader = new three.CubeTextureLoader();
+    const texture = loader.load([
+      'https://i.imgur.com/U2JKGpH.png', // - s
+      'https://i.imgur.com/ZhiviQI.png', // - n
+      'https://i.imgur.com/C0XxEpF.png', // - u
+      'https://i.imgur.com/TPLV8ez.png', // - d
+      'https://i.imgur.com/M2H0EHR.png', // - e
+      'https://i.imgur.com/787nQas.png', // - w
+    ]);
+    this.myscene.root.background = texture;
+
     var floor = new three.Mesh(
       new three.PlaneGeometry(6, 6),
       new three.MeshPhongMaterial({ color: 0x114400 }));

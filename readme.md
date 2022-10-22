@@ -18,6 +18,8 @@ Let's get started on some more [`three.js`](https://threejs.org/) programs.
 
 [five](five/index.html) - more with a world grid
 
+[six](six/index.html) - start on hex world
+
 ## localhost
 
 TODO - add notes

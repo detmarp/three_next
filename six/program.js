@@ -1,5 +1,6 @@
 import * as three from '../threejs/build/three.module.js';
 import {MyScene} from './myscene.js';
+import {EzUi} from './ezui.js';
 
 export class Program {
   constructor() {
@@ -26,6 +27,16 @@ export class Program {
     floor.position.set(0, 0, 0);
     floor.rotation.x = Math.PI * -0.5;
     this.myscene.root.add(floor);
+
+    let ui = new EzUi();
+
+    let c = 0;
+    let a = ui.addButton('butt', () => {
+      c += 1;
+      ui.updateText(a, `butt ${c}`);
+      ui.updateText(b, `text ${c}`);
+    });
+    let b = ui.addText('foo');
 
     this.myscene.run();
   }

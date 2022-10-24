@@ -25,7 +25,7 @@ export class EzUi {
   addText(text) {
     let div = document.createElement('div');
     this.div.appendChild(div);
-    div.innerHTML = text;
+    div.innerHTML = text ?? '';
     div.style.color = 'white';
     return div;
   }

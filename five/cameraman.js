@@ -11,12 +11,16 @@ export class Cameraman {
   init() {
     this.camera = new three.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-    this.camera.position.set(10, 150, 25);
-    this.camera.up.set(0, 1, 0);
-    this.camera.lookAt(0, 12, 0);
+    this.reset();
 
     this.controls = new OrbitControls(this.camera, this.myscene.renderer.domElement);
     this.controls.update();
+  }
+
+  reset() {
+    this.camera.position.set(10, 150, 25);
+    this.camera.up.set(0, 1, 0);
+    this.camera.lookAt(0, 12, 0);
   }
 
   resize() {

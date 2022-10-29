@@ -54,7 +54,8 @@ export class Program {
     this.ui.updateText(
       this.info,
       `workers:${this.myscene.workers.size}<br>` +
-      `res:${this.myscene.res3.count}/${this.myscene.res3.id}`
+      `res:${this.myscene.res3.count}/${this.myscene.res3.id}<br>` +
+      `stats:${JSON.stringify(this.part1.hexer.stats)}`
     );
   }
 }

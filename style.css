@@ -36,7 +36,8 @@ button {
   }
   button {
     font-size: 1.0rem;
-  }
+    padding: 0.3rem;
+}
 }
 
 /* detect desktop */

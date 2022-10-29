@@ -10,6 +10,7 @@ export class Part1 {
 
   create() {
     this.hexer = new Hexer(this.n);
+    console.log(JSON.stringify(this.hexer.stats));
 
     this.group = new three.Group();
     this.myscene.root.add(this.group);
@@ -21,6 +22,9 @@ export class Part1 {
     this.hexer.schematic.allFaces.forEach(c => {
       this.addDot(c, 1, [0x004488, 0x0077ff]);
     });
+
+    let sphere = this.makeSchematicSphere(this.hexer);
+    this.group.add(sphere);
   }
 
   addDot(position, size, colors) {
@@ -45,7 +49,7 @@ export class Part1 {
     this.myscene.res3.add(ee);
     group.add(ee);
 
-    group.position.set(position[0]*size, position[1]*size);
+    group.position.set(position[0]*size, position[1]*size, 0);
 
     this.group.add(group);
   }
@@ -60,4 +64,26 @@ export class Part1 {
     this.n = n;
     this.create();
   }
+
+  makeSchematicSphere(hexer) {
+    let group = new three.Group();
+    hexer.sphere.verts.forEach(v => {
+      let position = new three.Vector3(v[0], v[1], v[2]);
+      group.add(this.makeball(position));
+    });
+
+    return group;
+  }
+
+  makeball(position) {
+    const geometry = new three.SphereGeometry(0.15);
+    const material = new three.MeshPhongMaterial({color: 0x996600,});
+    const circle = new three.Mesh(geometry, material);
+    this.myscene.res3.add(circle);
+    if (position) {
+      circle.position.set(position.x, position.y, position.z);
+    }
+    return circle;
+  }
+
 }

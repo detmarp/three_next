@@ -17,8 +17,8 @@ export class Hexer {
 
         Vertices -- think of these at the pentagons on the sphere:
                 0   +   +   +   +
-              1   2   3   4   5   +
-            6*  7   8   9   10  +
+              2   4   6   8   10  +
+            1*  3   5   7   9  +
               11  +   +   +   +
 
         Faces -- think of these as composed of tiles of hexagons:
@@ -39,15 +39,14 @@ export class Hexer {
 
     this.corners = [
       [0,2],
-      [0,1], [1,1], [2,1], [3,1], [4,1],
-      [0,0], [1,0], [2,0], [3,0], [4,0],
+      [0,0], [0,1], [1,0], [1,1], [2,0], [2,1], [3,0], [3,1], [4,0], [4,1],
       [1,-1],
     ];
     let h = Math.sqrt(3) / 2;
     this.schematic = {};
 
     let r;  // radius of "unit" axis
-    let e;  // covrner spacing
+    let e;  // corner spacing
     let odd = n % 2;
     if (odd) {
       // Even N;
@@ -95,33 +94,12 @@ export class Hexer {
         }
       }
       for (let j = 0; j > -top; j--) {
-        console.log(`${j} -- ${(-j % 3) - j}; ${top}`);
         for (let i = (-j % 3) - j; i < top; i += 3) {
           if (i || j) {
             this._appendOffset(this.schematic.ups, dx, dy, [i, j]);
           }
         }
       }
-      /*
-      this._appendOffset(this.schematic.ups, dx, dy, [1, 7]);
-
-      this._appendOffset(this.schematic.ups, dx, dy, [0, 6]);
-
-      this._appendOffset(this.schematic.ups, dx, dy, [2, 5]);
-
-      this._appendOffset(this.schematic.ups, dx, dy, [1, 4]);
-      this._appendOffset(this.schematic.ups, dx, dy, [4, 4]);
-
-      this._appendOffset(this.schematic.ups, dx, dy, [0, 3]);
-      this._appendOffset(this.schematic.ups, dx, dy, [3, 3]);
-
-      this._appendOffset(this.schematic.ups, dx, dy, [2, 2]);
-      this._appendOffset(this.schematic.ups, dx, dy, [5, 2]);
-
-      this._appendOffset(this.schematic.ups, dx, dy, [1, 1]);
-      this._appendOffset(this.schematic.ups, dx, dy, [4, 1]);
-      this._appendOffset(this.schematic.ups, dx, dy, [7, 1]);
-      */
     }
 
     this.schematic.allFaces = [];
@@ -139,6 +117,18 @@ export class Hexer {
       this._appendFace(this.schematic.allFaces, this.schematic.downs,
         this.schematic.corners[c]);
     }
+
+    let stats = {
+      n:n,
+      corners:12,
+      hexFaces:this.schematic.allFaces.length,
+      faces:this.schematic.allFaces.length + 12,
+      faceSize:this.schematic.allFaces.length / 20,
+      even:!odd,
+
+    };
+
+    this.stats = stats;
   }
 
   _appendOffset(list, dx, dy, offset) {
@@ -155,5 +145,31 @@ export class Hexer {
     face.forEach(v => {
       list.push(_vAdd(v, offset));
     });
+
+    let verts = [[0, 1, 0],]; // north pole
+    let lat = Math.atan(0.5);
+    for (let i = 0; i < 10; i++) {
+      let phi = Math.PI * (i - 5) / 5;
+      let theta = (i % 2) ? lat : -lat;
+      verts.push(this._fromSpherical(theta, phi));
+    }
+    verts.push([0,-1,0]); // south pole
+    this.sphere = {
+      verts:verts
+    };
+  }
+
+  _fromSpherical(lat, long) {
+    // lat: radians, [-pi/2,pi/2], 0 equator, pi/2 north pole
+    // long: radians, [-pi,pi], 0 england, neg america, pos asia.
+    // Return [x,y,z] on unit sphere;
+    //   Y-axis: North pole
+    //   X-axis: Gulf of Guinea
+    //   Z-axis: Galapagos
+    return [
+      Math.cos(lat) * Math.cos(-long),
+      Math.sin(lat),
+      Math.cos(lat) * Math.sin(-long),
+    ];
   }
 }

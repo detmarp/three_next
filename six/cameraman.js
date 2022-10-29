@@ -10,7 +10,6 @@ export class Cameraman {
 
   init() {
     this.camera = new three.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
-    this.controls = new OrbitControls(this.camera, this.myscene.renderer.domElement);
     this.reset();
   }
 
@@ -18,7 +17,12 @@ export class Cameraman {
     this.camera.position.set(0, 0, 20);
     this.camera.up.set(0, 1, 0);
     this.camera.lookAt(0, 0, 0);
-    this.controls.update();
+    if (this.controls) {
+      this.controls.reset();
+    }
+    else {
+      this.controls = new OrbitControls(this.camera, this.myscene.renderer.domElement);
+    }
   }
 
   resize() {

@@ -10,7 +10,6 @@ export class Part1 {
 
   create() {
     this.hexer = new Hexer(this.n);
-    console.log(JSON.stringify(this.hexer.stats));
 
     this.group = new three.Group();
     this.myscene.root.add(this.group);
@@ -22,17 +21,6 @@ export class Part1 {
     this.hexer.schematic.allFaces.forEach(c => {
       this.addDot(c, 1, [0x004488, 0x0077ff]);
     });
-
-    let xx = [
-      this.hexer.schematic.dx[0] * this.hexer.schematic.edge,
-      this.hexer.schematic.dx[1] * this.hexer.schematic.edge,
-    ];
-    let yy = [
-      this.hexer.schematic.dy[0] * this.hexer.schematic.edge,
-      this.hexer.schematic.dy[1] * this.hexer.schematic.edge,
-    ];
-    this.addDot(xx, 1, [0x880000, 0xaa0000]);
-    this.addDot(yy, 1, [0x880000, 0xaa0000]);
 
     let sphere = this.make2(this.hexer);
     //let sphere = this.makeSchematicSphere(this.hexer);
@@ -79,63 +67,94 @@ export class Part1 {
 
   make2(hexer) {
     let group = new three.Group();
+
     for (let i = 0; i < 12; i++) {
-      let c = hexer.korners[i];
-      group.add(
-        this._setPosV(
-          this._makeball(),
-          this._fromSpher(c.spherical[0], c.spherical[1])
-        )
-      );
+      let corner = hexer.corners[i];
+      this._addPent(corner, group);
+      this._addFaces(corner, group);
     }
 
-    for (let j = 0; j < 10; j++) {
-      let c = hexer.korners[j];
-      group.add(this._makePatch(
-        hexer,
-        j, c.rightCi, c.upCi
-      ));
-      group.add(this._makePatch(
-        hexer,
-        j, c.rightCi, c.downCi
-      ));
-    }
-
+    // for (let j = 0; j < 10; j++) {
+    //   let c = hexer.corners[j];
+    //   group.add(this._makePatch(
+    //     hexer,
+    //     j, c.rightCi, c.upCi,
+    //     hexer.patches.up,
+    //   ));
+    //   group.add(this._makePatch(
+    //     hexer,
+    //     j, c.rightCi, c.downCi,
+    //     hexer.patches.down,
+    //     ));
+    // }
     return group;
   }
 
-  _makePatch(hexer, c0, c1, c2) {
+  _addPent(corner, group) {
+    // Add the pentagon for this corner.
+    group.add(
+      this._setPosV(
+        this._makeball(),
+        this._fromSpherA(corner.spherical)
+      )
+    );
+  }
+
+  _addFaces(corner, group) {
+    // Add the two up and down faces for this corner.
+    this._addFace(corner, true, group);
+    //this._addFace(corner, false, group);
+  }
+
+  _addFace(corner, up, group) {
+    // Add one face for this corner.
+    let patch = this.hexer.definePatch(corner.ci, up);
+    let face = up ? this.hexer.schematic.ups : this.hexer.schematic.downs;
+    // Build a list of fractional offsets, for each hex in face.
+    let fracs = [];
+    face.forEach(h => {
+      let f = [h[0], h[1]];
+      fracs.push(f);
+    });
+    // Convert each frac offset to a final spherical coordinate, using patch.
+    let sph = [];
+    fracs.forEach(f => {
+      let s = [
+        f[0] + patch.a.spherical[0],
+        f[1] + patch.a.spherical[1]
+      ];
+      sph.push(s);
+    });
+    // Draw each hex.
+    sph.forEach(s => {
+      group.add(
+        this._setPosV(
+          this._makeball(0.1, 0xffff00),
+          this._fromSpherA(s)
+        )
+      );
+    });
+  }
+
+  _makePatch(hexer, c0, c1, c2, list) {
     // c0 is the start corner index
     // c1 is the corner index to the right
     // c2 is the corner index up (or down)
     let group = new three.Group();
 
-    let a = hexer.korners[c0].spherical;
-    let b = hexer.korners[c2].spherical;
-    let c = hexer.korners[c1].spherical;
-    for (let f = 0.0; f < 0.8; f += 0.05) {
-      let sph = hexer.lerpPatch(a, b, c, 0, f);
+    let a = hexer.corners[c0].spherical;
+    let b = hexer.corners[c2].spherical;
+    let c = hexer.corners[c1].spherical;
+
+    list.forEach(f => {
+      let sph = hexer.lerpPatch(a, b, c, f[0], f[1]);
       group.add(
         this._setPosV(
-          this._makeball(0.05, 0x00aa00),
-          this._fromSpher(sph[0], sph[1])
+          this._makeball(0.1, 0x00aaff),
+          this._fromSpherA(sph)
         )
       );
-      sph = hexer.lerpPatch(a, b, c, f, 0);
-      group.add(
-        this._setPosV(
-          this._makeball(0.05, 0xff0000),
-          this._fromSpher(sph[0], sph[1])
-        )
-      );
-      sph = hexer.lerpPatch(a, b, c, f, .5);
-      group.add(
-        this._setPosV(
-          this._makeball(0.05, 0x9900ff),
-          this._fromSpher(sph[0], sph[1])
-        )
-      );
-    }
+    });
 
     return group;
   }
@@ -202,6 +221,8 @@ export class Part1 {
     obj.position.set(x, y, z);
     return obj;
   }
+
+  _fromSpherA(array) {return this._fromSpher(array[0], array[1]); }
 
   _fromSpher(theta, phi) {
     return new three.Vector3(

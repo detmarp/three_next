@@ -37,14 +37,14 @@ export class Hexer {
   constructor(n) {
     this.n = n;
 
-    this.corners = [
-      [0,2],
+    this.oldcorners = [
       [0,0], [0,1], [1,0], [1,1], [2,0], [2,1], [3,0], [3,1], [4,0], [4,1],
+      [0,2],
       [1,-1],
     ];
     let h = Math.sqrt(3) / 2;
 
-    this.korners = this._makeCorners();
+    this.corners = this._makeCorners();
 
     this.schematic = {};
 
@@ -65,7 +65,7 @@ export class Hexer {
     let dx = [r, 0];
     let dy = _vPolar(a, r);
     this.schematic.corners = [];
-    this.corners.forEach(v => {
+    this.oldcorners.forEach(v => {
       this._appendOffset(this.schematic.corners, dx, dy, _vScale(v, e));
     });
 
@@ -78,6 +78,8 @@ export class Hexer {
     this.schematic.dx = dx;
     this.schematic.dy = dy;
     this.schematic.edge = e;
+    this.schematic.scale = 1 / (this.schematic.edge * r);
+    //this.schematic.scale = 1 / (r * e);
 
     this.schematic.ups = [];
 
@@ -100,6 +102,7 @@ export class Hexer {
       }
     }
     else {
+      // build the "up" face.
       let top = n * 3 / 2;
       for (let j = top; j > 0; j--) {
         for (let i = j % 3; i < (top - j); i += 3) {
@@ -116,23 +119,23 @@ export class Hexer {
     }
 
     this.schematic.allFaces = [];
-    for (let c = 1; c < 6; c ++) {
+    for (let c = 1; c < 10; c+=2) {
       this._appendFace(this.schematic.allFaces, this.schematic.ups,
         this.schematic.corners[c]);
     }
-    for (let c = 1; c < 6; c ++) {
+    for (let c = 0; c < 10; c+=2) {
       this._appendFace(this.schematic.allFaces, this.schematic.ups,
-        this.schematic.corners[c + 5]);
-      this._appendFace(this.schematic.allFaces, this.schematic.downs,
         this.schematic.corners[c]);
+      this._appendFace(this.schematic.allFaces, this.schematic.downs,
+        this.schematic.corners[c + 1]);
       }
-    for (let c = 6; c < 11; c ++) {
+    for (let c = 0; c < 10; c+=2) {
       this._appendFace(this.schematic.allFaces, this.schematic.downs,
         this.schematic.corners[c]);
     }
 
     // coords for each center face
-    let verts = [[0, 1, 0],]; // north pole
+    let verts = [];
     let spherical = [[Math.PI / 2, 0]];
 
     let lat = Math.atan(0.5);
@@ -143,6 +146,7 @@ export class Hexer {
       verts.push(this._fromSpherical([theta, phi]));
     }
 
+    verts.push([0,1,0]); // north pole
     verts.push([0,-1,0]); // south pole
     spherical.push([-Math.PI / 2, 0]);
 
@@ -150,6 +154,8 @@ export class Hexer {
       verts: verts,
       spherical: spherical,
     };
+
+    this.patches = this._makePatches();
 
     // some stats
     let stats = {
@@ -248,6 +254,54 @@ export class Hexer {
     }
 
     return corners;
+  }
+
+  definePatch(ci, up) {
+    // For a given corner index, define a sphere patch from it.
+    // A sphere patch basically outlines a tri in a icosahedron.
+    // Identify the corners of this patch, as a,b,c;
+    //   c      ; a---b
+    //  / (up)  ;  \ (down)
+    // a---b    ;   c
+    let a = this.corners[ci];
+    let b = this.corners[a.rightCi];
+    let c = this.corners[up ? a.upCi : a.downCi];
+    let patch = {
+      up: up,
+      a: a,
+      b: b,
+      c: c,
+    }
+    return patch;
+  }
+
+  _makePatches() {
+    let patches = {
+      up:[],
+      down:[],
+    };
+
+    let scale = this.schematic.scale;
+    this.schematic.ups.forEach(v => {
+      patches.up.push([
+        v[0] * scale,
+        v[1] * scale
+      ]);
+    });
+    console.log(JSON.stringify(scale));
+    console.log(JSON.stringify(1/scale));
+    console.log(JSON.stringify(this.schematic.dx));
+    console.log(JSON.stringify(this.schematic.dy));
+    console.log(JSON.stringify(this.schematic.ups));
+
+    //patches.up = [];
+    for(let y = 0.1; y < 1; y+=0.1) {
+      for (let x = 0.1; x <= (1-y); x+= 0.1) {
+        //patches.up.push([x, y]);
+      }
+    }
+
+    return patches;
   }
 
   lerpPatch(a, b, c, fx, fy) {

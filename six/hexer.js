@@ -21,7 +21,7 @@ export class Hexer {
             0*  2   4   6   8  +
               11  +   +   +   +
 
-        Faces -- think of these as composed of tiles of hexagons:
+        Faces -- composed of tiles of hexagons:
               0/\ 1/\ 2/\ 3/\ 4/\
               /__\/__\/__\/__\/__\
              /\ 5/\ 6/\ 7/\ 8/\ 9/
@@ -288,11 +288,6 @@ export class Hexer {
         v[1] * scale
       ]);
     });
-    console.log(JSON.stringify(scale));
-    console.log(JSON.stringify(1/scale));
-    console.log(JSON.stringify(this.schematic.dx));
-    console.log(JSON.stringify(this.schematic.dy));
-    console.log(JSON.stringify(this.schematic.ups));
 
     //patches.up = [];
     for(let y = 0.1; y < 1; y+=0.1) {
@@ -302,6 +297,45 @@ export class Hexer {
     }
 
     return patches;
+  }
+
+  toTri(schem, tri) {
+    // convert schematic coord to triangular param coord
+    // n (for normalized) means scaling from [0:1] in both directions.
+    let xn = schem[0] * this.schematic.scale;
+    let yn = schem[1] * this.schematic.scale / (Math.sqrt(3) / 2);
+    // xn needs to be scaled and offset so it's always in [0:1],
+    // no matter where it is vertically on the triangle.
+    let yt = yn;
+    let xt;
+    if (yn >= 1) {
+      xt = 0;
+    }
+    else {
+      xt = (xn - yn / 2) / (1 - yn);
+    }
+    console.log(`${xn} ${yn} -- ${xt} ${yt}`);
+    return [xt, yt];
+  }
+
+  lerpSph(a, b, t) {
+    /*
+      Lerp between two spherical coordinates
+      Returns spherical coordinate: [phi, theta]
+    */
+    const p2 = Math.PI * 2;
+    let [ax, ay, bx, by] = [a[0], a[1], b[0], b[1]];
+    while (bx < ax - 3) { bx += p2; }
+    while (ax < bx - 3) { ax += p2; }
+    if (b[2]) {
+      // b is degenerate (is a pole)
+      bx = ax;
+    }
+    let s = [
+      ax + t * (bx - ax),
+      ay + t * (by - ay),
+    ];
+    return s;
   }
 
   lerpPatch(a, b, c, fx, fy) {

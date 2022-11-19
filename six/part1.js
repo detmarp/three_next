@@ -71,22 +71,11 @@ export class Part1 {
     for (let i = 0; i < 12; i++) {
       let corner = hexer.corners[i];
       this._addPent(corner, group);
+    }
+    for (let i = 0; i < 10; i++) {
+      let corner = hexer.corners[i];
       this._addFaces(corner, group);
     }
-
-    // for (let j = 0; j < 10; j++) {
-    //   let c = hexer.corners[j];
-    //   group.add(this._makePatch(
-    //     hexer,
-    //     j, c.rightCi, c.upCi,
-    //     hexer.patches.up,
-    //   ));
-    //   group.add(this._makePatch(
-    //     hexer,
-    //     j, c.rightCi, c.downCi,
-    //     hexer.patches.down,
-    //     ));
-    // }
     return group;
   }
 
@@ -103,7 +92,7 @@ export class Part1 {
   _addFaces(corner, group) {
     // Add the two up and down faces for this corner.
     this._addFace(corner, true, group);
-    //this._addFace(corner, false, group);
+    this._addFace(corner, false, group);
   }
 
   _addFace(corner, up, group) {
@@ -113,17 +102,13 @@ export class Part1 {
     // Build a list of fractional offsets, for each hex in face.
     let fracs = [];
     face.forEach(h => {
-      let f = [h[0], h[1]];
-      fracs.push(f);
+      let s = [h[0], up ? h[1] : -h[1]];
+      fracs.push(this.hexer.toTri(s));
     });
     // Convert each frac offset to a final spherical coordinate, using patch.
     let sph = [];
     fracs.forEach(f => {
-      let s = [
-        f[0] + patch.a.spherical[0],
-        f[1] + patch.a.spherical[1]
-      ];
-      sph.push(s);
+      sph.push(this._paramToPatch(f, patch));
     });
     // Draw each hex.
     sph.forEach(s => {
@@ -134,6 +119,16 @@ export class Part1 {
         )
       );
     });
+  }
+
+  _paramToPatch(f, patch) {
+    // f is [x,y] param pair
+    // patch has corner elements
+    // returns a spherical coordinate
+    let ac = this.hexer.lerpSph(patch.a.spherical, patch.c.spherical, f[1]);
+    let bc = this.hexer.lerpSph(patch.b.spherical, patch.c.spherical, f[1]);
+    let s = this.hexer.lerpSph(ac, bc, f[0]);
+    return s;
   }
 
   _makePatch(hexer, c0, c1, c2, list) {

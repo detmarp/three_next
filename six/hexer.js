@@ -78,7 +78,8 @@ export class Hexer {
     this.schematic.dx = dx;
     this.schematic.dy = dy;
     this.schematic.edge = e;
-    this.schematic.scale = 1 / (this.schematic.edge * r);
+    this.schematic.size = r;
+    this.schematic.scale = 1 / (e * r);
     //this.schematic.scale = 1 / (r * e);
 
     this.schematic.ups = [];
@@ -314,7 +315,6 @@ export class Hexer {
     else {
       xt = (xn - yn / 2) / (1 - yn);
     }
-    console.log(`${xn} ${yn} -- ${xt} ${yt}`);
     return [xt, yt];
   }
 

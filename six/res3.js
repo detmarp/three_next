@@ -10,11 +10,12 @@ export class Res3 {
   }
 
   add(obj) {
-    // Track thisd object.
+    // Track this object.
     // If it has geo or materials that are not yet tracked, then track them.
     if (!obj._res3id) {
       obj._res3id = ++this.id;
       this.count++;
+      // In case this is a 3d object with material and geometry, try to track.
       this._track(obj, obj.material);
       this._track(obj, obj.geometry);
     }

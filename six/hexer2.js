@@ -58,21 +58,32 @@ export class Hexer2 {
       e = n * 3 / 2;
     }
     let a = Math.PI / 3;
+    // dx: points toward the next corner to the east
+    // dy: points toward the next corner to the north-east
     let dx = [r, 0];
     let dy = _vPolar(a, r);
-    this.corners = [];
-    this.oldcorners.forEach(v => {
-      this._appendOffset(this.corners, dx, dy, _vScale(v, e));
-    });
+    this.korners = [];
 
-    // dx: points to the next corner to the east
-    // dy: points to the next corner to the north-east
     // edge: is the distance to those corners
     this.edge = e;
     this.size = r;
     this.scale = 1 / (e * r);
 
     this._makeUpsandDowns(n, dx, dy);
+
+    this.polys = [];
+    this.corners.forEach(c => {
+      let position = _vScale(_vAdd(_vScale(dx, c.logical[0]), _vScale(dy, c.logical[1])), e);
+      let p = {
+        x:position[0],
+        y:position[1],
+        corner:true,
+        pent:true,
+        ci:c.ci,
+        i:this.polys.size,
+      };
+      this.polys.push(p);
+    });
 
     this.allFaces = [];
     for (let c = 1; c < 10; c+=2) {
@@ -89,6 +100,12 @@ export class Hexer2 {
       this._appendFace(this.allFaces, this.downs,
         this.corners[c]);
     }
+
+    console.log(JSON.stringify(this.corners));
+    console.log(JSON.stringify(this.ups));
+    console.log(JSON.stringify(this.downs));
+    console.log(JSON.stringify(this.polys));
+
   }
 
   _appendOffset(list, dx, dy, offset) {
@@ -140,21 +157,22 @@ export class Hexer2 {
         }
         c.rightCi = (i + 2) % 10;
 
+        c.logical = [Math.floor(i / 2), c.even ? 0 : 1];
+
         let lat = Math.atan(0.5);
         let theta = c.even ? -lat : lat;
         let phi = Math.PI * (i - 5) / 5;
       }
       else {
         // the poles
+        let north = (i == 10);
         c.pole = true;
         c.neighborCi = ((i == 10) ? [1,3,5,7,9] : [8,6,4,2,0]);
-
-        let phi = Math.PI / ((i == 10) ? 2 : -2);
+        let phi = Math.PI / (north ? 2 : -2);
+        c.logical = north ? [0, 2] : [1, -1];
       }
       corners.push(c);
     }
-    console.log(JSON.stringify(corners));
-
     return corners;
   }
 

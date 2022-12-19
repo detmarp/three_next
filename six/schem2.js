@@ -10,9 +10,12 @@ export class Schem2 {
 
   make() {
     let group = new three.Group();
-    group.add(this.maker2.make([0, 0]));
-    group.add(this.maker2.make([1, 0]));
-    group.add(this.maker2.make([2, 0]));
+
+    this.hexer2.polys.forEach(p => {
+      let color = p.pent ? 1 : 0;
+      group.add(this.maker2.make([p.x, p.y], color));
+    });
+
     return group;
   }
 }

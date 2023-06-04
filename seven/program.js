@@ -51,6 +51,16 @@ export class Program {
     this.ui.addText();
     this.ui.addButton('Cube', () => {this.reset('cube');});
     this.ui.addText();
+    this.ui.addButton('1', () => {
+      fetch('./data1.json')
+      .then((response) => response.json())
+      .then((json) => this.x = json.x);
+      });
+    this.ui.addButton('2', () => {
+      fetch('./data2.json')
+      .then((response) => response.json())
+      .then((json) => this.x = json.x);
+      });
   }
 
   updateHud() {
@@ -59,6 +69,7 @@ export class Program {
       `hey<br>` +
       `workers:${this.myscene.workers.size}<br>` +
       `res:${this.myscene.res3.count}/${this.myscene.res3.id}<br>` +
+      `x:${this.x}<br>` +
       `renderer:${this.myscene.renderer.info}<br>` + // TODO - show more info
       ``
     );

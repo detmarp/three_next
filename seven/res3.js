@@ -3,6 +3,10 @@ import * as three from '../threejs/build/three.module.js';
 export class Res3 {
   // A class for managing three js resources.
   // Not too complex; helps with disposing of 3d resources.
+  // The basic pattern is:
+  //   let o = new Object3D();
+  //   res3.add(o);
+  // And later, call res3.destroy(parentObj); on the parent.
 
   constructor() {
     this.id = 0;
@@ -25,7 +29,12 @@ export class Res3 {
     // Recursively destroy children.
     // Dispose of resources.
     // Remove from parent.
-    obj.children.forEach(c => { this.destroy(c, true); });
+    if (!obj) {
+      return;
+    }
+    if (obj.children) {
+      obj.children.forEach(c => { this.destroy(c, true); });
+    }
     if (obj._res3dresources) {
       obj._res3dresources.forEach(r => {
         r.dispose();
@@ -34,6 +43,9 @@ export class Res3 {
     }
     if (!noremove && obj.parent) {
       obj.parent.remove(obj);
+    }
+    if (obj.dispose) {
+      obj.dispose();
     }
     if (obj._res3id) {
       this.count--;

@@ -1,7 +1,6 @@
 import * as three from '../threejs/build/three.module.js';
 import {MyScene} from './myscene.js';
 import {EzUi} from './ezui.js';
-import {Part1} from './part1.js';
 import {MyBuiltins} from './mybuiltins.js';
 
 export class Program {
@@ -11,41 +10,47 @@ export class Program {
 
   run() {
     this.myscene.init();
+
+    this.builtins = new MyBuiltins(this.myscene.res3);
+
     this.setup();
-    this.myscene.run();
-  }
-
-  setup() {
-    this.builtins = new MyBuiltins();
-
-    this.myscene.rootScene.background = this.builtins.load('bluebox');
-
-    this.n = 6;
-    this.part1 = new Part1(this.myscene, this.n);
 
     this.createHud();
     this.myscene.addCallback(() => {this.updateHud();});
+
+    this.myscene.run();
   }
 
-  reset() {
-    this.n = 6;
-    this.part1.reset(this.n);
+  setup(shape='ball') {
+    this.sky = this.builtins.bluesky();
+    this.myscene.rootScene.background = this.sky;
+
+    this.root = this.builtins.object({parent:this.myscene.rootScene});
+    this.builtins.load(shape, {parent:this.root});
+  }
+
+  reset(shape) {
+    if (this.sky) {
+      this.myscene.res3.destroy(this.sky);
+      this.sky = null;
+      this.myscene.rootScene.background = null;
+    }
+
+    this.myscene.res3.destroy(this.root);
+    this.root = null;
+
     this.myscene.cameraman.reset();
+
+    this.setup(shape);
   }
 
   createHud() {
     this.ui = new EzUi();
     this.info = this.ui.addText();
-    this.ui.addButton('Reset', () => {this.reset();});
+    this.ui.addButton('Ball', () => {this.reset('ball');});
     this.ui.addText();
-    this.ui.addButton('-', () => {
-      this.n = Math.max(this.n - 1, 1);
-      this.part1.reset(this.n);
-    });
-    this.ui.addButton('+', () => {
-      this.n = this.n + 1;
-      this.part1.reset(this.n);
-    });
+    this.ui.addButton('Cube', () => {this.reset('cube');});
+    this.ui.addText();
   }
 
   updateHud() {
@@ -54,7 +59,8 @@ export class Program {
       `hey<br>` +
       `workers:${this.myscene.workers.size}<br>` +
       `res:${this.myscene.res3.count}/${this.myscene.res3.id}<br>` +
-      `stats:${JSON.stringify(this.part1.hexer.stats)}`
+      `renderer:${this.myscene.renderer.info}<br>` + // TODO - show more info
+      ``
     );
   }
 }

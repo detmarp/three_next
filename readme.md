@@ -20,6 +20,8 @@ Let's get started on some more [`three.js`](https://threejs.org/) programs.
 
 [six](six/index.html) - start on hex world
 
+[seven](seven/index.html) - attempt at better modularity
+
 ## localhost
 
 TODO - add notes

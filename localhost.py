@@ -19,7 +19,7 @@ class Program(object):
     httpd = socketserver.TCPServer(("", port), Handler)
 
     print('Created')
-    print('Connect with\n  http://localhost:{}'.format(port))
+    print(f'Connect with\n  http://localhost:{port}')
     httpd.serve_forever()
 
 import os

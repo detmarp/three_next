@@ -2,7 +2,7 @@ import * as three from '../threejs/build/three.module.js';
 
 export class Res3 {
   // A class for managing three js resources.
-  // Not too complex; helps with disposing of 3d reosurces.
+  // Not too complex; helps with disposing of 3d resources.
 
   constructor() {
     this.id = 0;

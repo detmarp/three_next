@@ -22,6 +22,8 @@ Let's get started on some more [`three.js`](https://threejs.org/) programs.
 
 [seven](seven/index.html) - attempt at better modularity
 
+[eight](eight/index.html) - (nothing to do with 3d; actually some genAI stuff)
+
 ## localhost
 
 TODO - add notes

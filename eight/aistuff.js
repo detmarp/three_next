@@ -96,7 +96,7 @@ export class AiStuff {
           resolve(null);
         };
         var data = `{
-          "prompt": "${prompt}",
+          "prompt": "${encodeURIComponent(prompt)}",
           "n": 1,
           "size": "256x256",
           "response_format": "url"

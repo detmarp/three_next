@@ -1,0 +1,29 @@
+(Reset)
+Prompt:
+[In one word, an interesting current topic]
+(Go / X loading)
+Result:
+[topic]
+----------
+(Reset)
+Prompt:
+[Give me 20 words or ideas related to: topic]
+(Go / X loading)
+Result:
+[asdf,asdf,asdf,asdf,asdf,asdf,]
+----------
+(Reset)
+Prompt:
+[Give me random a short fake advertising slogan for a specific product]
+(Go / X loading)
+Result:
+[for x and y this does z!]
+-----------
+(Reset)
+Prompt:
+[Given this context, Context, Create an attractive fun background image for an ad about: ad]
+(Go / X loading)
+Result:
+[IMAGE]
+
+

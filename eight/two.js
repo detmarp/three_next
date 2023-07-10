@@ -20,16 +20,6 @@ export class Two {
     return this.body;
   }
 
-  /*
-  [ ] alpha
-    [ ] submit
-  [ ] complete topic picker
-    [/] make reset work
-    [ ] call ai thingy
-    [ ] return value
-
-  */
-
   build() {
     let div = document.createElement('div');
 
@@ -39,7 +29,7 @@ export class Two {
     );
     div.appendChild(a);
 
-    let b = this._makeTextSection('Pick a topic',
+    let b = this._makeTextSection('Create context',
       () => `30 words related to: ${this.topic}`,
       result => this.context = result
     );

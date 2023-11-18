@@ -1,12 +1,69 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>one</title>
+    <title>ana01 full sized canvas</title>
     <style>
-      body { margin: 0; }
+      body { margin: 0;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      border: 0;
+      overflow: hidden;
+      display: block;
+      font-family:Consolas,monospace;
+    }
+    canvas {
+      background-color:#fff;
+      position:relative;
+      padding: 0;
+      margin: auto;
+      display: block;
+    }
+    #content {
+      position:absolute;
+      top:1rem;
+      left:1rem;
+    }
     </style>
   </head>
   <body>
-    <script type="module" src="main.js""></script>
+    <canvas id="canvas"></canvas>
+    <div id="content"></div>
+
+    <script type="module">
+      let frame = 0;
+      let time;
+
+      const update = function() {
+        // Get size for canvas update.
+        var width = window.innerWidth;
+        var height = window.innerHeight;
+
+        // Get time, just becase;
+        var now = new Date().getTime(); // In epoch ms.
+        var delta = time ? now - time : 0;
+        time = now;
+
+        let color = 'rgb(255,140,0)';
+
+        // Draw the canvas.
+        const canvas = document.getElementById("canvas");
+        const context = canvas.getContext("2d");
+        context.canvas.width  = width;
+        context.canvas.height = height;
+        context.rect(0, 0, canvas.width, canvas.height);
+        context.fillStyle = color;
+        context.fill();
+
+        context.fillStyle = (frame & 4) ? 'rgb(0,0,255)': 'rgb(255,0,0)';
+        context.fillRect(10, 10, 20, 20);
+
+        // End of frame.
+        frame++;
+        requestAnimationFrame(update);
+      };
+
+      update();
+    </script>
   </body>
 </html>

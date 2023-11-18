@@ -24,6 +24,12 @@ Let's get started on some more [`three.js`](https://threejs.org/) programs.
 
 [eight](eight/index.html) - (nothing to do with 3d; actually some genAI stuff)
 
+## ana project
+
+Starting in Nov 2023
+
+[ana01 - simple](ana01/index.html);
+
 ## localhost
 
 TODO - add notes

@@ -31,10 +31,10 @@ export class Program {
     this.context.fillRect(0, 0, this.size, this.size);
 
     let [time, fraction] = this.clock();
-    let margin = this.size * 0.86;
+    let margin = this.size * 0.84;
     let baseline = 150;
 
-    this.context.font = this.font(75);
+    this.context.font = this.font(70);
     this.context.textAlign = 'right';
     this.context.verticalAlign = 'baseline';
     this.context.fillStyle = '#222222';
@@ -48,7 +48,7 @@ export class Program {
 
   font(size) {
     // return a font string
-    return `${size}px "Roboto Mono", monospace`;
+    return `${size}px monospace`;
   }
 
   clock() {

@@ -6,12 +6,10 @@ export class Program {
   setup() {
     this.context = this.canvas.getContext("2d");
     this.frame = 0;
-    this.time = 0;
     this.size = 400;
   }
 
   start() {
-    this.canvas.onclick = () => { this.onclick(); };
   }
 
   resize() {
@@ -25,32 +23,44 @@ export class Program {
   }
 
   work() {
-    var now = new Date().getTime(); // In epoch ms.
-    this.time = now;
     this.frame++;
   }
 
-  onclick() {
-    this.count++;
+  draw() {
+    this.context.fillStyle = '#eeeeee';
+    this.context.fillRect(0, 0, this.size, this.size);
+
+    let [time, fraction] = this.clock();
+    let margin = this.size * 0.86;
+    let baseline = 150;
+
+    this.context.font = this.font(75);
+    this.context.textAlign = 'right';
+    this.context.verticalAlign = 'baseline';
+    this.context.fillStyle = '#222222';
+    this.context.fillText(time, margin, baseline);
+
+    this.context.font = this.font(40);
+    this.context.textAlign = 'left';
+    this.context.fillStyle = '#333333';
+    this.context.fillText(fraction, margin, baseline);
   }
 
-  draw() {
-    let color = '#eeeeee';
-    //context.rect(0, 0, this.width, this.height);
-    this.context.fillStyle = color;
-    this.context.fill();
+  font(size) {
+    // return a font string
+    return `${size}px "Roboto Mono", monospace`;
+  }
 
-    let size = Math.min(this.width, this.height);
-    this.context.fillStyle = (this.frame & 4) ? 'rgb(0,0,255)': 'rgb(0, 0, 200)';
-    //context.fillRect(x, y, size, size);
-
-    this.context.lineWidth = 1;
-    this.context.strokeStyle = '#ff0000';
-    let x = this.size - 1;
-    this.context.strokeRect(0.5, 0.5, x, x);
-
-    this.context.font = "48px serif";
-    this.context.fillText("Hello world", 10, 50);
+  clock() {
+    // return the time as array: [time, fraction]
+    let date = new Date();
+    let h = date.getHours().toString().padStart(2, '0');
+    let m = date.getMinutes().toString().padStart(2, '0');
+    let s = date.getSeconds().toString().padStart(2, '0');
+    let f = Math.floor(date.getMilliseconds() / 10).toString().padStart(2, '0');
+    let time = `${h}:${m}:${s}`;
+    let fraction = `${f}`;
+    return [time, fraction];
   }
 
    update() {

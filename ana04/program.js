@@ -13,11 +13,14 @@ export class Program {
   }
 
   resize() {
-    let width = Math.max(window.innerWidth, 40);
-    let height = Math.max(window.innerHeight, 40);
+    this.canvas.style.width ='100%';
+    this.canvas.style.height='100%';
+    this.canvas.width = this.canvas.offsetWidth;  // set the internal size to match
+    this.canvas.height = this.canvas.offsetHeight;
+
+    let width = Math.max(this.canvas.width, 40);
+    let height = Math.max(this.canvas.height, 40);
     let min = Math.min(width, height);
-    this.canvas.width  = width;
-    this.canvas.height = height;
     let scale = min / this.size;
     this.context.scale(scale, scale);
   }

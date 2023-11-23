@@ -28,6 +28,7 @@ Let's get started on some more [`three.js`](https://threejs.org/) programs.
 
 Starting in Nov 2023
 
+[ana00 - clocks](ana00/index.html);
 [ana01 - simple](ana01/index.html);
 [ana02 - canvas, click](ana02/index.html);
 [ana03 - text clock](ana03/index.html);

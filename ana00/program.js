@@ -100,8 +100,6 @@ export class Program {
 
     let big = this.makeElement('div', this.big);
     big.className = 'bigdiv';
-    big.style.width = '520px';
-    big.style.height = '520px';
 
     let canvas = this.makeElement('canvas', big);
     onCanvas(canvas);

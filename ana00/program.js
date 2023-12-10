@@ -1,9 +1,11 @@
 import {Program as Program03} from '../ana03/program.js';
 import {Program as Program04} from '../ana04/program.js';
+import Persist from './d/persist.js';
 
 export class Program {
   constructor(root) {
     this.root = root;
+    this.persist = new Persist();
     this.clocks = new Map();
   }
 
@@ -69,10 +71,19 @@ export class Program {
   }
 
   setup() {
-    this.clockId = 0;
+    this.clockId = this.persist.getInt('clock', -1);
     this.clocks.clear();
 
     this.makeTree();
+
+    this.debugText(this.persist.json);
+
+    this.makeMenuScreen();
+  }
+
+  makeMenuScreen() {
+    this.cells.replaceChildren();
+    this.big.replaceChildren();
 
     this.makeCell(canvas => {
       let p = new Program03(canvas);
@@ -83,8 +94,6 @@ export class Program {
       let p = new Program04(canvas);
       p.run();
     });
-
-    this.debugText('asdf');
   }
 
   run() {
@@ -96,6 +105,7 @@ export class Program {
   }
 
   setBigClock(onCanvas) {
+    this.cells.replaceChildren();
     this.big.replaceChildren();
 
     let big = this.makeElement('div', this.big);
@@ -103,5 +113,11 @@ export class Program {
 
     let canvas = this.makeElement('canvas', big);
     onCanvas(canvas);
+
+    let self = this;
+    canvas.addEventListener('click', () => {
+      self.makeMenuScreen();
+    }, false);
+
   }
 }

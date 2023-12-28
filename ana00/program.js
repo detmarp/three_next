@@ -1,6 +1,7 @@
 import {Program as Program03} from '../ana03/program.js';
 import {Program as Program04} from '../ana04/program.js';
 import SecondsLeft from './clocks/secondsleft.js';
+import Binary from './clocks/binary.js';
 import Persist from './d/persist.js';
 
 export class Program {
@@ -96,13 +97,18 @@ export class Program {
       p.run();
     });
 
-  this.makeCell(canvas => {
-    let p = new SecondsLeft(canvas);
-    p.run();
-  });
-}
+    this.makeCell(canvas => {
+      let p = new SecondsLeft(canvas);
+      p.run();
+    });
 
-run() {
+    this.makeCell(canvas => {
+      let p = new Binary(canvas);
+      p.run();
+    });
+  }
+
+  run() {
     this.setup();
   }
 
@@ -115,7 +121,7 @@ run() {
     this.big.replaceChildren();
 
     let big = this.makeElement('div', this.big);
-    big.className = 'bigdiv';
+    big.className = 'bigsquare';
 
     let canvas = this.makeElement('canvas', big);
     onCanvas(canvas);

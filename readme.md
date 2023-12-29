@@ -6,6 +6,10 @@
 &nbsp; | &nbsp;
 [repo](https://github.com/detmarp/three_next)
 
+## Celia notebook editor project
+[celia0 - notebook](celia0/index.html)
+
+## my 2023 3d learning projects
 Let's get started on some more [`three.js`](https://threejs.org/) programs.
 
 [zero](zero/index.html) - a simple scene.

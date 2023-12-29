@@ -9,6 +9,7 @@ export default class Persist {
 
   get(name, defaultValue = null) {
     return this.object[name];
+    // TODO defaultValue
   }
 
   getInt(name, defautlValue = 0) {

@@ -1,10 +1,13 @@
 import Doc from './d/doc.js';
+import Persist from './d/persist.js';
 import Note from './note.js';
+import Settings from './settings.js';
 
 export default class Program {
   constructor(root) {
     this.root = root;
     this.count = 0;
+    this.persist = new Persist('celia0');
   }
 
   setup() {
@@ -52,15 +55,11 @@ export default class Program {
     this.doc.add('h2', 'Upload');
     this.sendArea = this.doc.add('p');
 
-    this.doc.add('h2', 'TODO');
-    let todo = this.doc.add('ul');
-    this.doc.add('li', '[/] Make a new journal repo', todo);
-    this.doc.add('li', '[/] Fetch button', todo);
-    this.doc.add('li', '[/] ...raw fetch', todo);
-    this.doc.add('li', '[ ] Fetch a real list, some kind of formatting?', todo);
-    this.doc.add('li', '[ ] handle all fetch error cases', todo);
-    this.doc.add('li', '[ ] Create new file', todo);
-    this.doc.add('li', '[ ] auth?', todo);
+    // settings
+    this.doc.add('h2', 'Settings');
+    let settingsDiv = this.doc.add('div');
+    this.settings = new Settings(this.persist);
+    this.settings.addTo(settingsDiv);
   }
 
   click(message) {
@@ -103,7 +102,7 @@ export default class Program {
     const repo = 'notebook';
     const path = `pages/${note.getFolder()}/${note.getFilename()}`;
     const message = `${note.getMessage()}`;
-    const auth = 'x'; // try 3, fine-grained
+    const auth = this.settings.authToken;
 
     const existingFile = await (await fetch(
       `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,

@@ -7,7 +7,9 @@
 [repo](https://github.com/detmarp/three_next)
 
 ## Celia notebook editor project
-[celia0 - notebook](celia0/index.html)
+[celia0 - editor](celia0/index.html)
+
+[notebook - webpage](https://detmarp.github.io/notebook); [repo](https://github.com/detmarp/notebook)
 
 ## my 2023 3d learning projects
 Let's get started on some more [`three.js`](https://threejs.org/) programs.

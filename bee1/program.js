@@ -31,6 +31,8 @@ export default class Program {
     this.doc.add('hr');
 
     this.doc.add('text', 'the end');
+
+    this.click('(messages go here)');
   }
 
   click(message) {

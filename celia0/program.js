@@ -2,6 +2,7 @@ import Doc from './d/doc.js';
 import Persist from './d/persist.js';
 import Note from './note.js';
 import Settings from './settings.js';
+import Github from './github.js';
 
 export default class Program {
   constructor(root) {
@@ -60,6 +61,9 @@ export default class Program {
     let settingsDiv = this.doc.add('div');
     this.settings = new Settings(this.persist);
     this.settings.addTo(settingsDiv);
+
+    // github api
+    this.github = new Github('detmarp', 'notebook', this.settings.authToken);
   }
 
   click(message) {
@@ -69,25 +73,7 @@ export default class Program {
 
   async fetch() {
     // Fetch the repo contents
-    let s = 'ccc';
-    let response;
-
-    let url = 'https://api.github.com/repos/detmarp/notebook/git/trees/main?recursive=1';
-    await fetch(url)
-    .then(response => response.text())
-    .then((text) => {
-      if (true) {
-      s = 'bbb ' + text;
-      }
-      else {
-      s = 'ddd ' + text;
-      }
-
-    })
-    .catch(err => {
-      s = 'aaa err: ' + err;
-      //this.report(err, this.listArea);
-    });
+    let s = await this.github.trees();
     this.report(s, this.listArea);
   }
 
@@ -98,38 +84,11 @@ export default class Program {
 
   async send(note) {
     const content = note.text;
-    const owner = 'detmarp';
-    const repo = 'notebook';
     const path = `pages/${note.getFolder()}/${note.getFilename()}`;
     const message = `${note.getMessage()}`;
-    const auth = this.settings.authToken;
 
-    const existingFile = await (await fetch(
-      `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
-      {
-        method: 'GET',
-        headers: {
-          Accept: 'application/vnd.github+json',
-          Authorization: `token ${auth}`
-        }
-      }
-    )).json();
-
-    await (await fetch(
-      `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
-      {
-        method: 'PUT',
-        headers: {
-          Accept: 'application/vnd.github+json',
-          Authorization: `token ${auth}`
-        },
-        body: JSON.stringify({
-          message: message,
-          content: btoa(content),
-          sha: existingFile.sha,
-        }),
-      }
-    )).json();
+    let existingFile = github.get(path);
+    this.github.put(content, path, message, existingFile.sha);
   }
 
   run() {

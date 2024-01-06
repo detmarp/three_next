@@ -3,6 +3,7 @@ import Persist from './d/persist.js';
 import Note from './note.js';
 import Settings from './settings.js';
 import Github from './github.js';
+import PageTop from './pagetop.js';
 
 export default class Program {
   constructor(root) {
@@ -12,7 +13,12 @@ export default class Program {
   }
 
   setup() {
+    this.settings = new Settings(this.persist);
+    this.github = new Github('detmarp', 'notebook', this.settings.authToken);
+
     this.doc = new Doc(this.root);
+    this.topPage = new PageTop(this.root, this);
+    return;
 
     let self = this;
 
@@ -87,7 +93,7 @@ export default class Program {
     const path = `pages/${note.getFolder()}/${note.getFilename()}`;
     const message = `${note.getMessage()}`;
 
-    let existingFile = github.get(path);
+    let existingFile = this.github.get(path);
     this.github.put(content, path, message, existingFile.sha);
   }
 

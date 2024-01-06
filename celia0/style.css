@@ -2,6 +2,18 @@
 body {
   font-family: 'Roboto', Arial, sans-serif;
 }
+
+.tab {
+  padding: 1em;
+  background-color: #dddddd;
+  border-style: solid;
+  border-width: 1px;
+}
+.tab.selected {
+  background-color: white;
+  border-style: solid solid none solid;
+}
+
 @media only screen and (min-width: 992px) {
   body {
     font-size: 16px;

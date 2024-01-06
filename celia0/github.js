@@ -9,8 +9,8 @@ export default class Github {
   }
 
   async get(path) {
-    let url = `{this.url}/contents/${path}`;
-    let headers = _this._makeHeaders();
+    let url = `${this.url}/contents/${path}`;
+    let headers = this._makeHeaders();
     let info = {
       method: 'GET',
       headers: headers,
@@ -23,9 +23,9 @@ export default class Github {
   }
 
   async put(blob, path, message, sha = null) {
-    let url = `{this.url}/contents/${path}`;
+    let url = `${this.url}/contents/${path}`;
     let content = btoa(blob);
-    let headers = _this._makeHeaders();
+    let headers = this._makeHeaders();
     let body = {
       message: message,
       content: content,
@@ -38,13 +38,15 @@ export default class Github {
     };
 
     let result = await fetch(url, info);
+    console.log('aaa ' + url);
+    console.log('bbb ' + await result.text());
     let json = await result.json();
 
     return json;
   }
 
   async trees() {
-    let url = `{this.url}/git/trees/main?recursive=1`;
+    let url = `${this.url}/git/trees/main?recursive=1`;
     let response = await fetch(url);
     let text = response.text();
     s = 'bbb ' + text;

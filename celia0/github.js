@@ -38,11 +38,9 @@ export default class Github {
     };
 
     let result = await fetch(url, info);
-    console.log('aaa ' + url);
-    console.log('bbb ' + await result.text());
-    let json = await result.json();
-
-    return json;
+    let text = await result.text()
+    //let json = await result.json();
+    //return json;
   }
 
   async trees() {

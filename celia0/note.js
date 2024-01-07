@@ -54,7 +54,8 @@ Here is the note.
 
   // Return a possible folder for this note.
   getFolder() {
-    return `${this.created.substring(0, 7)}`
+    return 'testing';
+    //return `${this.created.substring(0, 7)}`
   }
 
   // Return a possible commit message for this note.

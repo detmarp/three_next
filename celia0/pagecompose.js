@@ -10,18 +10,68 @@ export default class PageCompose {
     this.edit = this.doc.add('textarea');
     this.edit.setAttribute('cols', '40');
     this.edit.setAttribute('rows', '10');
-    this.edit.focus();
+    this.edit.addEventListener('input', (e) => this.onChange());
 
     this.doc.add('br');
-    let sendButton = this.doc.add('button', 'Send');
-    this.doc.onClick(sendButton, () => {
-      let note = new Note(this.edit.value);
-      this.program.send(note);
+    this.buttonArea = this.doc.add('div');
+
+    this.doc.add('br');
+    this.messageArea = this.doc.add('div');
+
+    this.onStart();
+  }
+
+  onStart() {
+    this.clearButtons();
+    this.saveButton = this.addButton('Save', () => this.onSaveButton());
+
+    this.edit.disabled = false;
+    this.edit.focus();
+
+    this.onChange();
+  }
+
+  clearButtons() {
+    this.doc.clear(this.buttonArea);
+  }
+
+  addButton(label, onClick) {
+    let button = this.doc.add('button', label, this.buttonArea);
+    this.doc.onClick(button, onClick);
+    return button;
+  }
+
+  onChange() {
+    let white = this.edit.value.trim().length === 0;
+    if(this.saveButton) {
+      this.saveButton.disabled = white;
+    }
+  }
+
+  async onSaveButton() {
+    let note = new Note(this.edit.value);
+    this.saveButton.disabled = true;
+    this.edit.disabled = true;
+    await this.program.send(note).catch(error => {
+      this.onError(error);
     });
-    let clearButton = this.doc.add('button', 'Clear');
-    this.doc.onClick(clearButton, () => {
-      this.edit.value = '';
-      this.edit.focus();
-    });
+
+    this.onSaved();
+  }
+
+  onError(error) {
+    console.log(error);
+  }
+
+  onSaved() {
+    this.addButton('Clear', () => this.onClearButton());
+  }
+
+  onClearButton() {
+    this.edit.value = '';
+    this.onStart();
+  }
+
+  onRetryButton() {
   }
 }

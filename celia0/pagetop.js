@@ -8,8 +8,12 @@ export default class PageTop {
   constructor(parent, program) {
     this.parent = parent;
     this.program = program;
-    this.tabMaker = new TabMaker(this.parent);
     this.doc = new Doc(this.parent);
+
+    this.doc.add('br');
+    this.header = this.doc.add('div');
+
+    this.tabMaker = new TabMaker(this.header);
 
     new PageCompose(this.tabMaker.add('Compose'), this.program);
     new PageSettings(this.tabMaker.add('Settings'), this.program.settings);

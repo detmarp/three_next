@@ -8,9 +8,17 @@ export default class PageCompose {
     this.doc = new Doc(this.parent);
 
     this.edit = this.doc.add('textarea');
+    this.edit.label =
     this.edit.setAttribute('cols', '40');
     this.edit.setAttribute('rows', '10');
     this.edit.addEventListener('input', (e) => this.onChange());
+    // Prevent unwanted capitlization, etc.
+    // Just guessing at alot of this
+    this.edit.autocomplete = 'off';
+    this.edit.ariaInvalid = 'false';
+    this.edit.ariaHaspopup = 'false';
+    this.edit.spellcheck = 'false';
+
 
     this.doc.add('br');
     this.buttonArea = this.doc.add('div');

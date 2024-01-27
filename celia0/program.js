@@ -94,7 +94,12 @@ export default class Program {
     const message = `${note.getMessage()}`;
 
     let existingFile = this.github.get(path);
-    await this.github.put(content, path, message, existingFile.sha);
+    try {
+      await this.github.put(content, path, message, existingFile.sha);
+    }
+    catch(e) {
+      throw new Error(e);
+    }
   }
 
   run() {

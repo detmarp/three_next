@@ -16,10 +16,15 @@ export default class Github {
       headers: headers,
     };
 
-    let result = await fetch(url, info);
-    let existingFile = await result.json();
-
-    return existingFile;
+    try {
+      let result = await fetch(url, info);
+      let existingFile = await result.json();
+      return existingFile;
+    }
+    catch(e) {
+      console.log(e.message);
+    }
+    // TODO - error flow?
   }
 
   async put(blob, path, message, sha = null) {
@@ -37,8 +42,12 @@ export default class Github {
       body: JSON.stringify(body),
     };
 
-    let result = await fetch(url, info);
-    let text = await result.text()
+    let response = await fetch(url, info);
+    let text = await response.text()
+    if (!response.ok) {
+      let message = `${response.status} ${response.statusText} \n${text}`;
+      throw(new Error(message));
+    }
     //let json = await result.json();
     //return json;
   }

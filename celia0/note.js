@@ -12,7 +12,7 @@ export default class Note {
   mock() {
     this.setCreated();
 
-    this.text = `# Note
+    this.text = `#Note
 #testing
 
 This is a note.
@@ -63,4 +63,13 @@ Here is the note.
     return `Note for ${this.created}`;
   }
 
+  toJson() {
+    let ob = {
+      title: this.title,
+      text: this.text,
+      created: this.created,
+      createdUtc: this.createdUtc,
+    };
+    return JSON.stringify(ob, null, 2);
+  }
 }

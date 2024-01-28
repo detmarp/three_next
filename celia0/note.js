@@ -59,8 +59,12 @@ Here is the note.
   }
 
   // Return a possible commit message for this note.
-  getMessage() {
-    return `Note for ${this.created}`;
+  getMessage(device = null) {
+    let text = `Note for ${this.created}`;
+    if (device) {
+      text += ` from ${device}`;
+    }
+    return text;
   }
 
   toJson() {

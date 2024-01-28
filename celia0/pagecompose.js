@@ -82,6 +82,7 @@ export default class PageCompose {
 
   onSaved() {
     this.doc.clear(this.messageArea);
+    this.doc.add('text', 'Saved', this.messageArea);
     this.addButton('Clear', () => this.onClearButton());
   }
 

@@ -91,7 +91,7 @@ export default class Program {
   async send(note) {
     const content = note.text;
     const path = `pages/${note.getFolder()}/${note.getFilename()}`;
-    const message = `${note.getMessage()}`;
+    const message = `${note.getMessage(this.settings.device)}`;
 
     let existingFile = this.github.get(path);
     try {

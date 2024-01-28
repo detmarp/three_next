@@ -8,8 +8,11 @@ export default class Persist {
   }
 
   get(name, defaultValue = null) {
+    if (!this.object.hasOwnProperty(name)) {
+      return defaultValue;
+    }
+
     return this.object[name];
-    // TODO defaultValue
   }
 
   getInt(name, defautlValue = 0) {

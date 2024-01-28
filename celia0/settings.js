@@ -17,7 +17,7 @@ export default class Settings {
     input.value = this.authToken;
     input.style.width='40em';
     input.addEventListener('input', (e) => {
-      this.authToken = e.srcElement.value;
+      this.authToken = e.srcElement.value.trim();
       this.persist.set('authtoken', this.authToken);
     });
 
@@ -28,7 +28,7 @@ export default class Settings {
     device.value = this.device;
     device.style.width='40em';
     device.addEventListener('input', (e) => {
-      this.device = e.srcElement.value;
+      this.device = e.srcElement.value.trim();
       this.persist.set('device', this.device);
     });
   }

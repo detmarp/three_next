@@ -9,7 +9,7 @@ export default class PageCompose {
 
     this.edit = this.doc.add('textarea');
     this.edit.setAttribute('cols', '40');
-    this.edit.setAttribute('rows', '10');
+    this.edit.setAttribute('rows', '50');
     this.edit.addEventListener('input', (e) => this.onChange());
     // Prevent unwanted capitlization, etc.
     // Just guessing at alot of this.
@@ -32,8 +32,22 @@ export default class PageCompose {
   }
 
   onStart() {
+    // detmar
+    this.edit.value =`
+#one
+some text
+#two #three_four. asdf
+some words
+#twohashes
+#Can_you_normalize_This09435_-wer-adsf.
+#Or-this?#three
+[#detmar](../../pageindex.md#detmar)
+some formatting
+    `
+    // detmar
     this.clearButtons();
     this.saveButton = this.addButton('Save', () => this.onSaveButton());
+    this.formatButton = this.addButton('Format', () => this.onFormatButton());
 
     this.edit.disabled = false;
     this.edit.focus();
@@ -43,6 +57,7 @@ export default class PageCompose {
 
   clearButtons() {
     this.doc.clear(this.buttonArea);
+    this.formatButton = null;
   }
 
   addButton(label, onClick) {
@@ -56,6 +71,11 @@ export default class PageCompose {
     if(this.saveButton) {
       this.saveButton.disabled = white;
     }
+    if (this.formatButton) {
+      this.formatButton.disabled = white;
+      this.formatButton.label = 'Format';
+    }
+
     this.updateDebug();
   }
 
@@ -71,6 +91,17 @@ export default class PageCompose {
     catch(e) {
       this.onError(e.message);
     }
+  }
+
+  onFormatButton() {
+    // Format the note.
+    let note = new Note(this.edit.value);
+    note.format();
+
+    this.edit.value = note.format();
+    this.onChange();
+
+    this.formatButton.label = 'Undo Format';
   }
 
   onError(error) {

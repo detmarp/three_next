@@ -7,6 +7,7 @@ export default class Settings {
     this.persist = persist;
     this.authToken = persist.get('authtoken', '');
     this.device = persist.get('device', '');
+    this.testmode = persist.get('testmode', 'false');
   }
 
   addTo(parent) {
@@ -31,5 +32,18 @@ export default class Settings {
       this.device = e.srcElement.value.trim();
       this.persist.set('device', this.device);
     });
+
+    doc.add('br');
+
+    doc.add('text', 'test mode');
+    let test = doc.add('input');
+    test.type = 'checkbox';
+    test.checked = this.testmode === 'true';
+    test.addEventListener('change', (e) => {
+      this.testmode = e.srcElement.checked? 'true' : 'false';
+      this.persist.set('testmode', this.testmode);
+    });
+
+    return doc;
   }
 }

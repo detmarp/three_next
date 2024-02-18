@@ -1,5 +1,6 @@
 import Doc from './d/doc.js';
 import Note from './note.js';
+import EditNote from './editnote.js';
 
 export default class PageCompose {
   constructor(parent, program) {
@@ -7,13 +8,32 @@ export default class PageCompose {
     this.program = program;
     this.doc = new Doc(this.parent);
 
+    this.editNote = new EditNote();
+
+    this.doc.add('text', ' Title');
+    this.title = this.doc.add('input');
+    this.title.addEventListener('input', (e) => this.onTitle());
+    this.doc.add('text', ' auto title:');
+    this.autotitle = this.doc.add('input');
+    this.autotitle.checked = true;
+    this.autotitle.type = 'checkbox';
+    this.autotitle.addEventListener('change', (e) => {
+      this.onAutotitle();
+    });
+    this.doc.add('text', '[test: ');
+    this.testmode = this.doc.add('input');
+    this.testmode.checked = this.program.settings.testmode === 'true';
+    this.testmode.type = 'checkbox';
+    this.doc.add('text', ']');
+
+    this.doc.add('br');
     this.edit = this.doc.add('textarea');
     this.edit.setAttribute('cols', '40');
-    this.edit.setAttribute('rows', '50');
+    this.edit.setAttribute('rows', '12');
     this.edit.addEventListener('input', (e) => this.onChange());
     // Prevent unwanted capitlization, etc.
     // Just guessing at alot of this.
-    // DIesn't really do what I want. oh well.
+    // Doesn't really do what I want. oh well.
     this.edit.autocomplete = 'off';
     this.edit.ariaInvalid = 'false';
     this.edit.ariaHaspopup = 'false';
@@ -32,22 +52,10 @@ export default class PageCompose {
   }
 
   onStart() {
-    // detmar
-    this.edit.value =`
-#one
-some text
-#two #three_four. asdf
-some words
-#twohashes
-#Can_you_normalize_This09435_-wer-adsf.
-#Or-this?#three
-[#detmar](../../pageindex.md#detmar)
-some formatting
-    `
-    // detmar
     this.clearButtons();
     this.saveButton = this.addButton('Save', () => this.onSaveButton());
     this.formatButton = this.addButton('Format', () => this.onFormatButton());
+    this.undoFormat = null;
 
     this.edit.disabled = false;
     this.edit.focus();
@@ -66,6 +74,23 @@ some formatting
     return button;
   }
 
+  onTitle() {
+    // Title text changed
+    this.autotitle.checked = false;
+    this.updateDebug();
+  }
+
+  onAutotitle() {
+    // Autotitle toggled
+    if (this.autotitle.checked) {
+      let note = this.refreshNote();
+      this.title.value = note.title;
+    }
+    else {
+    }
+    this.updateDebug();
+  }
+
   onChange() {
     let white = this.edit.value.trim().length === 0;
     if(this.saveButton) {
@@ -73,15 +98,18 @@ some formatting
     }
     if (this.formatButton) {
       this.formatButton.disabled = white;
-      this.formatButton.label = 'Format';
+      this.undoFormat = null;
+      this.formatButton.textContent = 'Format';
     }
 
+    this.editNote.note.text = this.edit.value;
+    this.onAutotitle();
     this.updateDebug();
   }
 
   async onSaveButton() {
     this.doc.clear(this.messageArea);
-    let note = new Note(this.edit.value);
+    let note = this.refreshNote();
     this.saveButton.disabled = true;
     this.edit.disabled = true;
     try {
@@ -94,14 +122,23 @@ some formatting
   }
 
   onFormatButton() {
+    if (this.undoFormat) {
+      this.edit.value = this.undoFormat;
+      this.undoFormat = null;
+      this.formatButton.textContent = 'Format';
+      return
+    }
+
     // Format the note.
-    let note = new Note(this.edit.value);
+    let note = this.refreshNote();
     note.format();
 
+    let oldValue = this.edit.value;
     this.edit.value = note.format();
     this.onChange();
 
-    this.formatButton.label = 'Undo Format';
+    this.formatButton.textContent = 'Undo Format';
+    this.undoFormat = oldValue;
   }
 
   onError(error) {
@@ -124,7 +161,18 @@ some formatting
 
   updateDebug() {
     this.doc.clear(this.debugArea);
-    let note = new Note(this.edit.value);
-    this.doc.add('text', note.toJson(), this.debugArea);
+    let note = this.refreshNote();
+    this.doc.add('text',
+      `${note.toJson()}<br><br>${this.editNote.note.toJson()}`,
+      this.debugArea
+    );
+  }
+
+  refreshNote() {
+    let note = new Note(
+      this.edit.value,
+      this.autotitle.checked ? null : this.title.value
+    );
+    return note;
   }
 }

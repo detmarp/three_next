@@ -2,86 +2,60 @@
 */
 
 export default class Note {
-  constructor(text, title = null) {
-    this.text = text ?? '';
-    this.setCreated();
-    this.setTitle(title);
+  #text = '';
+  #autotitle = '';
+  #created = '';
+  #createdUtc = '';
+  #date = '';
+
+  constructor() {
+    this.setDates();
   }
 
-  /* Create a mock note, for testing */
-  mock() {
-    this.setCreated();
+  get text() { return this.#text; }
+  get autotitle() { return this.#autotitle; }
+  get created() { return this.#created; }
+  get createdUtc() { return this.#createdUtc; }
+  get date() { return this.#date; }
 
-    this.text = `#Note
-#testing
-
-This is a note.
-
-local : ${this.created}
-
-utc: ${this.createdUtc}
-
-Here is the note.
-`;
-
+  set text(text) {
+    this.#text = text;
+    this.setDates();
     this.setTitle();
   }
 
-  getTitle() {
-    return `${this.created}`;
-  }
-
-  setTitle(title = null) {
-    this.title = title ?? this.getTitle();
-  }
-
-  setCreated() {
+  setDates() {
     let now = new Date();
     let offset = now.getTimezoneOffset() * 60 * 1000
     let local = new Date(now - offset)
     let iso = local.toISOString().split('.')[0];
     let utc = now.toISOString();
-    this.created = iso;
-    this.createdUtc = utc;
-    this.date = iso.substring(0, 10);
+    this.#created = iso;
+    this.#createdUtc = utc;
+    this.#date = iso.substring(0, 10);
   }
 
-  // Return a possible filename for this note.
-  getFilename() {
-    let name = `${this.created}.md`;
+  setTitle() {
+    let name = `${this.created}`;
     name = name.replace('T', '_').replaceAll(':', '-');
-    return name;
-  }
+    this.#autotitle = name;
 
-  // Return a possible folder for this note.
-  getFolder() {
-    return 'testing';
-    //return `${this.created.substring(0, 7)}`
-  }
-
-  // Return a possible commit message for this note.
-  getMessage(device = null) {
-    let text = `Note for ${this.date}`;
-    if (device) {
-      text += ` from ${device}`;
-    }
-    return text;
   }
 
   toJson() {
     let ob = {
-      title: this.title,
-      text: this.text,
-      date: this.date,
-      created: this.created,
-      createdUtc: this.createdUtc,
+      autotitle: this.#autotitle,
+      text: this.#text,
+      date: this.#date,
+      created: this.#created,
+      createdUtc: this.#createdUtc,
     };
     return JSON.stringify(ob, null, 2);
   }
 
   // return a normalized note.
   format() {
-    let text = this.text;
+    let text = this.#text;
     let post = '';
     let tagSet = new Set();
     let tags = [];
@@ -126,7 +100,6 @@ Here is the note.
 
     text = text.trim();
     text = text + `\n\n${post}`;
-    return text;
+    this.#text = text;
   }
-
 }

@@ -10,6 +10,7 @@ export default class Note {
 
   constructor() {
     this.setDates();
+    this.text = '';
   }
 
   get text() { return this.#text; }
@@ -39,7 +40,6 @@ export default class Note {
     let name = `${this.created}`;
     name = name.replace('T', '_').replaceAll(':', '-');
     this.#autotitle = name;
-
   }
 
   toJson() {

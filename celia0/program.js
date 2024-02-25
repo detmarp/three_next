@@ -88,14 +88,15 @@ export default class Program {
     this.doc.add('text', text, parent);
   }
 
-  async send(note) {
-    const content = note.text;
-    const path = `pages/${note.getFolder()}/${note.getFilename()}`;
-    const message = `${note.getMessage(this.settings.device)}`;
+  async send(text, path, message) {
 
-    let existingFile = this.github.get(path);
+    let existingFile = await this.github.get(path);
+    if (existingFile.blob) {
+      text = text.trim() + '\n\n' + existingFile.blob.trim();
+    }
+
     try {
-      await this.github.put(content, path, message, existingFile.sha);
+      await this.github.put(text, path, message, existingFile.sha);
     }
     catch(e) {
       throw new Error(e);

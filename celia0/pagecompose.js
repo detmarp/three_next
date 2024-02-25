@@ -1,6 +1,7 @@
 import Doc from './d/doc.js';
 import Note from './note.js';
 import EditNote from './editnote.js';
+import Format from './format.js';
 
 export default class PageCompose {
   constructor(parent, program) {
@@ -12,14 +13,8 @@ export default class PageCompose {
 
     this.doc.add('text', ' Title');
     this.title = this.doc.add('input');
+    this.title.placeholder = this.editNote.note.autotitle;
     this.title.addEventListener('input', (e) => this.onTitle());
-    this.doc.add('text', ' auto title:');
-    this.autotitle = this.doc.add('input');
-    this.autotitle.checked = true;
-    this.autotitle.type = 'checkbox';
-    this.autotitle.addEventListener('change', (e) => {
-      this.onAutotitle();
-    });
     this.doc.add('text', '[test: ');
     this.testmode = this.doc.add('input');
     this.testmode.checked = this.program.settings.testmode === 'true';
@@ -76,18 +71,6 @@ export default class PageCompose {
 
   onTitle() {
     // Title text changed
-    this.autotitle.checked = false;
-    this.updateDebug();
-  }
-
-  onAutotitle() {
-    // Autotitle toggled
-    if (this.autotitle.checked) {
-      let note = this.refreshNote();
-      this.title.value = note.title;
-    }
-    else {
-    }
     this.updateDebug();
   }
 
@@ -103,17 +86,20 @@ export default class PageCompose {
     }
 
     this.editNote.note.text = this.edit.value;
-    this.onAutotitle();
     this.updateDebug();
   }
 
   async onSaveButton() {
     this.doc.clear(this.messageArea);
-    let note = this.refreshNote();
     this.saveButton.disabled = true;
     this.edit.disabled = true;
+
     try {
-      await this.program.send(note);
+      await this.program.send(
+        this.editNote.note.text,
+        this.getPath(),
+        'message'
+      );
       this.onSaved();
     }
     catch(e) {
@@ -121,6 +107,25 @@ export default class PageCompose {
     }
   }
 
+  getPath() {
+    return `pages/${this.getFolder()}/${this.getFilename()}`;
+  }
+
+  getFolder() {
+    let folder = this.editNote.note.date.substring(0,7);
+    return folder
+  }
+
+  getFilename() {
+    let title = this.title.value;
+    let filename = title.trim();
+    if (Format.isBlank(filename)) {
+      filename = this.editNote.note.autotitle;
+    }
+    filename = filename + '.md';
+    return filename;
+  }
+    
   onFormatButton() {
     if (this.undoFormat) {
       this.edit.value = this.undoFormat;
@@ -130,7 +135,10 @@ export default class PageCompose {
     }
 
     // Format the note.
-    let note = this.refreshNote();
+    let note = new Note(
+      this.edit.value,
+      this.autotitle.checked ? null : this.title.value
+    );
     note.format();
 
     let oldValue = this.edit.value;
@@ -156,23 +164,15 @@ export default class PageCompose {
 
   onClearButton() {
     this.edit.value = '';
+    this.title.value = '';
     this.onStart();
   }
 
   updateDebug() {
     this.doc.clear(this.debugArea);
-    let note = this.refreshNote();
     this.doc.add('text',
-      `${note.toJson()}<br><br>${this.editNote.note.toJson()}`,
+      `${this.getPath()}<br><br>${this.editNote.note.toJson()}`,
       this.debugArea
     );
-  }
-
-  refreshNote() {
-    let note = new Note(
-      this.edit.value,
-      this.autotitle.checked ? null : this.title.value
-    );
-    return note;
   }
 }

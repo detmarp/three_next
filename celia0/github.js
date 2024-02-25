@@ -19,6 +19,9 @@ export default class Github {
     try {
       let result = await fetch(url, info);
       let existingFile = await result.json();
+      if (existingFile.content) {
+        existingFile.blob = atob(existingFile.content);
+      }
       return existingFile;
     }
     catch(e) {

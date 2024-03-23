@@ -6,7 +6,7 @@ function element(type, text, parent) {
   if (parent) {
     parent.appendChild(e);
   }
-  return e; // Return the created element for further manipulation if needed
+  return e;
 }
 
 export default class SettingsPage {
@@ -54,9 +54,9 @@ export default class SettingsPage {
     });
     boolLabel.style.display = 'inline-flex';
     bar.style.marginRight = '0.5em';
-    bar.style.fontSize = '16px'; // Set the font size (adjust as needed)
-    bar.style.fontFamily = 'monospace'; // Set the font family to monospace
-    bar.style.width = '4em'; // Set the width to fit about 4 characters (adjust as needed)
+    bar.style.fontSize = '16px';
+    bar.style.fontFamily = 'monospace';
+    bar.style.width = '4em';
     bar.style.textAlign = 'right'
 
     return bar;
@@ -73,10 +73,10 @@ export default class SettingsPage {
   }
 
   updateUi() {
-    this.body.value = this.settings.body;
-    this.foo.checked = this.settings.foo;
-    this.bar.value = this.settings.bar;
-    this.persist.textContent = this.settings.persist.json;
+    this.bodyElement.value = this.settings.body;
+    this.fooElement.checked = this.settings.foo;
+    this.barElement.value = this.settings.bar;
+    this.persistElement.textContent = this.settings.persist.json;
   }
 
   make() {
@@ -86,9 +86,9 @@ export default class SettingsPage {
     div.style.display = 'flex';
     div.style.flexDirection = 'column';
 
-    this.body = this.makeBody(div);
-    this.foo = this.makeFoo(div);
-    this.bar = this.makeBar(div);
+    this.bodyElement = this.makeBody(div);
+    this.fooElement = this.makeFoo(div);
+    this.barElement = this.makeBar(div);
 
     element('br', null, div);
 
@@ -112,10 +112,10 @@ export default class SettingsPage {
 
     element('br', null, div);
 
-    this.persist = element('label', '', div);
-    this.persist.style.whiteSpace = 'pre-wrap';
-    this.persist.style.overflowWrap = 'break-word';
-    this.persist.style.fontFamily = 'monospace';
+    this.persistElement = element('label', '', div);
+    this.persistElement.style.whiteSpace = 'pre-wrap';
+    this.persistElement.style.overflowWrap = 'break-word';
+    this.persistElement.style.fontFamily = 'monospace';
 
     this.updateUi();
   }

@@ -17,11 +17,11 @@ export default class MainPage {
 
   make() {
     const labels = [
-      'body', 'foo', 'bar', 'tab', '_count',
+      'body', 'foo', 'bar', 'tab',
     ];
 
     for (let label of labels) {
-      let text = '' + this.program.settings.persist.get(label);
+      let text = '' + this.program.settings[label];
       text = text.replace(/\n/g, '<br>').replace(/ /g, '&nbsp;');
       let e = element(
         'div',

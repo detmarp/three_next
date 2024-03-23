@@ -16,9 +16,7 @@ export default class Program {
     document.body.appendChild(header);
 
     const tabContainer = document.body;
-    const tabs = new Tabber(tabContainer, (selectedTabName) => {
-      this.settings.setTab(tabs.index);
-    });
+    const tabs = new Tabber(tabContainer);
 
     tabs.addTab("Main", (parent) => {
       let page = new MainPage(parent, this);
@@ -31,5 +29,8 @@ export default class Program {
     });
 
     tabs.selectTab(this.settings.tab);
+    tabs.onSelected = () => {
+      this.settings.setTab(tabs.index);
+    };
   }
 }

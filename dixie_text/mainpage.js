@@ -6,6 +6,7 @@ function element(type, text, parent) {
   if (parent) {
     parent.appendChild(e)
   }
+  return e;
 }
 
 export default class MainPage {
@@ -16,17 +17,19 @@ export default class MainPage {
 
   make() {
     const labels = [
-      'body', 'foo', 'bar'
+      'body', 'foo', 'bar', 'tab', '_count',
     ];
 
     for (let label of labels) {
       let text = '' + this.program.settings.persist.get(label);
       text = text.replace(/\n/g, '<br>').replace(/ /g, '&nbsp;');
-      element(
+      let e = element(
         'div',
         `${label}: ${text}`,
         this.parentElement
       );
+      e.style.whiteSpace = 'pre-wrap';
+      e.style.overflowWrap = 'break-word';
     }
   }
 }

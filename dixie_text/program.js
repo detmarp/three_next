@@ -17,7 +17,7 @@ export default class Program {
 
     const tabContainer = document.body;
     const tabs = new Tabber(tabContainer, (selectedTabName) => {
-      console.log("Tab selected:", selectedTabName);
+      this.settings.setTab(tabs.index);
     });
 
     tabs.addTab("Main", (parent) => {
@@ -29,6 +29,7 @@ export default class Program {
       let page = new SettingsPage(parent, this.settings);
       page.make();
     });
-    tabs.selectTab(1);
+
+    tabs.selectTab(this.settings.tab);
   }
 }

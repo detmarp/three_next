@@ -12,6 +12,7 @@ export default class Tabber {
 
     this.tabs = [];
     this.onSelected = onSelected;
+    this.index = 0;
 
     this.tabsContainer.addEventListener('click', this.handleTabClick.bind(this));
   }
@@ -89,6 +90,8 @@ export default class Tabber {
       entry.tab.classList.toggle('tabber-selected', isSelected);
       entry.tab.classList.toggle('tabber-deselected', !isSelected);
     });
+
+    this.index = index;
 
     if (this.onSelected) {
       this.onSelected(index);

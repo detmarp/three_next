@@ -31,8 +31,22 @@ get(name, defaultValue = null) {
     return i;
   }
 
+  getBool(name, defautlValue = false) {
+    let b = defautlValue;
+    try {
+      b = JSON.parse(this.object[name]);
+    }
+    catch { }
+    return b;
+  }
+
   set(name, value, increment = true) {
     this.object[name] = value;
+    this.save(increment);
+  }
+
+  delete(name, increment = true) {
+    delete this.object[name];
     this.save(increment);
   }
 

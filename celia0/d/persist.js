@@ -15,12 +15,12 @@ export default class Persist {
     return this.object[name];
   }
 
-  getInt(name, defautlValue = 0) {
-    let i = defautlValue;
+  getInt(name, defaultValue = 0) {
+    let i = defaultValue;
     try {
       i = parseInt(this.object[name]);
       if (isNaN(i)) {
-        i = defautlValue;
+        i = defaultValue;
       }
     }
     catch {}
@@ -30,6 +30,7 @@ export default class Persist {
   set(name, value) {
     this.object[name] = value;
     this.save();
+    return value
   }
 
   load() {

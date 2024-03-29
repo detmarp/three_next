@@ -7,7 +7,10 @@ import SettingsPage from './settingspage.js';
 export default class Program {
   constructor() {
     this.persist = new Persist('dixie_text');
-    this.settings = new Settings(this.persist);
+    const defaults = {
+      'apikey': '',
+    }
+    this.settings = new Settings(this.persist, defaults);
   }
 
   run() {
@@ -28,9 +31,8 @@ export default class Program {
       page.make();
     });
 
-    tabs.selectTab(this.settings.tab);
     tabs.onSelected = () => {
-      this.settings.setTab(tabs.index);
+      this.settings.set('tab', tabs.index);
     };
   }
 }

@@ -1,45 +1,35 @@
 export default class Settings {
-  constructor(persist) {
+  constructor(persist, defaults = {}) {
     this.persist = persist;
+    this.values = {};
+    this.defaults = defaults;
+    this.resetDefaults(); // Initialize with defaults
     this.refresh();
   }
 
   get(key) {
-    if (! key in this) {
-      this[key] = this.persist.get(key);
+    if (!key in this.values) {
+      this.values[key] = this.persist.get(key) || this.defaults[key];
     }
-    return this[key];
+    return this.values[key];
   }
 
   set(key, value) {
-    this[key] = value;
+    this.values[key] = value;
     this.persist.set(key, value);
   }
 
-  setBody(text) {
-    this.persist.set('body', text);
-    this.body = text;
-  }
-
-  setFoo(foo) {
-    this.persist.set('foo', foo);
-    this.foo = foo;
-  }
-
-  setBar(bar) {
-    this.persist.set('bar', bar);
-    this.bar = bar;
-  }
-
-  setTab(tab) {
-    this.persist.set('tab', tab);
-    this.tab = tab;
-  }
-
   resetDefaults() {
-    this.refresh();
+    this.values = {...this.defaults}; // Create a new copy of defaults
   }
 
   refresh() {
+    // Only fetch from persist if the key exists in defaults
+    for (const key in this.defaults) {
+      const persistedValue = this.persist.get(key);
+      if (persistedValue !== undefined) {
+        this.values[key] = persistedValue;
+      }
+    }
   }
 }

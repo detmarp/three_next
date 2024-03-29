@@ -1,4 +1,3 @@
-
 export default class Tabber {
   constructor(parentElement, onSelected = null) {
     this.parentElement = parentElement;
@@ -30,9 +29,9 @@ export default class Tabber {
     this.tabs.push({ tab, tabContent });
 
     // Hide all tab contents except the first one
-    this.tabs.forEach((entry, index) => {
-      entry.tabContent.style.display = index === 0 ? 'block' : 'none';
-    });
+    //this.tabs.forEach((entry, index) => {
+    //  entry.tabContent.style.display = index === 0 ? 'block' : 'none';
+    //});
 
     // Select the first tab by default (index 0) only if it's the first tab added
     if (this.tabs.length === 1) {
@@ -47,20 +46,6 @@ export default class Tabber {
       });
 
       onSelectedCallback(tabContent);
-    }
-
-    return tabContent;
-  }
-
-  addTabWithCallback(name, onSelectedCallback = null) {
-    const tabContent = this.addTab(name);
-
-    if (onSelectedCallback) {
-      const lastIndex = this.tabs.length - 1;
-      this.tabs[lastIndex].tab.addEventListener('click', () => {
-        this.clearTabContent(tabContent); // Clear tab content before calling callback
-        onSelectedCallback(tabContent);
-      });
     }
 
     return tabContent;
@@ -84,9 +69,7 @@ export default class Tabber {
   selectTab(index) {
     this.tabs.forEach((entry, tabIndex) => {
       const isSelected = tabIndex === index;
-
       entry.tabContent.style.display = isSelected ? 'block' : 'none';
-
       entry.tab.classList.toggle('tabber-selected', isSelected);
       entry.tab.classList.toggle('tabber-deselected', !isSelected);
     });

@@ -76,7 +76,9 @@ export default class SettingsPage {
     this.bodyElement.value = this.settings.body;
     this.fooElement.checked = this.settings.foo;
     this.barElement.value = this.settings.bar;
-    this.persistElement.textContent = this.settings.persist.json;
+    this.persistElement.textContent =
+      `${this.settings.persist.label} ` +
+      `${this.settings.persist.json}`;
   }
 
   make() {

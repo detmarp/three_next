@@ -7,6 +7,9 @@ import SettingsPage from './settingspage.js';
 export default class Program {
   constructor() {
     this.persist = new Persist('dixie_text');
+
+
+
     this.settings = new Settings(this.persist);
   }
 

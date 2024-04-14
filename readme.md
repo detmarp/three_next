@@ -7,6 +7,8 @@
 [repo](https://github.com/detmarp/three_next)
 
 ## projects 2024
+[ember_0](ember_0/index.html)
+
 [dixie_text](dixie_text/index.html)
 
 [dixie_ai](dixie_ai/index.html)

@@ -40,7 +40,7 @@ export default class MainPage {
     textArea.style.resize = 'vertical';
     textArea.style.display = 'block';
     textArea.style.width = '100%';
-    textArea.style.minHeight = '4em';
+    textArea.style.minHeight = '12em';
     textArea.readOnly = true;
     return textArea;
   }

@@ -24,7 +24,6 @@ export default class MainPage {
 
   make() {
     this.textArea = this.createReadOnlyTextArea();
-    this.textArea.style.display = 'block';
 
     this.queryButton = this.createButton('Query', this.handleQuery.bind(this));
 
@@ -36,11 +35,11 @@ export default class MainPage {
 
   createReadOnlyTextArea() {
     let textArea = element('textarea', null, this.parentElement);
-    textArea.rows = 4;
-    textArea.readOnly = true;
-    textArea.style.resize = 'none';
+    textArea.style.minHeight = '16em';
+    //textArea.readOnly = true;
     textArea.style.display = 'block';
     textArea.style.width = '100%';
+    textArea.style.resize = 'vertical';
     return textArea;
   }
 

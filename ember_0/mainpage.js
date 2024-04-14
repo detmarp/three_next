@@ -36,11 +36,12 @@ export default class MainPage {
 
   createReadOnlyTextArea() {
     let textArea = element('textarea', null, this.parentElement);
-    textArea.rows = 4;
     textArea.readOnly = true;
-    textArea.style.resize = 'none';
+    textArea.style.resize = 'vertical';
     textArea.style.display = 'block';
     textArea.style.width = '100%';
+    textArea.style.minHeight = '4em';
+    textArea.readOnly = true;
     return textArea;
   }
 

@@ -10,11 +10,33 @@ import SettingsPage from './settingspage.js';
 export default class Program {
   constructor() {
     this.persist = new Persist('ember_0');
-    const defaults = {
+    this.defaults = {
       'apikey': '',
       'tab': 0,
-    }
-    this.settings = new Settings(this.persist, defaults);
+      'persona': {
+        'name': 'Detmar',
+        'description': 'A guy'
+      },
+      'bot': {
+        'name': 'Ember',
+        'description':
+          'I am a friendly and informative chatbot ' +
+          'with a passion for learning. ' +
+          'I can answer your questions ' +
+          'in a helpful and engaging way, ' +
+          'tailoring my responses to your ' +
+          'specific needs. Still under ' +
+          'development, I am constantly ' +
+          'learning and improving my ' +
+          'abilities. You can customize ' +
+          'my settings to adjust my ' +
+          'formality and humor level. I ' +
+          'strive to be a reliable and ' +
+          'trustworthy companion in ' +
+          'your digital adventures.'
+      }
+    };
+    this.settings = new Settings(this.persist, this.defaults);
   }
 
   run() {
@@ -54,5 +76,8 @@ export default class Program {
     tabs.onSelected = () => {
       this.settings.set('tab', tabs.index);
     };
+
+    // temp hack to save
+    // this.settings.set('bot', this.defaults['bot']);
   }
 }

@@ -6,6 +6,7 @@ import MemoryPage from './memorypage.js';
 import TransactionPage from './transactionpage.js';
 import MainPage from './mainpage.js';
 import SettingsPage from './settingspage.js';
+import Brains from './brains.js';
 
 export default class Program {
   constructor() {
@@ -40,6 +41,8 @@ export default class Program {
   }
 
   run() {
+    this.brains = new Brains(this);
+
     const header = document.createElement('h2');
     header.textContent = 'Ember 0';
     document.body.appendChild(header);

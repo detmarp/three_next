@@ -16,6 +16,10 @@ export default class MainPage {
   }
 
   make() {
-    element('p', 'transaction page', this.parentElement);
+    let data = this.program.brains.getOpenAiData();
+    let text = JSON.stringify(data, null, 2);
+    let e = element('p', `${text}`, this.parentElement);
+    e.style.whiteSpace = 'pre-wrap';
+    e.style.fontFamily = 'monospace';
   }
 }

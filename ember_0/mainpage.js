@@ -69,7 +69,7 @@ export default class MainPage {
 
     const prompt = 'Your prompt or text here';
 
-    openai.completions('hey')
+    openai.completions(this.program.brains.getOpenAiData())
       .then(data => {
         this.textArea.value = data;
       })

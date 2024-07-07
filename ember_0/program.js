@@ -1,12 +1,14 @@
-import Tabber from './tabber.js';
+import Brains from './brains.js';
+import ChatPage from './chatpage.js';
+import Dixie from './dixie.js';
+import MainPage from './mainpage.js';
+import MemoryPage from './memorypage.js';
 import Persist from './persist.js';
 import Settings from './settings.js';
-import ChatPage from './chatpage.js';
-import MemoryPage from './memorypage.js';
-import TransactionPage from './transactionpage.js';
-import MainPage from './mainpage.js';
 import SettingsPage from './settingspage.js';
-import Brains from './brains.js';
+import Tabber from './tabber.js';
+import TransactionPage from './transactionpage.js';
+import Ui from './ui.js';
 
 export default class Program {
   constructor() {
@@ -82,5 +84,12 @@ export default class Program {
 
     // temp hack to save
     // this.settings.set('bot', this.defaults['bot']);
+
+        // remove all children of body
+//        while (document.body.firstChild) {
+//          document.body.removeChild(document.body.firstChild);
+//        }
+        this.ui = new Ui(this, document.body);
+
   }
 }

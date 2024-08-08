@@ -9,9 +9,9 @@
 ## projects 2024
 [ember_0](ember_0/index.html)
 
-[dixie_text](dixie_text/index.html)
+[dixie_folder](dixie_folder/index.html)
 
-[dixie_ai](dixie_ai/index.html)
+[dixie_bee](dixie_bee/index.html)
 
 ## projects, 2023 - 2024
 [celia0 - editor](celia0/index.html)

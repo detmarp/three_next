@@ -20,4 +20,7 @@ export default class Program {
     Dixie.makeFidgetWidget(tab1, 'main');
     Dixie.makeFidgetWidget(tab2, 'two');
   }
+
+  run() {
+  }
 }

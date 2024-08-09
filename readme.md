@@ -7,7 +7,7 @@
 [repo](https://github.com/detmarp/three_next)
 
 ## projects 2024
-[ember_0](ember_0/index.html)
+[ember-1](ember-1/index.html)
 
 [dixie_folder](dixie_folder/index.html)
 

@@ -13,6 +13,17 @@ export default class Dixie {
       return outer;
   }
 
+static element(tag, parent, textContent) {
+  const el = document.createElement(tag);
+  if (parent) {
+    parent.appendChild(el);
+  }
+  if (textContent) {
+    el.textContent = textContent;
+  }
+  return el;
+}
+
 static makeTextWidget(parent, text = 'Placeholder text') {
   const el = document.createElement('p');
   el.textContent = text;
@@ -22,6 +33,16 @@ static makeTextWidget(parent, text = 'Placeholder text') {
   }
 
   return el;
+}
+
+static makeButton(parent, label = 'Button', onClick) {
+  const button = document.createElement('button');
+  if (parent) {
+    parent.appendChild(button);
+  }
+  button.textContent = label;
+  button.addEventListener('click', onClick);
+  return  button;
 }
 
 static makeFidgetWidget(parent, title = 'Fidget Widget') {

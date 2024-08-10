@@ -1,6 +1,8 @@
 import Dixie from './dixie/dixie.js';
 import DixieTabs from './dixie/dixie-tabs.js';
 import UiMainPage from './ui/ui-main-page.js';
+import UiEmberPage from './ui/ui-ember-page.js';
+import UiAiPage from './ui/ui-ai-page.js';
 import UiSettingsPage from './ui/ui-settings-page.js';
 import BeePersist from './bee/bee-persist.js';
 
@@ -27,8 +29,11 @@ export default class Program {
     let mainTab = tabs.addTab('Main');
     new UiMainPage(mainTab);
 
-    let tab2 = tabs.addTab('two');
-    Dixie.makeFidgetWidget(tab2, 'two');
+    let emberTab = tabs.addTab('Ember');
+    new UiEmberPage(emberTab);
+
+    let aiTab = tabs.addTab('AI');
+    new UiAiPage(aiTab);
 
     let settingsTab = tabs.addTab('Settings');
     new UiSettingsPage(settingsTab);

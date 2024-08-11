@@ -1,5 +1,6 @@
 import Dixie from "../dixie/dixie.js";
 import AiTest from "../ember/ai-test.js";
+import XhrPost from "../ember/xhr-post.js";
 
 export default class UiAiPage {
   constructor(parent) {
@@ -15,7 +16,13 @@ export default class UiAiPage {
     this.aiTest = null;
     this.element.innerHTML = '';
 
-    this.addGroup(Dixie.makeButton(this.element, 'Foo', () => {this.foo()}));
+    this.addGroup(Dixie.makeButton(this.element, 'Test no URL', () => {this.testNoUrl()}));
+    Dixie.element('div', this.element);
+    this.addGroup(Dixie.makeButton(this.element, 'Test badly formed URL', () => {this.testBadUrl()}));
+    Dixie.element('div', this.element);
+    this.addGroup(Dixie.makeButton(this.element, 'Test bad address', () => {this.testBadAddress()}));
+    Dixie.element('div', this.element);
+    this.addGroup(Dixie.makeButton(this.element, 'Test bad endpoint', () => {this.testBadEndpoint()}));
     Dixie.element('div', this.element);
     this.addGroup(Dixie.makeButton(this.element, 'Test', () => {this.test()}));
     Dixie.element('div', this.element);
@@ -30,36 +37,67 @@ export default class UiAiPage {
     Dixie.makeButton(this.element, 'Reset', () => {this.reset()});
     this.topEnd = Dixie.element('div', this.element);
     this.resultDiv = Dixie.element('div', this.element);
+    this.resultElements = null;
+    this.resultA = null;
+    this.resultB = null;
   }
 
   begin() {
     this.setGroup(false);
-    this.aiTest = new AiTest();
-    this.aiTest.foo(x => {this.result(x)});
     Dixie.makeButton(this.topEnd, '...\u2b1b', () => {this.abort()});
   }
 
   abort() {
     if (this.aiTest) {
       this.aiTest.controller.abort();
-      this.aiTest = null;
-      this.reset();
     }
   }
 
   result(data) {
     this.setGroup(true);
     this.topEnd.innerHTML = '';
-    Dixie.element('hr', this.element);
-    let a = this.makeText();
-    Dixie.element('p', this.element);
-    let b = this.makeText();
-    a.innerText = 'aaa\nbbb';
-    b.innerText = 'ccc\nddd';
+    if (!this.resultElements) {
+      this.resultElements = Dixie.element('hr', this.element);
+      this.resultA = this.makeText();
+      Dixie.element('p', this.element);
+      this.resultB = this.makeText();
+    }
+
+    let cleanString = function (s) {
+      s = s ?? '[null]';
+      if (typeof s!=='string') {
+        s = JSON.stringify(s);
+      }
+      return s;
+    };
+
+
+    this.resultA.innerText = cleanString(data.content);
+    this.resultB.innerText = cleanString(data.response);
   }
 
-  foo() {
-    this.begin()
+  testNoUrl() {
+    this.begin();
+    let xhr = new XhrPost();
+    xhr.send(x => {this.result(x)});
+  }
+
+  testBadUrl() {
+    this.begin();
+    let xhr = new XhrPost('this bad url might be treated as a local resource');
+    xhr.send(x => {this.result(x)});
+  }
+
+  testBadAddress() {
+    this.begin();
+    let xhr = new XhrPost();
+    xhr.send(x => {this.result(x)});
+  }
+
+  testBadEndpoint() {
+    this.begin();
+    let xhr = new XhrPost();
+    xhr.send(x => {this.result(x)});
   }
 
   test() {
@@ -72,15 +110,6 @@ export default class UiAiPage {
     Dixie.element('div', this.element, 'testBadKey');
   }
 
-  testBadUrl() {
-    this.setGroup(false);
-    Dixie.element('div', this.element, 'testBadUrl');
-  }
-
-  testBadEndpoint() {
-    this.setGroup(false);
-    Dixie.element('div', this.element, 'testBadEndpoint');
-  }
   testErrorDelay() {
     this.setGroup(false);
     Dixie.element('div', this.element, 'testErrorDelay');
@@ -90,12 +119,13 @@ export default class UiAiPage {
     const element = document.createElement('pre');
     this.element.appendChild(element);
     element.textContent = 'asdfasdfasdf\nasdfasdf\n\n';
-    //element.contentEditable = 'true';
     element.readOnly = true;
     element.style.userSelect = 'text';
     element.style.fontFamily = 'monospace';
     element.style.border = '1px solid gray';
-    return element;
+    element.style.whiteSpace = 'pre-wrap';
+    element.style.overflowWrap = 'break-word';
+     return element;
   }
 
   addGroup(element) {

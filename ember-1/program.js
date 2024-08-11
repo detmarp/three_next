@@ -12,13 +12,7 @@ export default class Program {
 
     const outer = Dixie.makeOuter();
 
-    const header = document.createElement('h2');
-    header.textContent = 'Ember 1';
-    outer.appendChild(header);
-
-    const p1 = document.createElement('p');
-    p1.textContent = 'Hi.';
-    outer.appendChild(p1);
+    Dixie.element('h2', outer, 'Ember 1');
 
     this.makeTabs(outer);
   }

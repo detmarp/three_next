@@ -35,15 +35,20 @@ export default class XhrPost {
       else {
         callback({ 'response': {
           xhrpost: 'Request failed',
-          status: xhr.st1atus,
-          verylongthingresponse: 'adsfasdfoiuweroiquwer987234982374ioweuyriweuryskdfhksdjfh,cxvmn,xcmvnksdjfhskdfjhweiruweiu92384792',
+          status: xhr.status,
           url: this.url,
         } });
       }
     };
 
-    xhr.onerror = () => {
-      console.error('Network error');
+    let self = this;
+    xhr.onerror = function() {
+      callback({ 'response': {
+        xhrpost: 'send error',
+        status: this.status,
+        statusText: this.statusText,
+        url: self.url,
+      } });
     };
 
     xhr.send();

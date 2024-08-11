@@ -20,7 +20,7 @@ export default class UiAiPage {
     Dixie.element('div', this.element);
     this.addGroup(Dixie.makeButton(this.element, 'Test badly formed URL', () => {this.testBadUrl()}));
     Dixie.element('div', this.element);
-    this.addGroup(Dixie.makeButton(this.element, 'Test bad address', () => {this.testBadAddress()}));
+    this.addGroup(Dixie.makeButton(this.element, 'Test badly formed URL 2', () => {this.testBadUrl2()}));
     Dixie.element('div', this.element);
     this.addGroup(Dixie.makeButton(this.element, 'Test bad endpoint', () => {this.testBadEndpoint()}));
     Dixie.element('div', this.element);
@@ -35,7 +35,7 @@ export default class UiAiPage {
     this.addGroup(Dixie.makeButton(this.element, 'Test with error and delay', () => {this.testErrorDelay()}));
     Dixie.element('p', this.element);
     Dixie.makeButton(this.element, 'Reset', () => {this.reset()});
-    this.topEnd = Dixie.element('div', this.element);
+    this.topEnd = Dixie.element('span', this.element);
     this.resultDiv = Dixie.element('div', this.element);
     this.resultElements = null;
     this.resultA = null;
@@ -44,7 +44,7 @@ export default class UiAiPage {
 
   begin() {
     this.setGroup(false);
-    Dixie.makeButton(this.topEnd, '...\u2b1b', () => {this.abort()});
+    Dixie.makeButton(this.topEnd, '...', () => {this.abort()});
   }
 
   abort() {
@@ -88,15 +88,15 @@ export default class UiAiPage {
     xhr.send(x => {this.result(x)});
   }
 
-  testBadAddress() {
+  testBadUrl2() {
     this.begin();
-    let xhr = new XhrPost();
+    let xhr = new XhrPost('https://293847465.29347847494.ghtry');
     xhr.send(x => {this.result(x)});
   }
 
   testBadEndpoint() {
     this.begin();
-    let xhr = new XhrPost();
+    let xhr = new XhrPost('https://api.openai.com/notarealendpoint');
     xhr.send(x => {this.result(x)});
   }
 

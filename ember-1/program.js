@@ -27,10 +27,10 @@ export default class Program {
     new UiEmberPage(emberTab);
 
     let aiTab = tabs.addTab('AI');
-    new UiAiPage(aiTab);
+    new UiAiPage(aiTab, this.persist);
 
     let settingsTab = tabs.addTab('Settings');
-    new UiSettingsPage(settingsTab);
+    new UiSettingsPage(settingsTab, this.persist);
 
     // Persist the current tab
     tabs.selectTab(this.persist.getInt('tab'));

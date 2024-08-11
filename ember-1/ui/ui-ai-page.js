@@ -3,11 +3,10 @@ import AiTest from "../ember/ai-test.js";
 import XhrPost from "../ember/xhr-post.js";
 
 export default class UiAiPage {
-  constructor(parent) {
-    this.element = document.createElement('div');
-    if (parent) {
-      parent.appendChild(this.element);
-    }
+  constructor(parent, persist) {
+    this.persist = persist;
+
+    this.element = Dixie.element('div', parent);
 
     this.reset();
   }
@@ -101,8 +100,10 @@ export default class UiAiPage {
   }
 
   test() {
-    this.setGroup(false);
-    Dixie.element('div', this.element, 'test');
+    this.begin();
+    let xhr = new XhrPost('https://api.openai.com/v1/chat/completions');
+    xhr.hackApiKey = this.persist.get('apikey');
+    xhr.send(x => {this.result(x)});
   }
 
   testBadKey() {

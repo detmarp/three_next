@@ -23,15 +23,9 @@ export default class UiAiPage {
     Dixie.element('div', this.element);
     this.addGroup(Dixie.makeButton(this.element, 'Test bad endpoint', () => {this.testBadEndpoint()}));
     Dixie.element('div', this.element);
-    this.addGroup(Dixie.makeButton(this.element, 'Test', () => {this.test()}));
-    Dixie.element('div', this.element);
     this.addGroup(Dixie.makeButton(this.element, 'Test bad key', () => {this.testBadKey()}));
     Dixie.element('div', this.element);
-    this.addGroup(Dixie.makeButton(this.element, 'Test bad url', () => {this.testBadUrl()}));
-    Dixie.element('div', this.element);
-    this.addGroup(Dixie.makeButton(this.element, 'Test bad endpoint', () => {this.testBadEndpoint()}));
-    Dixie.element('div', this.element);
-    this.addGroup(Dixie.makeButton(this.element, 'Test with error and delay', () => {this.testErrorDelay()}));
+    this.addGroup(Dixie.makeButton(this.element, 'Test', () => {this.test()}));
     Dixie.element('p', this.element);
     Dixie.makeButton(this.element, 'Reset', () => {this.reset()});
     this.topEnd = Dixie.element('span', this.element);
@@ -78,42 +72,43 @@ export default class UiAiPage {
   testNoUrl() {
     this.begin();
     let xhr = new XhrPost();
-    xhr.send(x => {this.result(x)});
+    xhr.quickSend(x => {this.result(x)});
   }
 
   testBadUrl() {
     this.begin();
     let xhr = new XhrPost('this bad url might be treated as a local resource');
-    xhr.send(x => {this.result(x)});
+    xhr.quickSend(x => {this.result(x)});
   }
 
   testBadUrl2() {
     this.begin();
     let xhr = new XhrPost('https://293847465.29347847494.ghtry');
-    xhr.send(x => {this.result(x)});
+    xhr.quickSend(x => {this.result(x)});
   }
 
   testBadEndpoint() {
     this.begin();
     let xhr = new XhrPost('https://api.openai.com/notarealendpoint');
-    xhr.send(x => {this.result(x)});
+    xhr.quickSend(x => {this.result(x)});
+  }
+
+  testBadKey() {
+    this.begin();
+    let post = new XhrPost('https://api.openai.com/v1/chat/completions');
+    let xhr = post.open(x => {this.result(x)});
+    let apiKey = 'not the right key'
+    xhr.setRequestHeader("Authorization", `Bearer ${apiKey}`);
+    post.send();
   }
 
   test() {
     this.begin();
-    let xhr = new XhrPost('https://api.openai.com/v1/chat/completions');
-    xhr.hackApiKey = this.persist.get('apikey');
-    xhr.send(x => {this.result(x)});
-  }
-
-  testBadKey() {
-    this.setGroup(false);
-    Dixie.element('div', this.element, 'testBadKey');
-  }
-
-  testErrorDelay() {
-    this.setGroup(false);
-    Dixie.element('div', this.element, 'testErrorDelay');
+    let post = new XhrPost('https://api.openai.com/v1/chat/completions');
+    let xhr = post.open(x => {this.result(x)});
+    let apiKey = this.persist.get('apikey');
+    xhr.setRequestHeader("Authorization", `Bearer ${apiKey}`);
+    post.send();
   }
 
   makeText() {

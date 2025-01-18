@@ -5,16 +5,11 @@ export default class XhrPost {
     this.url = url;
   }
 
-  send(callback) {
+  open(callback) {
     if (!this.url) {
       callback({ 'response': { xhrpost: 'no url' } });
       return;
     }
-
-    //let url = 'https://pokeapi.co/api/v2/pokemon/ditto';
-    //let endpoint = `v1/chat/completions`;
-    //url = `https://api.openai.com/${endpoint}`;
-    //url = 'https://reqres.in/api/users?page=2';
 
     const controller = new AbortController();
     const signal = controller.signal;
@@ -22,7 +17,6 @@ export default class XhrPost {
     const xhr = new XMLHttpRequest();
     xhr.open("POST", this.url);
     xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.setRequestHeader("Authorization", `Bearer ${this.hackApiKey}`);
     xhr.signal = signal;
 
     xhr.onreadystatechange = function () {
@@ -39,7 +33,6 @@ export default class XhrPost {
         }
       }
     };
-
 
     xhr.onload = () => {
       if (xhr.status === 200) {
@@ -80,6 +73,11 @@ export default class XhrPost {
       } });
     };
 
+    this.xhr = xhr;
+    return this.xhr;
+  }
+
+  send() {
     let model = 'gpt-3.5-turbo-0125';
     var data = `{
       "model": "${model}",
@@ -91,11 +89,12 @@ export default class XhrPost {
       "presence_penalty": 0
     }`;
 
-    xhr.send(data);
+    this.xhr.send(data);
+  }
 
-    //return { abort: () => controller.abort() };
-
-    return xhr;
+  quickSend(callback) {
+    this.open(callback);
+    this.send();
   }
 
   abort() {

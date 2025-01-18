@@ -6,6 +6,9 @@
 &nbsp; | &nbsp;
 [repo](https://github.com/detmarp/three_next)
 
+## projects 2025
+[glinda1](glinda1/index.html)
+
 ## projects 2024
 [ember-1](ember-1/index.html)
 

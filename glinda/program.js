@@ -1,16 +1,27 @@
+import Glinda from './glinda.js';
+
 export default class Program {
   constructor(container) {
     this.container = container;
     this.canvas = null;
     this.context = null;
-    this.colorToggle = false;
+    this.glinda = null;
+    this.lastFrameTime = null;
   }
 
   run() {
-    // Clear the existing content
-    this.container.innerHTML = '';
+    this.setCanvas();
+    this.glinda = new Glinda(this.context);
 
-    // Create a full-window canvas
+    window.addEventListener('resize', () => this.onResize());
+    this.addTouchListeners();
+
+    this.onResize();
+    this.doFrame();
+  }
+
+  setCanvas() {
+    this.container.innerHTML = '';
     this.canvas = document.createElement('canvas');
     this.canvas.style.position = 'absolute';
     this.canvas.style.top = '0';
@@ -18,43 +29,33 @@ export default class Program {
     this.canvas.style.width = '100%';
     this.canvas.style.height = '100%';
     this.container.appendChild(this.canvas);
-
-    // Initialize the canvas context for drawing
     this.context = this.canvas.getContext('2d');
-
-    // Add resize event listener
-    window.addEventListener('resize', () => this.onResize());
-    this.onResize(); // Initial resize to set canvas size
-
-    // Start the animation loop
-    this.animate();
   }
 
   onResize() {
-    // Adjust canvas size
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
   }
 
-  animate() {
-    // Determine the color based on the evenness of width and height
-    let color;
-    if (this.canvas.width % 2 === 0 && this.canvas.height % 2 === 0) {
-      color = 'green';
-    } else if (this.canvas.width % 2 === 0 && this.canvas.height % 2 !== 0) {
-      color = 'cyan';
-    } else if (this.canvas.width % 2 !== 0 && this.canvas.height % 2 === 0) {
-      color = 'blue';
-    } else {
-      color = 'purple';
+  addTouchListeners() {
+    this.canvas.addEventListener('touchstart', (event) => this.handleTouch(event));
+    this.canvas.addEventListener('touchmove', (event) => this.handleTouch(event));
+    this.canvas.addEventListener('touchend', (event) => this.handleTouch(event));
+  }
+
+  handleTouch(event) {
+    this.glinda.handleTouch(event);
+  }
+
+  doFrame() {
+    const currentTime = performance.now();
+    let deltaTime = 0;
+    if (this.lastFrameTime !== null) {
+      deltaTime = (currentTime - this.lastFrameTime) / 1000;
     }
-
-    // Clear the canvas with alternating colors
-    this.context.fillStyle = this.colorToggle ? color : 'yellow';
-    this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    this.colorToggle = !this.colorToggle;
-
-    // Request the next frame
-    requestAnimationFrame(() => this.animate());
+    this.lastFrameTime = currentTime;
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.glinda.draw(deltaTime);
+    requestAnimationFrame(() => this.doFrame());
   }
 }

@@ -25,13 +25,14 @@ export default class Glinda {
   }
 
   drawTile(x, y, tile) {
-    const width = 64;
-    const height = 48;
-    const canvasHeight = this.context.canvas.height;
-
-    const adjustedY = canvasHeight - y - height;
+    const width = 128;
+    const height = 96;
+    let wHalf = Math.floor(width / 2);
+    let hHalf = Math.floor(height / 2);
+    let x2 = x - wHalf;
+    let y2 = y - hHalf;
 
     this.context.fillStyle = 'cyan';
-    this.context.fillRect(x, y, width, height);
+    this.context.fillRect(x2, y2, width, height);
   }
 }

@@ -1,6 +1,10 @@
 export default class Glinda {
   constructor(context) {
     this.context = context;
+    this.halfW = 64;
+    this.halfH = 48;
+    this.width = this.halfW * 2;
+    this.height = this.halfH * 2;
   }
 
   handleTouch(event) {
@@ -19,20 +23,52 @@ export default class Glinda {
     this.context.fillStyle = 'black';
     this.context.fillRect(0, 0, size, size);
 
-    const x = Math.floor(canvas.width / 2);
-    const y = Math.floor(canvas.height / 2);
-    this.drawTile(x, y, {});
+    for (let mx = 0; mx < 7; mx++) {
+      for (let my = 0; my < 7; my++) {
+        this.drawMap(mx, my, {});
+      }
+    }
   }
 
-  drawTile(x, y, tile) {
-    const width = 128;
-    const height = 96;
-    let wHalf = Math.floor(width / 2);
-    let hHalf = Math.floor(height / 2);
-    let x2 = x - wHalf;
-    let y2 = y - hHalf;
+  drawMap(x, y, tile) {
+    // Draw tile at map position
+    let c = x % 2 + (y % 2) * 2;
+    const colors = ['red', 'orange', 'yellow', 'green'];
+    tile.color = colors[c % colors.length];
 
-    this.context.fillStyle = 'cyan';
-    this.context.fillRect(x2, y2, width, height);
+    let gx = x - y;
+    let gy = -x -y;
+    this.drawGrid(gx, gy, tile);
+  }
+
+  drawGrid(x, y, tile) {
+    // Draw tile at grid position
+    const canvas = this.context.canvas;
+
+    const cx = Math.floor(canvas.width / 2);
+    const cy = Math.floor(canvas.height / 2);
+
+    let px = x * this.halfW + cx;
+    let py = y * this.halfH + cy;
+    this.drawPixel(px, py, tile);
+  }
+
+  drawPixel(x, y, tile) {
+    // Draw tile at pixel, top left anchor
+    const saveSmooth = this.context.imageSmoothingEnabled;
+    this.context.imageSmoothingEnabled = false;
+
+    const color = tile.color || 'magenta';
+    this.context.fillStyle = color;
+
+    this.context.beginPath();
+    this.context.moveTo(x - this.halfW, y);
+    this.context.lineTo(x, y - this.halfH);
+    this.context.lineTo(x + this.halfW, y);
+    this.context.lineTo(x, y + this.halfH);
+    this.context.closePath();
+    this.context.fill();
+
+    this.context.imageSmoothingEnabled = saveSmooth;
   }
 }

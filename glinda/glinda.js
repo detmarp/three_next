@@ -15,12 +15,12 @@ export default class Glinda {
     const canvas = this.context.canvas;
 
     // Clear the canvas to white
-    this.context.fillStyle = 'white';
+    this.context.fillStyle = this.randomColor();//'white';
     this.context.fillRect(0, 0, canvas.width, canvas.height);
 
     // Draw a square with size based on dt
     const size = dt * 10000;
-    this.context.fillStyle = 'black';
+    this.context.fillStyle = this.randomColor();//'blue';
     this.context.fillRect(0, 0, size, size);
 
     for (let mx = 0; mx < 7; mx++) {
@@ -28,13 +28,16 @@ export default class Glinda {
         this.drawMap(mx, my, {});
       }
     }
+
+    this.drawPixel(0, 0, {})
+    this.drawPixel(100, 100, {})
   }
 
   drawMap(x, y, tile) {
     // Draw tile at map position
     let c = x % 2 + (y % 2) * 2;
     const colors = ['red', 'orange', 'yellow', 'green'];
-    tile.color = colors[c % colors.length];
+    tile.color = this.randomColor();//colors[c % colors.length];
 
     let gx = x - y;
     let gy = -x -y;
@@ -53,12 +56,20 @@ export default class Glinda {
     this.drawPixel(px, py, tile);
   }
 
+  randomColor() {
+    const rand = (n) => Math.floor(Math.random() * n);
+    const hex = () => rand(256).toString(16).padStart(2, '0');
+    const insert = (a, b, n) => a.slice(0, n) + b + a.slice(n);
+    const rgb = insert(rand(2) ? '#ff00' : '#00ff', hex(), rand(3) * 2 + 1);
+    return rgb;
+  }
+
   drawPixel(x, y, tile) {
     // Draw tile at pixel, top left anchor
     const saveSmooth = this.context.imageSmoothingEnabled;
     this.context.imageSmoothingEnabled = false;
 
-    const color = tile.color || 'magenta';
+    const color = tile.color || this.randomColor();//'magenta';
     this.context.fillStyle = color;
 
     this.context.beginPath();

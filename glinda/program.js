@@ -55,7 +55,7 @@ export default class Program {
     }
     this.lastFrameTime = currentTime;
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.glinda.draw(deltaTime);
+    this.glinda.render(deltaTime);
     requestAnimationFrame(() => this.doFrame());
   }
 }

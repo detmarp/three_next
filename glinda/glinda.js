@@ -5,55 +5,85 @@ export default class Glinda {
     this.halfH = 48;
     this.width = this.halfW * 2;
     this.height = this.halfH * 2;
+    this.tileSize = [this.width, this.height];
+    this.bg = 'forestgreen';
   }
 
   handleTouch(event) {
     // Handle touch input
   }
 
-  draw(dt) {
+  render(dt) {
     const canvas = this.context.canvas;
-
-    // Clear the canvas to white
-    this.context.fillStyle = this.randomColor();//'white';
+    this.context.fillStyle = this.bg;
     this.context.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Draw a square with size based on dt
-    const size = dt * 10000;
-    this.context.fillStyle = this.randomColor();//'blue';
-    this.context.fillRect(0, 0, size, size);
+    var world = this._junkMakeWorld();
+    world.forEach((tile, _) => {
+      this.drawTile(tile, tile.map);
+    });
+  }
 
-    for (let mx = 0; mx < 7; mx++) {
-      for (let my = 0; my < 7; my++) {
-        this.drawMap(mx, my, {});
+  _junkMakeWorld() {
+    const world = new Map();
+    var topLeft = this.canvasToMap([0, 0]);
+    var topRight = this.canvasToMap([this.context.canvas.width, 0]);
+    var bottomRight = this.canvasToMap([this.context.canvas.width, this.context.canvas.height]);
+    var bottomLeft = this.canvasToMap([0, this.context.canvas.height]);
+    var xMin = Math.min(topLeft[0], topRight[0], bottomRight[0], bottomLeft[0]) + 2;
+    var xMax = Math.max(topLeft[0], topRight[0], bottomRight[0], bottomLeft[0]) - 2;
+    var yMin = Math.min(topLeft[1], topRight[1], bottomRight[1], bottomLeft[1]) + 2;
+    var yMax = Math.max(topLeft[1], topRight[1], bottomRight[1], bottomLeft[1]) - 2;
+    for (var x = xMin; x <= xMax; x++) {
+      for (var y = yMin; y <= yMax; y++) {
+        world.set(`tile${x},${y}`, { map: [x, y], color: this.randomColor() });
       }
     }
-
-    this.drawPixel(0, 0, {})
-    this.drawPixel(100, 100, {})
+    return world;
   }
 
-  drawMap(x, y, tile) {
-    // Draw tile at map position
-    let c = x % 2 + (y % 2) * 2;
-    const colors = ['red', 'orange', 'yellow', 'green'];
-    tile.color = this.randomColor();//colors[c % colors.length];
-
-    let gx = x - y;
-    let gy = -x -y;
-    this.drawGrid(gx, gy, tile);
+  drawAt(c, callback) {
+    const prevTransform = this.context.getTransform();
+    this.context.translate(c[0], c[1]);
+    callback();
+    this.context.setTransform(prevTransform);
   }
 
-  drawGrid(x, y, tile) {
-    // Draw tile at grid position
-    const canvas = this.context.canvas;
+  drawTile(tile, map) {
+    const c = this.gridToCanvas(this.mapToGrid(map));
+    this.drawAt([c[0] - this.halfW, c[1] - this.halfH], () => {
+      const color = tile.color || this.randomColor();//'magenta';
+      this.context.fillStyle = color;
 
-    const cx = Math.floor(canvas.width / 2);
-    const cy = Math.floor(canvas.height / 2);
+      this.context.beginPath();
+      // draw diamond, from left, to top, to right, to bottom, and back
+      this.context.moveTo(0, this.halfH);
+      this.context.lineTo(this.halfW, 0);
+      this.context.lineTo(this.width, this.halfH);
+      this.context.lineTo(this.halfW, this.height);
+      this.context.closePath();
+      this.context.fill();
+      });
+  }
 
-    let px = x * this.halfW + cx;
-    let py = y * this.halfH + cy;
-    this.drawPixel(px, py, tile);
+  canvasToGrid(c) {
+    return [c[0] / this.width, c[1] / this.height];
+  }
+
+  gridToCanvas(g) {
+    return [g[0] * this.width, g[1] * this.height];
+  }
+
+  canvasToMap(c) {
+    return this.gridToMap(this.canvasToGrid(c));
+  }
+
+  gridToMap(g) {
+    return [g[0] - g[1], -g[0] - g[1]];
+  }
+
+  mapToGrid(m) {
+    return [(m[0] - m[1]) / 2, (-m[0] - m[1]) / 2];
   }
 
   randomColor() {
@@ -62,24 +92,5 @@ export default class Glinda {
     const insert = (a, b, n) => a.slice(0, n) + b + a.slice(n);
     const rgb = insert(rand(2) ? '#ff00' : '#00ff', hex(), rand(3) * 2 + 1);
     return rgb;
-  }
-
-  drawPixel(x, y, tile) {
-    // Draw tile at pixel, top left anchor
-    const saveSmooth = this.context.imageSmoothingEnabled;
-    this.context.imageSmoothingEnabled = false;
-
-    const color = tile.color || this.randomColor();//'magenta';
-    this.context.fillStyle = color;
-
-    this.context.beginPath();
-    this.context.moveTo(x - this.halfW, y);
-    this.context.lineTo(x, y - this.halfH);
-    this.context.lineTo(x + this.halfW, y);
-    this.context.lineTo(x, y + this.halfH);
-    this.context.closePath();
-    this.context.fill();
-
-    this.context.imageSmoothingEnabled = saveSmooth;
   }
 }

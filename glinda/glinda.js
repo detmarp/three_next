@@ -6,7 +6,14 @@ export default class Glinda {
     this.width = this.halfW * 2;
     this.height = this.halfH * 2;
     this.tileSize = [this.width, this.height];
-    this.bg = 'forestgreen';
+    this.grid = {
+      size: [64, 48]
+    };
+    this.camera = {
+      center: [0, 0],
+      zoom: 1.0
+    };
+    this.time = 0;
   }
 
   handleTouch(event) {
@@ -14,14 +21,39 @@ export default class Glinda {
   }
 
   render(dt) {
+    this.positionCamera();
+
     const canvas = this.context.canvas;
-    this.context.fillStyle = this.bg;
-    this.context.fillRect(0, 0, canvas.width, canvas.height);
 
     var world = this._junkMakeWorld();
     world.forEach((tile, _) => {
       this.drawTile(tile, tile.map);
     });
+
+    for (let y = 0; y < 10; y++) {
+      for (let x = 0; x < 10; x++) {
+      this.debugDrawAxis(
+        [x * this.grid.size[0], y * this.grid.size[1]],
+        [this.grid.size[0], this.grid.size[1]]
+      );
+      }
+    }
+
+    this.time += dt;
+  }
+
+  positionCamera() {
+    let phase = (2 * Math.PI * this.time) / 4;
+    let scale = 1.0 + 0.25 * Math.sin(phase);
+    this.camera.zoom = scale;
+    this.camera.center = [0, 0];
+
+    const canvas = this.context.canvas;
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    let x = centerX - this.camera.center[0] * scale;
+    let y = centerY - this.camera.center[1] * scale;
+    this.context.setTransform(scale, 0, 0, scale, x, y);
   }
 
   _junkMakeWorld() {
@@ -63,7 +95,23 @@ export default class Glinda {
       this.context.lineTo(this.halfW, this.height);
       this.context.closePath();
       this.context.fill();
-      });
+    });
+  }
+
+  debugDrawAxis(position, size) {
+    this.drawAt(position, () => {
+      this.context.strokeStyle = 'magenta';
+      this.context.lineWidth = 1;
+      this.context.beginPath();
+      this.context.moveTo(0, 0);
+      this.context.lineTo(size[0], 0);
+      this.context.moveTo(0, 0);
+      this.context.lineTo(0, size[1]);
+      this.context.stroke();
+    });
+  }
+
+  debugDrawGrid(position) {
   }
 
   canvasToGrid(c) {

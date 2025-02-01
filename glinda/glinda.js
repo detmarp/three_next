@@ -14,6 +14,13 @@ export default class Glinda {
       zoom: 1.0
     };
     this.time = 0;
+
+    // Load the image
+    this.tiles = new Image();
+    this.tiles.src = 'glinda_tile_00.png';
+    this.tiles.onload = () => {
+      console.log('Image loaded');
+    };
   }
 
   handleTouch(event) {
@@ -24,12 +31,23 @@ export default class Glinda {
     this.positionCamera();
 
     const canvas = this.context.canvas;
-
     var world = this._junkMakeWorld();
     world.forEach((tile, _) => {
       this.drawTile(tile, tile.map);
     });
 
+    if (this.tiles.complete) {
+      var destX = 0;
+      var destY = -128+96;
+      var destWidth = 256;
+      var destHeight = 256;
+      this.context.drawImage(this.tiles, 256, 0, 256, 256, destX, destY, destWidth, destHeight);
+      destX = 128;
+      destY = -128+96;
+      destWidth = 256;
+      destHeight = 256;
+      this.context.drawImage(this.tiles, 512, 0, 256, 256, destX, destY, destWidth, destHeight);
+    }
     for (let y = 0; y < 10; y++) {
       for (let x = 0; x < 10; x++) {
       this.debugDrawAxis(
@@ -43,10 +61,11 @@ export default class Glinda {
   }
 
   positionCamera() {
-    let phase = (2 * Math.PI * this.time) / 4;
+    let phase = (2 * Math.PI * this.time) / 40;
     let scale = 1.0 + 0.25 * Math.sin(phase);
     this.camera.zoom = scale;
-    this.camera.center = [0, 0];
+    this.camera.center = [128*4, 96*4];
+    //this.camera.center = [this.time * 20, this.time * 30];
 
     const canvas = this.context.canvas;
     const centerX = canvas.width / 2;
@@ -62,13 +81,23 @@ export default class Glinda {
     var topRight = this.canvasToMap([this.context.canvas.width, 0]);
     var bottomRight = this.canvasToMap([this.context.canvas.width, this.context.canvas.height]);
     var bottomLeft = this.canvasToMap([0, this.context.canvas.height]);
-    var xMin = Math.min(topLeft[0], topRight[0], bottomRight[0], bottomLeft[0]) + 2;
-    var xMax = Math.max(topLeft[0], topRight[0], bottomRight[0], bottomLeft[0]) - 2;
-    var yMin = Math.min(topLeft[1], topRight[1], bottomRight[1], bottomLeft[1]) + 2;
-    var yMax = Math.max(topLeft[1], topRight[1], bottomRight[1], bottomLeft[1]) - 2;
+
+//    var topRight = [topLeft[0] + 3, topLeft[1]];
+//    var bottomRight = [topLeft[0] + 3, topLeft[1] + 3];
+//    var bottomLeft = [topLeft[0], topLeft[1] + 3];
+
+    var xMin = Math.floor(Math.min(topLeft[0], topRight[0], bottomRight[0], bottomLeft[0]) + 2);
+    var xMax = Math.floor(Math.max(topLeft[0], topRight[0], bottomRight[0], bottomLeft[0]) - 2);
+    var yMin = Math.floor(Math.min(topLeft[1], topRight[1], bottomRight[1], bottomLeft[1]) + 2);
+    var yMax = Math.floor(Math.max(topLeft[1], topRight[1], bottomRight[1], bottomLeft[1]) - 2);
+    const rand = (n) => Math.floor(Math.random() * n);
     for (var x = xMin; x <= xMax; x++) {
       for (var y = yMin; y <= yMax; y++) {
-        world.set(`tile${x},${y}`, { map: [x, y], color: this.randomColor() });
+        var tile = {}
+        tile.map = [x, y];
+        tile.color = this.randomColor();
+        tile.source = rand(2) + 1;
+        world.set(`tile${x},${y}`, tile);
       }
     }
     return world;
@@ -84,7 +113,7 @@ export default class Glinda {
   drawTile(tile, map) {
     const c = this.gridToCanvas(this.mapToGrid(map));
     this.drawAt([c[0] - this.halfW, c[1] - this.halfH], () => {
-      const color = tile.color || this.randomColor();//'magenta';
+      const color = tile.color || this.randomColor();
       this.context.fillStyle = color;
 
       this.context.beginPath();
@@ -94,8 +123,20 @@ export default class Glinda {
       this.context.lineTo(this.width, this.halfH);
       this.context.lineTo(this.halfW, this.height);
       this.context.closePath();
-      this.context.fill();
-    });
+      //this.context.fill();
+
+      if (this.tiles.complete && tile.source !== undefined) {
+        var srcX = tile.source * 256;
+        var srcY = 0;
+        var destX = 0;
+        var destY = -128+96;
+        var w = 256;
+        var h = 256;
+        this.context.drawImage(this.tiles, srcX, srcY, w, h, destX, destY, w, h);
+        //this.context.drawImage(this.tiles, tile.source * 256, 0, 256, 256, destX, destY, destWidth, destHeight);
+      }
+    }
+    );
   }
 
   debugDrawAxis(position, size) {

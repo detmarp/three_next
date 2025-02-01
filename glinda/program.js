@@ -60,33 +60,10 @@ export default class Program {
     this.lastFrameTime = currentTime;
     this.time += dt;
 
-    // this.context.setTransform(1, 0, 0, 1, 0, 0);
-    // this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    // this.bg = 'forestgreen';
-    // this.context.fillStyle = this.bg;
-    // this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
-    // //let scale = 1.0 + 0.5 * Math.sin((2 * Math.PI * this.time) / 4);
-    // //let ds = scale / this.scale;
-
-    // let offset = [5, 5];//[Math.random() * 0.1 - 0.05, Math.random() * 0.1 - 0.05];
-    // let scale = Math.random() * 0.02 + 0.99;
-    // this.context.setTransform(scale, 0, 0, scale, offset[0], offset[1]);
-
-    //this.canvas.style.transform = `scale(${scale})`;
-    //this.canvas.width = window.innerWidth / scale;
-    //this.canvas.height = window.innerHeight / scale;
-    //this.scale = scale;
-
-    //this.offset = [this.offset[0], this.offset[1]];
-    //this.canvas.style.left = `${this.offset[0]}px`;
-    //this.canvas.style.top = `${this.offset[1]}px`;
-
     const saveTransform = this.context.getTransform();
     this.context.setTransform(1, 0, 0, 1, 0, 0);
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    //this.context.fillStyle = '#90EE90'; // light green
-    this.context.fillStyle = 'darkorange';
+    this.context.fillStyle = '#225511';
     this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
     this.context.setTransform(saveTransform);
 

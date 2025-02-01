@@ -36,29 +36,18 @@ export default class Glinda {
     this.positionCamera();
 
     const canvas = this.context.canvas;
-    var worldxxx = this._junkMakeWorld();
-    worldxxx.forEach((tile, _) => {
+    this._junkMakeWorld();
+
+    this.world.sorted.forEach((key) => {
+      const tile = this.world.map.get(key);
       this.drawTile(tile, tile.map);
     });
 
-    if (this.tiles.complete) {
-      var destX = 0;
-      var destY = -128+96;
-      var destWidth = 256;
-      var destHeight = 256;
-      this.context.drawImage(this.tiles, 256, 0, 256, 256, destX, destY, destWidth, destHeight);
-      destX = 128;
-      destY = -128+96;
-      destWidth = 256;
-      destHeight = 256;
-      this.context.drawImage(this.tiles, 512, 0, 256, 256, destX, destY, destWidth, destHeight);
-    }
     for (let y = 0; y < 10; y++) {
       for (let x = 0; x < 10; x++) {
-      this.debugDrawAxis(
-        [x * this.grid.size[0], y * this.grid.size[1]],
-        [this.grid.size[0], this.grid.size[1]]
-      );
+        let position = [x * this.grid.size[0], y * this.grid.size[1]];
+        let size = [this.grid.size[0], this.grid.size[1]];
+        //this.debugDrawAxis(position, size);
       }
     }
 
@@ -81,31 +70,25 @@ export default class Glinda {
   }
 
   _junkMakeWorld() {
-    const world = new Map();
     var topLeft = this.canvasToMap([0, 0]);
     var topRight = this.canvasToMap([this.context.canvas.width, 0]);
     var bottomRight = this.canvasToMap([this.context.canvas.width, this.context.canvas.height]);
     var bottomLeft = this.canvasToMap([0, this.context.canvas.height]);
-
-//    var topRight = [topLeft[0] + 3, topLeft[1]];
-//    var bottomRight = [topLeft[0] + 3, topLeft[1] + 3];
-//    var bottomLeft = [topLeft[0], topLeft[1] + 3];
 
     var xMin = Math.floor(Math.min(topLeft[0], topRight[0], bottomRight[0], bottomLeft[0]) + 2);
     var xMax = Math.floor(Math.max(topLeft[0], topRight[0], bottomRight[0], bottomLeft[0]) - 2);
     var yMin = Math.floor(Math.min(topLeft[1], topRight[1], bottomRight[1], bottomLeft[1]) + 2);
     var yMax = Math.floor(Math.max(topLeft[1], topRight[1], bottomRight[1], bottomLeft[1]) - 2);
     const rand = (n) => Math.floor(Math.random() * n);
+    let changed = false;
     for (var x = xMin; x <= xMax; x++) {
       for (var y = yMin; y <= yMax; y++) {
-        var tile = {}
-        tile.map = [x, y];
-        tile.color = this.randomColor();
-        tile.source = rand(2) + 1;
-        world.set(`tile${x},${y}`, tile);
+        changed |= this.world.add(x, y);
       }
     }
-    return world;
+    if (changed) {
+      this.world.sort();
+    }
   }
 
   drawAt(c, callback) {
@@ -121,25 +104,26 @@ export default class Glinda {
       const color = tile.color || this.randomColor();
       this.context.fillStyle = color;
 
-      this.context.beginPath();
-      // draw diamond, from left, to top, to right, to bottom, and back
-      this.context.moveTo(0, this.halfH);
-      this.context.lineTo(this.halfW, 0);
-      this.context.lineTo(this.width, this.halfH);
-      this.context.lineTo(this.halfW, this.height);
-      this.context.closePath();
-      //this.context.fill();
+      let image = (this.tiles.complete && tile.source !== undefined);
 
-      if (this.tiles.complete && tile.source !== undefined) {
+      if (image) {
         var srcX = tile.source * 256;
         var srcY = 0;
-        var destX = 0;
-        var destY = -128+96;
+        var destX = 0 - 64;
+        var destY = -128+96 - 48;
         var w = 256;
         var h = 256;
         this.context.drawImage(this.tiles, srcX, srcY, w, h, destX, destY, w, h);
-        //this.context.drawImage(this.tiles, tile.source * 256, 0, 256, 256, destX, destY, destWidth, destHeight);
-        }
+      } else {
+        this.context.beginPath();
+        // draw diamond, from left, to top, to right, to bottom, and back
+        this.context.moveTo(0, this.halfH);
+        this.context.lineTo(this.halfW, 0);
+        this.context.lineTo(this.width, this.halfH);
+        this.context.lineTo(this.halfW, this.height);
+        this.context.closePath();
+        this.context.fill();
+      }
     }
     );
   }

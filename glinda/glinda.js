@@ -1,3 +1,5 @@
+import World from './world.js';
+
 export default class Glinda {
   constructor(context) {
     this.context = context;
@@ -21,6 +23,9 @@ export default class Glinda {
     this.tiles.onload = () => {
       console.log('Image loaded');
     };
+
+    // Initialize the world
+    this.world = new World(this);
   }
 
   handleTouch(event) {
@@ -31,8 +36,8 @@ export default class Glinda {
     this.positionCamera();
 
     const canvas = this.context.canvas;
-    var world = this._junkMakeWorld();
-    world.forEach((tile, _) => {
+    var worldxxx = this._junkMakeWorld();
+    worldxxx.forEach((tile, _) => {
       this.drawTile(tile, tile.map);
     });
 
@@ -134,7 +139,7 @@ export default class Glinda {
         var h = 256;
         this.context.drawImage(this.tiles, srcX, srcY, w, h, destX, destY, w, h);
         //this.context.drawImage(this.tiles, tile.source * 256, 0, 256, 256, destX, destY, destWidth, destHeight);
-      }
+        }
     }
     );
   }

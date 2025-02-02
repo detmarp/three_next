@@ -51,45 +51,50 @@ export default class Glinda {
       }
     });
     for (let key of remove) {
-      this.world.map.delete(key);
+      this.world.remove(key);
     }
     this.world.sort();
 
     this.time += dt;
-    //console.log('World map size:', this.world.map.size);
-    //console.log('Top Left:', this.topLeft, 'Bottom Right:', this.bottomRight);
 
-    // this.context.beginPath();
-    // this.context.arc(this.topLeft[0], this.topLeft[1], 100, 0, 2 * Math.PI, false);
-    // this.context.fillStyle = 'red';
-    // this.context.fill();
+    //this._debugShowMarkers();
+  }
 
-    // this.context.beginPath();
-    // this.context.arc(this.bottomRight[0], this.bottomRight[1], 100, 0, 2 * Math.PI, false);
-    // this.context.fillStyle = 'lime';
-    // this.context.fill();
+  _debugShowMarkers() {
+    console.log('World map size:', this.world.map.size);
+    console.log('Top Left:', this.topLeft, 'Bottom Right:', this.bottomRight);
 
-    // this.context.beginPath();
-    // this.context.arc(this.camera.center[0], this.camera.center[1], 50, 0, 2 * Math.PI, false);
-    // this.context.fillStyle = 'white';
-    // this.context.fill();
+    this.context.beginPath();
+    this.context.arc(this.topLeft[0], this.topLeft[1], 100, 0, 2 * Math.PI, false);
+    this.context.fillStyle = 'red';
+    this.context.fill();
 
-    // let g2 = this.canvasToGrid(this.topLeft);
-    // let c2 = this.gridToCanvas(g2);
-    // let m2 = this.gridToMap(g2);
-    // let g3 = this.mapToGrid(m2);
-    // let c3 = this.gridToCanvas(g3);
+    this.context.beginPath();
+    this.context.arc(this.bottomRight[0], this.bottomRight[1], 100, 0, 2 * Math.PI, false);
+    this.context.fillStyle = 'lime';
+    this.context.fill();
 
-    // this.context.lineWidth = 10;
-    // this.context.beginPath();
-    // this.context.arc(c2[0], c2[1], 50, 0, 2 * Math.PI, false);
-    // this.context.strokeStyle = 'yellow';
-    // this.context.stroke();
+    this.context.beginPath();
+    this.context.arc(this.camera.center[0], this.camera.center[1], 50, 0, 2 * Math.PI, false);
+    this.context.fillStyle = 'white';
+    this.context.fill();
 
-    // this.context.beginPath();
-    // this.context.arc(c3[0], c3[1], 60, 0, 2 * Math.PI, false);
-    // this.context.strokeStyle = 'orange';
-    // this.context.stroke();
+    let g2 = this.canvasToGrid(this.topLeft);
+    let c2 = this.gridToCanvas(g2);
+    let m2 = this.gridToMap(g2);
+    let g3 = this.mapToGrid(m2);
+    let c3 = this.gridToCanvas(g3);
+
+    this.context.lineWidth = 10;
+    this.context.beginPath();
+    this.context.arc(c2[0], c2[1], 50, 0, 2 * Math.PI, false);
+    this.context.strokeStyle = 'yellow';
+    this.context.stroke();
+
+    this.context.beginPath();
+    this.context.arc(c3[0], c3[1], 60, 0, 2 * Math.PI, false);
+    this.context.strokeStyle = 'orange';
+    this.context.stroke();
   }
 
   positionCamera() {
@@ -108,12 +113,16 @@ export default class Glinda {
     let y = centerY - this.camera.center[1] * scale;
     this.context.setTransform(scale, 0, 0, scale, x, y);
 
-    let scale2 = scale;
+    let scale2 = scale * 1;
     this.topLeft = [this.camera.center[0] - centerX / scale2, this.camera.center[1] - centerY / scale2];
     this.bottomRight = [this.camera.center[0] + centerX / scale2, this.camera.center[1] + centerY / scale2];
 
     this.gridTL = this.canvasToGrid(this.topLeft);
     this.gridBR = this.canvasToGrid(this.bottomRight);
+
+    let pad = 1;
+    this.gridTL = [this.gridTL[0] - pad, this.gridTL[1] - pad];
+    this.gridBR = [this.gridBR[0] + pad, this.gridBR[1] + pad];
   }
 
   _junkMakeWorld() {
@@ -125,11 +134,6 @@ export default class Glinda {
       for (var y = yMin; y <= yMax; y++) {
         var m = this.gridToMap([x, y]);
         this.world.add(m[0], m[1]);
-
-        let position = [x * this.grid.size[0], y * this.grid.size[1]];
-        let size = [this.grid.size[0], this.grid.size[1]];
-        this.debugDrawAxis(position, size);
-
       }
     }
     this.world.sort();

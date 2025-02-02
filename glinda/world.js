@@ -3,34 +3,37 @@ export default class World {
     this.glinda = glinda;
     this.map = new Map();
     this.sorted = [];
+    this.dirty = true;
   }
 
   add(x, y) {
     const key = this._toKey(x, y);
     if (!this.map.has(key)) {
       this.map.set(key, this._newTile(x, y));
-      return true;
+      this.dirty = true;
     }
-    return false;
   }
 
-  remove(x, y) {
-    const key = this._toKey(x, y);
+  remove(key) {
     if (this.map.has(key)) {
       this.map.delete(key);
+      this.dirty = true;
     }
   }
 
   sort() {
-    this.sorted = Array.from(this.map.keys()).sort((a, b) => {
-      var aa = this.map.get(a);
-      var bb = this.map.get(b);
-      if (aa.y === bb.y) {
-        return bb.x - aa.x;
-      }
-      return bb.y - aa.y;
-      }
-    );
+      if (this.dirty) {
+      this.sorted = Array.from(this.map.keys()).sort((a, b) => {
+        var aa = this.map.get(a);
+        var bb = this.map.get(b);
+        if (aa.y === bb.y) {
+          return bb.x - aa.x;
+        }
+        return bb.y - aa.y;
+        }
+      );
+      this.dirty = false;
+    }
   }
 
   _toKey(x, y) {

@@ -1,7 +1,7 @@
 export default class World {
   constructor(glinda) {
     this.glinda = glinda;
-    this.map = new Map;
+    this.map = new Map();
     this.sorted = [];
   }
 
@@ -44,7 +44,12 @@ export default class World {
     tile.y = y;
     tile.map = [x, y];
     tile.color = this._randomColor();
-    tile.source = rand(3);
+    if (rand(4) === 0) {
+      tile.source = rand(2);
+    }
+    else {
+      tile.source = rand(2) + 2;
+    }
     return tile;
   }
 

@@ -44,9 +44,7 @@ export default class World {
     tile.y = y;
     tile.map = [x, y];
     tile.color = this._randomColor();
-    if (rand(3) > 0) {
-      tile.source = rand(3);
-    }
+    tile.source = rand(3);
     return tile;
   }
 

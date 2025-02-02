@@ -56,9 +56,11 @@ export default class Glinda {
 
   positionCamera() {
     let phase = (2 * Math.PI * this.time) / 40;
-    let scale = 1.0 + 0.25 * Math.sin(phase);
-    this.camera.zoom = scale;
+    let distance = 3.0 + 0.5 * Math.sin(phase);
+    let scale = 1 / distance;
+    this.camera.scale = scale;
     this.camera.center = [128*4, 96*4];
+    this.camera.center = [0, 0];
     //this.camera.center = [this.time * 20, this.time * 30];
 
     const canvas = this.context.canvas;
@@ -70,16 +72,10 @@ export default class Glinda {
   }
 
   _junkMakeWorld() {
-    var topLeft = this.canvasToMap([0, 0]);
-    var topRight = this.canvasToMap([this.context.canvas.width, 0]);
-    var bottomRight = this.canvasToMap([this.context.canvas.width, this.context.canvas.height]);
-    var bottomLeft = this.canvasToMap([0, this.context.canvas.height]);
-
-    var xMin = Math.floor(Math.min(topLeft[0], topRight[0], bottomRight[0], bottomLeft[0]) + 2);
-    var xMax = Math.floor(Math.max(topLeft[0], topRight[0], bottomRight[0], bottomLeft[0]) - 2);
-    var yMin = Math.floor(Math.min(topLeft[1], topRight[1], bottomRight[1], bottomLeft[1]) + 2);
-    var yMax = Math.floor(Math.max(topLeft[1], topRight[1], bottomRight[1], bottomLeft[1]) - 2);
-    const rand = (n) => Math.floor(Math.random() * n);
+    var xMin = -10;
+    var xMax = 10;
+    var yMin = -10;
+    var yMax = 10;
     let changed = false;
     for (var x = xMin; x <= xMax; x++) {
       for (var y = yMin; y <= yMax; y++) {
@@ -101,7 +97,7 @@ export default class Glinda {
   drawTile(tile, map) {
     const c = this.gridToCanvas(this.mapToGrid(map));
     this.drawAt([c[0] - this.halfW, c[1] - this.halfH], () => {
-      const color = tile.color || this.randomColor();
+      const color = tile.color || 'magenta';
       this.context.fillStyle = color;
 
       let image = (this.tiles.complete && tile.source !== undefined);
@@ -141,34 +137,11 @@ export default class Glinda {
     });
   }
 
-  debugDrawGrid(position) {
-  }
-
-  canvasToGrid(c) {
-    return [c[0] / this.width, c[1] / this.height];
-  }
-
   gridToCanvas(g) {
     return [g[0] * this.width, g[1] * this.height];
   }
 
-  canvasToMap(c) {
-    return this.gridToMap(this.canvasToGrid(c));
-  }
-
-  gridToMap(g) {
-    return [g[0] - g[1], -g[0] - g[1]];
-  }
-
   mapToGrid(m) {
     return [(m[0] - m[1]) / 2, (-m[0] - m[1]) / 2];
-  }
-
-  randomColor() {
-    const rand = (n) => Math.floor(Math.random() * n);
-    const hex = () => rand(256).toString(16).padStart(2, '0');
-    const insert = (a, b, n) => a.slice(0, n) + b + a.slice(n);
-    const rgb = insert(rand(2) ? '#ff00' : '#00ff', hex(), rand(3) * 2 + 1);
-    return rgb;
   }
 }

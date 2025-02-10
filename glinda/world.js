@@ -52,7 +52,7 @@ export default class World {
 
     this._draw_ground(0);
     this._draw_ground(1);
-    this._draw_ground(2, 0.2);
+    this._draw_ground(2, 0.3);
     this._draw_billboard(3);
   }
 
@@ -71,6 +71,13 @@ export default class World {
           var h = 256;
           this.glinda.context.drawImage(this.glinda.tiles, srcX, srcY, w, h, destX, destY, w, h);
         }
+        if (layer && layer.sprite) {
+          if (alpha < 1.0) {
+            this.glinda.context.globalAlpha = alpha;
+          }
+          layer.sprite.draw(this.glinda.context, [c[0] -0, c[1] -0]);
+          this.glinda.context.globalAlpha = 1.0;
+          }
     });
   }
 
@@ -116,14 +123,18 @@ export default class World {
     tile.layer[0] = {
       source: rand(2),
     };
-    if (rand(3) === 0) {
+    if (rand(4) > 0) {
       tile.layer[1] = {
         source: rand(3) + 2
       };
     }
     if (rand(4) === 0) {
+      let x = 1024 * rand(2);
+      tile.layer[2] = {
+        sprite: new Sprite(this.glinda.tiles, [x + 256, 256], [256, 256], [128, 128]),
+      };
       tile.layer[3] = {
-        sprite: new Sprite(this.glinda.tiles, [1024 * rand(2), 256], [256, 256], [128, 128]),
+        sprite: new Sprite(this.glinda.tiles, [x, 256], [256, 256], [128, 128]),
       };
     }
     return tile;

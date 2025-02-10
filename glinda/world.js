@@ -129,7 +129,7 @@ export default class World {
       };
     }
     if (rand(4) === 0) {
-      let x = 1024 * rand(2);
+      let x = 512 * rand(3);
       tile.layer[2] = {
         sprite: new Sprite(this.glinda.tiles, [x + 256, 256], [256, 256], [128, 128]),
       };

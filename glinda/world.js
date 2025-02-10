@@ -1,3 +1,5 @@
+import Sprite from './sprite.js';
+
 export default class World {
   constructor(glinda) {
     this.glinda = glinda;
@@ -36,6 +38,63 @@ export default class World {
     }
   }
 
+  drawAt(c, callback) {
+    const prevTransform = this.glinda.context.getTransform();
+    this.glinda.context.translate(c[0], c[1]);
+    callback();
+    this.glinda.context.setTransform(prevTransform);
+  }
+
+  draw_world() {
+    this.sort();
+
+  //});
+
+    this._draw_ground(0);
+    this._draw_ground(1);
+    this._draw_ground(2, 0.2);
+    this._draw_billboard(3);
+  }
+
+  _draw_ground(index, alpha = 1.0) {
+    this.sorted.forEach((key) => {
+      const tile = this.map.get(key);
+      const c = this.glinda.gridToCanvas(this.glinda.mapToGrid(tile.map));
+      //this.drawAt([c[0] - this.glinda.halfW, c[1] - this.glinda.halfH], () => {
+        let layer = tile.layer[index];
+        if (layer && layer.source !== undefined) {
+          var srcX = layer.source * 256;
+          var srcY = 0;
+          var destX = c[0] - this.glinda.halfW + 0 - 64;
+          var destY = c[1] - this.glinda.halfH + -128+96 - 48;
+          var w = 256;
+          var h = 256;
+          this.glinda.context.drawImage(this.glinda.tiles, srcX, srcY, w, h, destX, destY, w, h);
+        }
+    });
+  }
+
+  _draw_billboard(index) {
+    this.sorted.forEach((key) => {
+      const tile = this.map.get(key);
+      const c = this.glinda.gridToCanvas(this.glinda.mapToGrid(tile.map));
+      //this.drawAt([c[0] - this.glinda.halfW, c[1] - this.glinda.halfH], () => {
+        let layer = tile.layer[index];
+        if (layer && layer.source !== undefined) {
+          var srcX = layer.source * 256;
+          var srcY = 0;
+          var destX = c[0] - this.glinda.halfW + 0 - 64;
+          var destY = c[1] - this.glinda.halfH + -128+96 - 48;
+          var w = 256;
+          var h = 256;
+          this.glinda.context.drawImage(this.glinda.tiles, srcX, srcY, w, h, destX, destY, w, h);
+        }
+        if (layer && layer.sprite) {
+          layer.sprite.draw(this.glinda.context, [c[0] -0, c[1] -0]);
+        }
+    });
+  }
+
   _toKey(x, y) {
     return `${x},${y}`;
   }
@@ -52,6 +111,20 @@ export default class World {
     }
     else {
       tile.source = rand(2) + 2;
+    }
+    tile.layer = [];
+    tile.layer[0] = {
+      source: rand(2),
+    };
+    if (rand(3) === 0) {
+      tile.layer[1] = {
+        source: rand(3) + 2
+      };
+    }
+    if (rand(4) === 0) {
+      tile.layer[3] = {
+        sprite: new Sprite(this.glinda.tiles, [1024 * rand(2), 256], [256, 256], [128, 128]),
+      };
     }
     return tile;
   }

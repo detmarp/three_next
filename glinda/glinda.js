@@ -1,4 +1,5 @@
 import World from './world.js';
+import Sprite from './sprite.js';
 
 export default class Glinda {
   constructor(context) {
@@ -17,13 +18,8 @@ export default class Glinda {
     };
     this.time = 0;
 
-    // Load the image
-    this.tiles = new Image();
-    this.tiles.src = 'glinda_tile_00.png';
-    this.tiles.onload = () => {
-      console.log('Image loaded');
-    };
-
+    this.loaded = false;
+    this._loadStuff();
     this.world = new World(this);
 
     this.positionCamera();
@@ -35,13 +31,17 @@ export default class Glinda {
 
   render(dt) {
     this.positionCamera();
-
+    this.time += dt;
     const canvas = this.context.canvas;
+
+    if (!this.loaded) { return; }
+
     this._junkMakeWorld();
 
+    this.world.draw_world();
     this.world.sorted.forEach((key) => {
       const tile = this.world.map.get(key);
-      this.drawTile(tile, tile.map);
+      //this.drawTile(tile, tile.map);
     });
 
     let remove = new Set();
@@ -55,9 +55,30 @@ export default class Glinda {
     }
     this.world.sort();
 
-    this.time += dt;
-
     //this._debugShowMarkers();
+  }
+
+  _loadStuff() {
+    // Load the image
+    this.tiles = new Image();
+    this.tiles.src = 'glinda_tile_00.png';
+    this.tiles.onload = () => {
+      console.log('Image loaded');
+
+      fetch('glinda_tile_00.json')
+      .then(response => response.json())
+      .then(data => {
+        this.json = data;
+        console.log('JSON loaded');
+
+        this.tree = new Sprite(this.tiles, [1024, 256], [256, 256], [128, 128]);
+
+        this.loaded = true;
+      })
+      .catch(error => {
+        console.error('Error loading JSON:', error);
+      });
+    };
   }
 
   _debugShowMarkers() {
@@ -99,7 +120,7 @@ export default class Glinda {
 
   positionCamera() {
     let phase = (2 * Math.PI * this.time) / 30;
-    let distance = 1.0 + 0.5 * Math.sin(phase);
+    let distance = 2.5 + 2.0 * Math.sin(phase);
     let scale = 1 / distance;
     this.camera.scale = scale;
     this.camera.center = [128*4, 96*4];
@@ -162,17 +183,15 @@ export default class Glinda {
       const color = tile.color || 'magenta';
       this.context.fillStyle = color;
 
-      let image = (this.tiles.complete && tile.source !== undefined);
+      var srcX = tile.source * 256;
+      var srcY = 0;
+      var destX = 0 - 64;
+      var destY = -128+96 - 48;
+      var w = 256;
+      var h = 256;
+      this.context.drawImage(this.tiles, srcX, srcY, w, h, destX, destY, w, h);
 
-      if (image) {
-        var srcX = tile.source * 256;
-        var srcY = 0;
-        var destX = 0 - 64;
-        var destY = -128+96 - 48;
-        var w = 256;
-        var h = 256;
-        this.context.drawImage(this.tiles, srcX, srcY, w, h, destX, destY, w, h);
-      } else {
+      if (false) {
         this.context.beginPath();
         // draw diamond, from left, to top, to right, to bottom, and back
         this.context.moveTo(0, this.halfH);
@@ -182,8 +201,9 @@ export default class Glinda {
         this.context.closePath();
         this.context.fill();
       }
-    }
-    );
+    });
+
+    this.tree.draw(this.context, [c[0] -0, c[1] -0]);
   }
 
   debugDrawAxis(position, size) {

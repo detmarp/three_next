@@ -23,14 +23,177 @@ export default class Glinda {
     this.world = new World(this);
 
     this.positionCamera();
+
+    // Bind event handlers
+    this.context.canvas.addEventListener('touchstart', this.handleTouch.bind(this));
+    this.context.canvas.addEventListener('touchmove', this.handleTouch.bind(this));
+    this.context.canvas.addEventListener('touchend', this.handleTouch.bind(this));
+    this.context.canvas.addEventListener('touchcancel', this.handleTouch.bind(this));
+    this.context.canvas.addEventListener('mousedown', this.handleMouse.bind(this));
+    this.context.canvas.addEventListener('mousemove', this.handleMouse.bind(this));
+    this.context.canvas.addEventListener('mouseup', this.handleMouse.bind(this));
   }
 
   handleTouch(event) {
-    // Handle touch input
+    switch (event.type) {
+      case 'touchstart':
+        this.onTouchStart(event);
+        break;
+      case 'touchmove':
+        this.onTouchMove(event);
+        break;
+      case 'touchend':
+      case 'touchcancel':
+        this.onTouchEnd(event);
+        break;
+    }
+  }
+
+  handleMouse(event) {
+    switch (event.type) {
+      case 'mousedown':
+        this.onMouseDown(event);
+        break;
+      case 'mousemove':
+        this.onMouseMove(event);
+        break;
+      case 'mouseup':
+        this.onMouseUp(event);
+        break;
+    }
+  }
+
+  onTouchStart(event) {
+    if (event.touches.length === 1) {
+      // Handle one-finger touch start
+      this.startOneFingerTouch(event.touches[0]);
+    } else if (event.touches.length === 2) {
+      // Handle two-finger touch start
+      this.startTwoFingerTouch(event.touches);
+    }
+  }
+
+  onTouchMove(event) {
+    if (event.touches.length === 1) {
+      // Handle one-finger touch move
+      this.moveOneFingerTouch(event.touches[0]);
+    } else if (event.touches.length === 2) {
+      // Handle two-finger touch move
+      this.moveTwoFingerTouch(event.touches);
+    }
+  }
+
+  onTouchEnd(event) {
+    // Handle touch end
+    this.endTouch();
+  }
+
+  onMouseDown(event) {
+    if (event.button === 0) {
+      // Handle left button (one-finger) mouse down
+      this.startOneFingerTouch(event);
+    } else if (event.button === 1) {
+      // Handle middle button (two-finger) mouse down
+      this.startTwoFingerTouch([event, this.createVirtualFinger(event)]);
+    }
+  }
+
+  onMouseMove(event) {
+    if (event.buttons === 1) {
+      // Handle left button (one-finger) mouse move
+      this.moveOneFingerTouch(event);
+    } else if (event.buttons === 4) {
+      // Handle middle button (two-finger) mouse move
+      this.moveTwoFingerTouch([event, this.createVirtualFinger(event)]);
+    }
+  }
+
+  onMouseUp(event) {
+    // Handle mouse up
+    this.endTouch();
+  }
+
+  createVirtualFinger(event) {
+    const canvas = this.context.canvas;
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    return {
+      clientX: 2 * centerX - event.clientX,
+      clientY: 2 * centerY - event.clientY
+    };
+  }
+
+  startOneFingerTouch(touch) {
+    this.initialTouch = { x: touch.clientX, y: touch.clientY };
+    this.initialCameraCenter = [...this.camera.center];
+  }
+
+  moveOneFingerTouch(touch) {
+    const dx = touch.clientX - this.initialTouch.x;
+    const dy = touch.clientY - this.initialTouch.y;
+    this.camera.center = [
+      this.initialCameraCenter[0] - dx / this.camera.scale,
+      this.initialCameraCenter[1] - dy / this.camera.scale
+    ];
+    this.updateCameraTransform();
+  }
+
+  startTwoFingerTouch(touches) {
+    this.initialTouches = [
+      { x: touches[0].clientX, y: touches[0].clientY },
+      { x: touches[1].clientX, y: touches[1].clientY }
+    ];
+    this.initialDistance = this.getDistance(this.initialTouches[0], this.initialTouches[1]);
+    this.initialCameraScale = this.camera.scale;
+  }
+
+  moveTwoFingerTouch(touches) {
+    const newTouches = [
+      { x: touches[0].clientX, y: touches[0].clientY },
+      { x: touches[1].clientX, y: touches[1].clientY }
+    ];
+    const newDistance = this.getDistance(newTouches[0], newTouches[1]);
+    const scaleChange = newDistance / this.initialDistance;
+    this.camera.scale = this.initialCameraScale * scaleChange;
+    this.updateCameraTransform();
+  }
+
+  endTouch() {
+    this.initialTouch = null;
+    this.initialCameraCenter = null;
+    this.initialTouches = null;
+    this.initialDistance = null;
+    this.initialCameraScale = null;
+  }
+
+  getDistance(touch1, touch2) {
+    const dx = touch2.x - touch1.x;
+    const dy = touch2.y - touch1.y;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  updateCameraTransform() {
+    const canvas = this.context.canvas;
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const x = centerX - this.camera.center[0] * this.camera.scale;
+    const y = centerY - this.camera.center[1] * this.camera.scale;
+    this.context.setTransform(this.camera.scale, 0, 0, this.camera.scale, x, y);
+
+    let scale2 = this.camera.scale * 1;
+    this.topLeft = [this.camera.center[0] - centerX / scale2, this.camera.center[1] - centerY / scale2];
+    this.bottomRight = [this.camera.center[0] + centerX / scale2, this.camera.center[1] + centerY / scale2];
+
+    this.gridTL = this.canvasToGrid(this.topLeft);
+    this.gridBR = this.canvasToGrid(this.bottomRight);
+
+    let pad = 1;
+    this.gridTL = [this.gridTL[0] - pad, this.gridTL[1] - pad];
+    this.gridBR = [this.gridBR[0] + pad, this.gridBR[1] + pad];
   }
 
   render(dt) {
-    this.positionCamera();
+    //this.positionCamera();
     this.time += dt;
     const canvas = this.context.canvas;
 

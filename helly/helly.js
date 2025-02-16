@@ -92,14 +92,18 @@ export default class Helly extends EventTarget {
       return;
     }
     const source = sprite.source;
-    const destination = [...position, ...sprite.size];
-    this.context.drawImage(sprite.image, ...source, ...sprite.size, ...destination);
+    let offset = sprite.offset || [0, 0];
+    this.context.drawImage(sprite.image,
+      ...source,
+      ...sprite.size,
+      position[0] - offset[0], position[1] - offset[1],
+      ...sprite.size);
   }
 
-  parseHelly(helly) {
-    let imageName = helly.imageName;
-    if (helly.sprites) {
-      for (const [key, value] of Object.entries(helly.sprites)) {
+  parseHelly(hellyDef) {
+    let imageName = hellyDef.imageName;
+    if (hellyDef.sprites) {
+      for (const [key, value] of Object.entries(hellyDef.sprites)) {
         value.imageName = value.imageName || imageName;
         this.sprites.set(key, value);
       }

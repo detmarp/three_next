@@ -46,14 +46,12 @@ export default class Program {
     this.context.fillStyle = this.color;
     this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-    const color = this.frameCount % 2 === 0 ? 'red' : 'lime';
-    this.helly.draw(null, [128, 96]);
-    this.helly.draw(null, [256, 96]);
-    this.helly.draw('dirt0', [0, 200]);
-    this.helly.draw('dirt1', [128, 200]);
-    this.helly.draw('grass0', [256, 200]);
-    this.helly.draw('grass1', [384, 200]);
-    this.helly.draw('grass2', [512, 200]);
+    let x = 128;
+    for (const key of this.helly.sprites.keys()) {
+      console.log(key);
+      this.helly.draw(key, [x, 128]);
+      x += 64;
+    }
 
     requestAnimationFrame(() => this.doFrame());
   }

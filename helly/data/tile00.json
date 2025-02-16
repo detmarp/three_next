@@ -26,6 +26,61 @@
         "source": [1024, 0],
         "size": [256, 256],
         "offset": [128, 128]
+      },
+      "treea": {
+        "source": [0, 256],
+        "size": [256, 256],
+        "offset": [128, 128]
+      },
+      "treeashadow": {
+        "source": [256, 256],
+        "size": [256, 256],
+        "offset": [128, 128]
+      },
+      "beasta": {
+        "source": [512, 256],
+        "size": [256, 256],
+        "offset": [128, 128]
+      },
+      "beastashadow": {
+        "source": [768, 256],
+        "size": [256, 256],
+        "offset": [128, 128]
+      },
+      "treeb": {
+        "source": [1024, 256],
+        "size": [256, 256],
+        "offset": [128, 128]
+      },
+      "treebshadow": {
+        "source": [1280, 256],
+        "size": [256, 256],
+        "offset": [128, 128]
+      },
+      "beastb0": {
+        "source": [0, 512],
+        "size": [256, 256],
+        "offset": [128, 128]
+      },
+      "beastb1": {
+        "source": [256, 512],
+        "size": [256, 256],
+        "offset": [128, 128]
+      },
+      "beastb2": {
+        "source": [512, 512],
+        "size": [256, 256],
+        "offset": [128, 128]
+      },
+      "beastb3": {
+        "source": [768, 512],
+        "size": [256, 256],
+        "offset": [128, 128]
+      },
+      "beastbshadow": {
+        "source": [1280, 512],
+        "size": [256, 256],
+        "offset": [128, 128]
       }
     }
   }

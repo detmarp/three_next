@@ -5,7 +5,7 @@ export default class Program {
     this.container = container;
     this.canvas = null;
     this.context = null;
-    this.squareSize = 100;
+    this.lastFrameTime = 0;
   }
 
   run() {
@@ -40,20 +40,36 @@ export default class Program {
     this.canvas.height = window.innerHeight;
   }
 
-  doFrame() {
-    this.frameCount = (this.frameCount || 0) + 1;
+  doFrame(timestamp = 0) {
+    const dt = (timestamp - this.lastFrameTime) / 1000;
+    this.lastFrameTime = timestamp;
+
+    this.helly.startFrame(dt);
 
     this.context.fillStyle = this.color;
     this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-    let x = 128;
-    for (const key of this.helly.sprites.keys()) {
-      console.log(key);
-      this.helly.draw(key, [x, 128]);
-      x += 64;
+    for (let pass = 0; pass < 2; pass++) {
+      let x = 0;
+      for (const key of this.helly.sprites.keys()) {
+        let a = x % 6;
+        let b = Math.floor(x / 6);
+        let grid = [(1 + a) * 2 + b, b + 3];
+        let world = this._gridToWorld(grid);
+        let name = (pass === 0) ? 'dirt0' : key;
+        this.helly.draw(name, world);
+        x++;
+      }
     }
 
-    requestAnimationFrame(() => this.doFrame());
+    this.helly.draw('riverstr', this._gridToWorld([2, 8]));
+    this.helly.draw('riverstr2', this._gridToWorld([4, 8]));
+
+    requestAnimationFrame((timestamp) => this.doFrame(timestamp));
+  }
+
+  _gridToWorld(grid) {
+    return [grid[0] * 64, grid[1] * 48];
   }
 
   onLoadingDone() {

@@ -1,6 +1,20 @@
 {
   "helly": {
     "imageName": "tile00",
+    "anims": {
+      "riverstr": {
+        "type": "flipbook",
+        "frames": ["rivers0", "rivers1", "rivers2" ],
+        "fps": 3,
+        "crossfade": true
+      },
+      "riverstr2": {
+        "type": "flipbook",
+        "frames": ["rivers0", "rivers1", "rivers2" ],
+        "fps": 3,
+        "crossfade": false
+      }
+    },
     "sprites": {
       "dirt0": {
         "source": [0, 0],
@@ -57,28 +71,43 @@
         "size": [256, 256],
         "offset": [128, 128]
       },
-      "beastb0": {
+      "rivers0": {
         "source": [0, 512],
         "size": [256, 256],
         "offset": [128, 128]
       },
-      "beastb1": {
+      "rivers1": {
         "source": [256, 512],
         "size": [256, 256],
         "offset": [128, 128]
       },
-      "beastb2": {
+      "rivers2": {
         "source": [512, 512],
         "size": [256, 256],
         "offset": [128, 128]
       },
+      "beastb0": {
+        "source": [0, 768],
+        "size": [256, 256],
+        "offset": [128, 128]
+      },
+      "beastb1": {
+        "source": [256, 768],
+        "size": [256, 256],
+        "offset": [128, 128]
+      },
+      "beastb2": {
+        "source": [512, 768],
+        "size": [256, 256],
+        "offset": [128, 128]
+      },
       "beastb3": {
-        "source": [768, 512],
+        "source": [768, 768],
         "size": [256, 256],
         "offset": [128, 128]
       },
       "beastbshadow": {
-        "source": [1280, 512],
+        "source": [1024, 768],
         "size": [256, 256],
         "offset": [128, 128]
       }

@@ -1,0 +1,32 @@
+{
+  "helly": {
+    "imageName": "tile00",
+    "sprites": {
+      "dirt0": {
+        "source": [0, 0],
+        "size": [256, 256],
+        "offset": [128, 128]
+      },
+      "dirt1": {
+        "source": [256, 0],
+        "size": [256, 256],
+        "offset": [128, 128]
+      },
+      "grass0": {
+        "source": [512, 0],
+        "size": [256, 256],
+        "offset": [128, 128]
+      },
+      "grass1": {
+        "source": [768, 0],
+        "size": [256, 256],
+        "offset": [128, 128]
+      },
+      "grass2": {
+        "source": [1024, 0],
+        "size": [256, 256],
+        "offset": [128, 128]
+      }
+    }
+  }
+}

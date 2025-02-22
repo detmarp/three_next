@@ -91,7 +91,7 @@ export default class Helly extends EventTarget {
     this.context.fillRect(...position, ...size);
   }
 
-  drawSprite(sprite, position = [0,0], alpha = 1) {
+  drawSprite(sprite, position = [0,0], alpha) {
     if (!sprite.image && sprite.imageName) {
       sprite.image = this.images.get(sprite.imageName);
       return;
@@ -100,6 +100,7 @@ export default class Helly extends EventTarget {
       this.drawColor(position, sprite.size);
       return;
     }
+    alpha = alpha || sprite.alpha || 1;
     this.context.globalAlpha = alpha;
     const source = sprite.source;
     let offset = sprite.offset || [0, 0];

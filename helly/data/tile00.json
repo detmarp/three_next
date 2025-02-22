@@ -49,7 +49,8 @@
       "treeashadow": {
         "source": [256, 256],
         "size": [256, 256],
-        "offset": [128, 128]
+        "offset": [128, 128],
+        "alpha": 0.4
       },
       "beasta": {
         "source": [512, 256],
@@ -59,7 +60,8 @@
       "beastashadow": {
         "source": [768, 256],
         "size": [256, 256],
-        "offset": [128, 128]
+        "offset": [128, 128],
+        "alpha": 0.4
       },
       "treeb": {
         "source": [1024, 256],
@@ -69,7 +71,8 @@
       "treebshadow": {
         "source": [1280, 256],
         "size": [256, 256],
-        "offset": [128, 128]
+        "offset": [128, 128],
+        "alpha": 0.4
       },
       "rivers0": {
         "source": [0, 512],
@@ -109,7 +112,8 @@
       "beastbshadow": {
         "source": [1024, 768],
         "size": [256, 256],
-        "offset": [128, 128]
+        "offset": [128, 128],
+        "alpha": 0.4
       }
     }
   }

@@ -1,5 +1,6 @@
 import World from './world.js';
 import Sprite from './sprite.js';
+import Camera from './camera.js';
 
 export default class Glinda {
   constructor(context) {
@@ -12,10 +13,12 @@ export default class Glinda {
     this.grid = {
       size: [64, 48]
     };
-    this.camera = {
+    this.camera = new Camera(context);
+    this.cameraX = {
       center: [0, 0],
       scale: 1.0
     };
+    this.debug = true;
     this.time = 0;
 
     this.loaded = false;
@@ -112,6 +115,7 @@ export default class Glinda {
 
   onMouseUp(event) {
     // Handle mouse up
+		event.preventDefault();
     this.endTouch();
   }
 
@@ -127,15 +131,15 @@ export default class Glinda {
 
   startOneFingerTouch(touch) {
     this.initialTouch = { x: touch.clientX, y: touch.clientY };
-    this.initialCameraCenter = [...this.camera.center];
+    this.initialCameraCenter = [...this.cameraX.center];
   }
 
   moveOneFingerTouch(touch) {
     const dx = touch.clientX - this.initialTouch.x;
     const dy = touch.clientY - this.initialTouch.y;
-    this.camera.center = [
-      this.initialCameraCenter[0] - dx / this.camera.scale,
-      this.initialCameraCenter[1] - dy / this.camera.scale
+    this.cameraX.center = [
+      this.initialCameraCenter[0] - dx / this.cameraX.scale,
+      this.initialCameraCenter[1] - dy / this.cameraX.scale
     ];
     this.updateCameraTransform();
   }
@@ -146,7 +150,7 @@ export default class Glinda {
       { x: touches[1].clientX, y: touches[1].clientY }
     ];
     this.initialDistance = this.getDistance(this.initialTouches[0], this.initialTouches[1]);
-    this.initialCameraScale = this.camera.scale;
+    this.initialCameraScale = this.cameraX.scale;
   }
 
   moveTwoFingerTouch(touches) {
@@ -156,7 +160,7 @@ export default class Glinda {
     ];
     const newDistance = this.getDistance(newTouches[0], newTouches[1]);
     const scaleChange = newDistance / this.initialDistance;
-    this.camera.scale = this.initialCameraScale * scaleChange;
+    this.cameraX.scale = this.initialCameraScale * scaleChange;
     this.updateCameraTransform();
   }
 
@@ -178,13 +182,13 @@ export default class Glinda {
     const canvas = this.context.canvas;
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    const x = centerX - this.camera.center[0] * this.camera.scale;
-    const y = centerY - this.camera.center[1] * this.camera.scale;
-    this.context.setTransform(this.camera.scale, 0, 0, this.camera.scale, x, y);
+    const x = centerX - this.cameraX.center[0] * this.cameraX.scale;
+    const y = centerY - this.cameraX.center[1] * this.cameraX.scale;
+    this.context.setTransform(this.cameraX.scale, 0, 0, this.cameraX.scale, x, y);
 
-    let scale2 = this.camera.scale * 1;
-    this.topLeft = [this.camera.center[0] - centerX / scale2, this.camera.center[1] - centerY / scale2];
-    this.bottomRight = [this.camera.center[0] + centerX / scale2, this.camera.center[1] + centerY / scale2];
+    let scale2 = this.cameraX.scale * 1;
+    this.topLeft = [this.cameraX.center[0] - centerX / scale2, this.cameraX.center[1] - centerY / scale2];
+    this.bottomRight = [this.cameraX.center[0] + centerX / scale2, this.cameraX.center[1] + centerY / scale2];
 
     this.gridTL = this.canvasToGrid(this.topLeft);
     this.gridBR = this.canvasToGrid(this.bottomRight);
@@ -204,6 +208,11 @@ export default class Glinda {
     this._junkMakeWorld();
 
     this.world.draw_world();
+
+    if (this.debug) {
+      this.camera.debug_draw();
+    }
+
     this.world.sorted.forEach((key) => {
       const tile = this.world.map.get(key);
       //this.drawTile(tile, tile.map);
@@ -261,7 +270,7 @@ export default class Glinda {
     this.context.fill();
 
     this.context.beginPath();
-    this.context.arc(this.camera.center[0], this.camera.center[1], 50, 0, 2 * Math.PI, false);
+    this.context.arc(this.cameraX.center[0], this.cameraX.center[1], 50, 0, 2 * Math.PI, false);
     this.context.fillStyle = 'white';
     this.context.fill();
 
@@ -287,21 +296,21 @@ export default class Glinda {
     let phase = (2 * Math.PI * this.time) / 30;
     let distance = 2.5 + 2.0 * Math.sin(phase);
     let scale = 1 / distance;
-    this.camera.scale = scale;
-    this.camera.center = [128*4, 96*4];
-    this.camera.center = [0, 0];
-    this.camera.center = [this.time * 40, this.time * -60];
+    this.cameraX.scale = scale;
+    this.cameraX.center = [128*4, 96*4];
+    this.cameraX.center = [0, 0];
+    this.cameraX.center = [this.time * 40, this.time * -60];
 
     const canvas = this.context.canvas;
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    let x = centerX - this.camera.center[0] * scale;
-    let y = centerY - this.camera.center[1] * scale;
+    let x = centerX - this.cameraX.center[0] * scale;
+    let y = centerY - this.cameraX.center[1] * scale;
     this.context.setTransform(scale, 0, 0, scale, x, y);
 
     let scale2 = scale * 1;
-    this.topLeft = [this.camera.center[0] - centerX / scale2, this.camera.center[1] - centerY / scale2];
-    this.bottomRight = [this.camera.center[0] + centerX / scale2, this.camera.center[1] + centerY / scale2];
+    this.topLeft = [this.cameraX.center[0] - centerX / scale2, this.cameraX.center[1] - centerY / scale2];
+    this.bottomRight = [this.cameraX.center[0] + centerX / scale2, this.cameraX.center[1] + centerY / scale2];
 
     this.gridTL = this.canvasToGrid(this.topLeft);
     this.gridBR = this.canvasToGrid(this.bottomRight);

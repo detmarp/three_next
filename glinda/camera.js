@@ -7,8 +7,7 @@ export default class Camera {
 
     const canvas = this.context.canvas;
     this.center = [canvas.width / 2, canvas.height / 2];
-    this.distance = 2;
-    this.scale = 1 / this.distance;
+    this.scale = 0.5;
 
     this.debug = true;
 
@@ -63,16 +62,32 @@ export default class Camera {
       if (touches.length == 1) {
         this.startDrag = this.center;
       }
-      if (touches.length == 3) {
+      else if (touches.length == 2) {
+        this.startScale = this.scale;
+      }
+      else if (touches.length == 3) {
         this.debug = !this.debug;
       }
     }
 
-    if (type == 'move' && touches.length == 1 && this.startDrag) {
-      let touch = touches[0];
-      let x = this.startDrag[0] + (touch.start[0] - touch.end[0]) / this.scale;
-      let y = this.startDrag[1] + (touch.start[1] - touch.end[1]) / this.scale;
-      this.center = [x, y];
+    if (type == 'move') {
+      if (touches.length == 1 && this.startDrag) {
+        let touch = touches[0];
+        let x = this.startDrag[0] + (touch.start[0] - touch.end[0]) / this.scale;
+        let y = this.startDrag[1] + (touch.start[1] - touch.end[1]) / this.scale;
+        this.center = [x, y];
+      }
+      if (touches.length == 2 && this.startScale) {
+        let touch1 = touches[0];
+        let touch2 = touches[1];
+        let startDistance = Math.hypot(touch1.start[0] - touch2.start[0], touch1.start[1] - touch2.start[1]);
+        let endDistance = Math.hypot(touch1.end[0] - touch2.end[0], touch1.end[1] - touch2.end[1]);
+        if (startDistance > 0) {
+          let scale = this.startScale * endDistance / startDistance;
+          scale = Math.max(0.5, Math.min(scale, 15));
+          this.scale = scale;
+        }
+      }
     }
   }
 }

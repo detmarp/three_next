@@ -28,29 +28,18 @@ export default class Glinda {
     this.positionCamera();
 
     // Bind event handlers
+    //this.context.canvas.addEventListener('mousedown', this.handleMouse.bind(this), { passive: false });
+    //this.context.canvas.addEventListener('mousemove', this.handleMouse.bind(this), { passive: false });
+    //this.context.canvas.addEventListener('mouseup', this.handleMouse.bind(this), { passive: false });
+
     this.context.canvas.addEventListener('touchstart', this.handleTouch.bind(this), { passive: false });
     this.context.canvas.addEventListener('touchmove', this.handleTouch.bind(this), { passive: false });
     this.context.canvas.addEventListener('touchend', this.handleTouch.bind(this), { passive: false });
     this.context.canvas.addEventListener('touchcancel', this.handleTouch.bind(this), { passive: false });
-    this.context.canvas.addEventListener('mousedown', this.handleMouse.bind(this), { passive: false });
-    this.context.canvas.addEventListener('mousemove', this.handleMouse.bind(this), { passive: false });
-    this.context.canvas.addEventListener('mouseup', this.handleMouse.bind(this), { passive: false });
   }
 
   handleTouch(event) {
     event.preventDefault();
-    switch (event.type) {
-      case 'touchstart':
-        this.onTouchStart(event);
-        break;
-      case 'touchmove':
-        this.onTouchMove(event);
-        break;
-      case 'touchend':
-      case 'touchcancel':
-        this.onTouchEnd(event);
-        break;
-    }
   }
 
   handleMouse(event) {
@@ -66,31 +55,6 @@ export default class Glinda {
         this.onMouseUp(event);
         break;
     }
-  }
-
-  onTouchStart(event) {
-    if (event.touches.length === 1) {
-      // Handle one-finger touch start
-      this.startOneFingerTouch(event.touches[0]);
-    } else if (event.touches.length === 2) {
-      // Handle two-finger touch start
-      this.startTwoFingerTouch(event.touches);
-    }
-  }
-
-  onTouchMove(event) {
-    if (event.touches.length === 1) {
-      // Handle one-finger touch move
-      this.moveOneFingerTouch(event.touches[0]);
-    } else if (event.touches.length === 2) {
-      // Handle two-finger touch move
-      this.moveTwoFingerTouch(event.touches);
-    }
-  }
-
-  onTouchEnd(event) {
-    // Handle touch end
-    this.endTouch();
   }
 
   onMouseDown(event) {

@@ -4,11 +4,30 @@ export default class Camera {
   constructor(context) {
     this.context = context;
     this.initEventListeners();
+
+    const canvas = this.context.canvas;
+    this.center = [canvas.width / 2, canvas.height / 2];
+    this.distance = 2;
+    this.scale = 1 / this.distance;
+
+    this.debug = true;
+
+    this.update();
   }
 
   initEventListeners() {
     this.mytouch = new Mytouch(this.context.canvas);
     this.mytouch.onChangeCallback = this.onChanged.bind(this);
+  }
+
+  update() {
+    const canvas = this.context.canvas;
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    let scale = this.scale;
+    let x = centerX - this.center[0] * scale;
+    let y = centerY - this.center[1] * scale;
+    this.context.setTransform(scale, 0, 0, scale, x, y);
   }
 
   debug_draw() {
@@ -40,5 +59,10 @@ export default class Camera {
 
   onChanged(touches, type) {
     console.log(`Hey type: ${type}, touches: ${JSON.stringify(touches)}`);
+    if (type == 'start') {
+      if (touches.length == 3) {
+        this.debug = !this.debug;
+      }
+    }
   }
 }

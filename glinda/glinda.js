@@ -18,7 +18,6 @@ export default class Glinda {
       center: [0, 0],
       scale: 1.0
     };
-    this.debug = true;
     this.time = 0;
 
     this.loaded = false;
@@ -143,16 +142,16 @@ export default class Glinda {
   }
 
   updateCameraTransform() {
+    this.camera.update();
+
     const canvas = this.context.canvas;
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    const x = centerX - this.cameraX.center[0] * this.cameraX.scale;
-    const y = centerY - this.cameraX.center[1] * this.cameraX.scale;
-    this.context.setTransform(this.cameraX.scale, 0, 0, this.cameraX.scale, x, y);
 
-    let scale2 = this.cameraX.scale * 1;
-    this.topLeft = [this.cameraX.center[0] - centerX / scale2, this.cameraX.center[1] - centerY / scale2];
-    this.bottomRight = [this.cameraX.center[0] + centerX / scale2, this.cameraX.center[1] + centerY / scale2];
+    let scale2 = this.camera.scale * (this.camera.debug ? 2 : 1);
+
+    this.topLeft = [this.camera.center[0] - centerX / scale2, this.camera.center[1] - centerY / scale2];
+    this.bottomRight = [this.camera.center[0] + centerX / scale2, this.camera.center[1] + centerY / scale2];
 
     this.gridTL = this.canvasToGrid(this.topLeft);
     this.gridBR = this.canvasToGrid(this.bottomRight);
@@ -163,7 +162,8 @@ export default class Glinda {
   }
 
   render(dt) {
-    //this.positionCamera();
+    this.updateCameraTransform();
+
     this.time += dt;
     const canvas = this.context.canvas;
 
@@ -173,7 +173,7 @@ export default class Glinda {
 
     this.world.draw_world();
 
-    if (this.debug) {
+    if (this.camera.debug) {
       this.camera.debug_draw();
     }
 
@@ -270,7 +270,7 @@ export default class Glinda {
     const centerY = canvas.height / 2;
     let x = centerX - this.cameraX.center[0] * scale;
     let y = centerY - this.cameraX.center[1] * scale;
-    this.context.setTransform(scale, 0, 0, scale, x, y);
+    //this.context.setTransform(scale, 0, 0, scale, x, y);
 
     let scale2 = scale * 1;
     this.topLeft = [this.cameraX.center[0] - centerX / scale2, this.cameraX.center[1] - centerY / scale2];

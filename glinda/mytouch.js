@@ -16,10 +16,10 @@ export default class Mytouch {
   }
 
   initEventListeners() {
-    // this.canvas.addEventListener('mousedown', this.onMouseDown.bind(this));
-    // this.canvas.addEventListener('mouseup', this.onMouseUp.bind(this));
-    // this.canvas.addEventListener('mouseleave', this.onMouseLeave.bind(this));
-    // this.canvas.addEventListener('mousemove', this.onMouseMove.bind(this));
+    this.canvas.addEventListener('mousedown', this.onMouseDown.bind(this));
+    this.canvas.addEventListener('mouseup', this.onMouseUp.bind(this));
+    this.canvas.addEventListener('mouseleave', this.onMouseLeave.bind(this));
+    this.canvas.addEventListener('mousemove', this.onMouseMove.bind(this));
 
     this.canvas.addEventListener('touchstart', this.onTouch.bind(this));
     this.canvas.addEventListener('touchmove', this.onTouch.bind(this));
@@ -33,9 +33,6 @@ export default class Mytouch {
   onTouch(event) {
     event.preventDefault();
 
-    console.log(`Touch event type: ${event.type}`);
-    console.log(event);
-
     let touches = [];
 
     for (let i = 0; i < event.touches.length; i++) {
@@ -43,7 +40,6 @@ export default class Mytouch {
       if (!this.fingerStarts.has(touch.identifier)) {
         this.fingerStarts.set(touch.identifier, [touch.clientX, touch.clientY]);
       }
-      console.log(`Touch ${i}: identifier=${touch.identifier}, clientX=${touch.clientX}, clientY=${touch.clientY}`);
       let p = [touch.clientX, touch.clientY];
       let start = this.fingerStarts.get(touch.identifier);
       touches.push({
@@ -52,16 +48,26 @@ export default class Mytouch {
       });
     }
 
+    if (event.type === 'touchstart' || event.type === 'touchend') {
+      if (this.touches.length) {
+        this.onChanged(this.touches, 'end');
+      }
+    }
+
     if (event.type === 'touchend') {
       for (let i = 0; i < event.changedTouches.length; i++) {
         const touch = event.changedTouches[i];
-        console.log(`Touch ended: identifier=${touch.identifier}, clientX=${touch.clientX}, clientY=${touch.clientY}`);
         this.fingerStarts.delete(touch.identifier);
       }
     }
 
     this.touches = touches;
-    this.onChanged(touches, 'foo');
+    if (event.type === 'touchstart') {
+      this.onChanged(touches, 'start');
+    }
+    if (event.type === 'touchmove') {
+      this.onChanged(touches, 'move');
+    }
   }
 
   onMouseDown(event) {

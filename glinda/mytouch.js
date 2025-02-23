@@ -10,6 +10,7 @@ export default class Mytouch {
     this.mousePosition = [0, 0];
     this.touches = [];
     this.onChangeCallback = null;
+    this.fingerStarts = new Map();
 
     this.initEventListeners();
   }
@@ -39,13 +40,26 @@ export default class Mytouch {
 
     for (let i = 0; i < event.touches.length; i++) {
       const touch = event.touches[i];
+      if (!this.fingerStarts.has(touch.identifier)) {
+        this.fingerStarts.set(touch.identifier, [touch.clientX, touch.clientY]);
+      }
       console.log(`Touch ${i}: identifier=${touch.identifier}, clientX=${touch.clientX}, clientY=${touch.clientY}`);
       let p = [touch.clientX, touch.clientY];
+      let start = this.fingerStarts.get(touch.identifier);
       touches.push({
-        start: p,
+        start: start ? start : p,
         end: p
       });
     }
+
+    if (event.type === 'touchend') {
+      for (let i = 0; i < event.changedTouches.length; i++) {
+        const touch = event.changedTouches[i];
+        console.log(`Touch ended: identifier=${touch.identifier}, clientX=${touch.clientX}, clientY=${touch.clientY}`);
+        this.fingerStarts.delete(touch.identifier);
+      }
+    }
+
     this.touches = touches;
     this.onChanged(touches, 'foo');
   }

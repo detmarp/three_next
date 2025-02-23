@@ -25,120 +25,6 @@ export default class Glinda {
     this.world = new World(this);
 
     this.positionCamera();
-
-    // Bind event handlers
-    //this.context.canvas.addEventListener('mousedown', this.handleMouse.bind(this), { passive: false });
-    //this.context.canvas.addEventListener('mousemove', this.handleMouse.bind(this), { passive: false });
-    //this.context.canvas.addEventListener('mouseup', this.handleMouse.bind(this), { passive: false });
-
-    this.context.canvas.addEventListener('touchstart', this.handleTouch.bind(this), { passive: false });
-    this.context.canvas.addEventListener('touchmove', this.handleTouch.bind(this), { passive: false });
-    this.context.canvas.addEventListener('touchend', this.handleTouch.bind(this), { passive: false });
-    this.context.canvas.addEventListener('touchcancel', this.handleTouch.bind(this), { passive: false });
-  }
-
-  handleTouch(event) {
-    event.preventDefault();
-  }
-
-  handleMouse(event) {
-    event.preventDefault();
-    switch (event.type) {
-      case 'mousedown':
-        this.onMouseDown(event);
-        break;
-      case 'mousemove':
-        this.onMouseMove(event);
-        break;
-      case 'mouseup':
-        this.onMouseUp(event);
-        break;
-    }
-  }
-
-  onMouseDown(event) {
-    if (event.button === 0) {
-      // Handle left button (one-finger) mouse down
-      this.startOneFingerTouch(event);
-    } else if (event.button === 1) {
-      // Handle middle button (two-finger) mouse down
-      this.startTwoFingerTouch([event, this.createVirtualFinger(event)]);
-    }
-  }
-
-  onMouseMove(event) {
-    if (event.buttons === 1) {
-      // Handle left button (one-finger) mouse move
-      this.moveOneFingerTouch(event);
-    } else if (event.buttons === 4) {
-      // Handle middle button (two-finger) mouse move
-      this.moveTwoFingerTouch([event, this.createVirtualFinger(event)]);
-    }
-  }
-
-  onMouseUp(event) {
-    // Handle mouse up
-		event.preventDefault();
-    this.endTouch();
-  }
-
-  createVirtualFinger(event) {
-    const canvas = this.context.canvas;
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
-    return {
-      clientX: 2 * centerX - event.clientX,
-      clientY: 2 * centerY - event.clientY
-    };
-  }
-
-  startOneFingerTouch(touch) {
-    this.initialTouch = { x: touch.clientX, y: touch.clientY };
-    this.initialCameraCenter = [...this.cameraX.center];
-  }
-
-  moveOneFingerTouch(touch) {
-    const dx = touch.clientX - this.initialTouch.x;
-    const dy = touch.clientY - this.initialTouch.y;
-    this.cameraX.center = [
-      this.initialCameraCenter[0] - dx / this.cameraX.scale,
-      this.initialCameraCenter[1] - dy / this.cameraX.scale
-    ];
-    this.updateCameraTransform();
-  }
-
-  startTwoFingerTouch(touches) {
-    this.initialTouches = [
-      { x: touches[0].clientX, y: touches[0].clientY },
-      { x: touches[1].clientX, y: touches[1].clientY }
-    ];
-    this.initialDistance = this.getDistance(this.initialTouches[0], this.initialTouches[1]);
-    this.initialCameraScale = this.cameraX.scale;
-  }
-
-  moveTwoFingerTouch(touches) {
-    const newTouches = [
-      { x: touches[0].clientX, y: touches[0].clientY },
-      { x: touches[1].clientX, y: touches[1].clientY }
-    ];
-    const newDistance = this.getDistance(newTouches[0], newTouches[1]);
-    const scaleChange = newDistance / this.initialDistance;
-    this.cameraX.scale = this.initialCameraScale * scaleChange;
-    this.updateCameraTransform();
-  }
-
-  endTouch() {
-    this.initialTouch = null;
-    this.initialCameraCenter = null;
-    this.initialTouches = null;
-    this.initialDistance = null;
-    this.initialCameraScale = null;
-  }
-
-  getDistance(touch1, touch2) {
-    const dx = touch2.x - touch1.x;
-    const dy = touch2.y - touch1.y;
-    return Math.sqrt(dx * dx + dy * dy);
   }
 
   updateCameraTransform() {
@@ -192,8 +78,6 @@ export default class Glinda {
       this.world.remove(key);
     }
     this.world.sort();
-
-    //this._debugShowMarkers();
   }
 
   _loadStuff() {
@@ -217,43 +101,6 @@ export default class Glinda {
         console.error('Error loading JSON:', error);
       });
     };
-  }
-
-  _debugShowMarkers() {
-    console.log('World map size:', this.world.map.size);
-    console.log('Top Left:', this.topLeft, 'Bottom Right:', this.bottomRight);
-
-    this.context.beginPath();
-    this.context.arc(this.topLeft[0], this.topLeft[1], 100, 0, 2 * Math.PI, false);
-    this.context.fillStyle = 'red';
-    this.context.fill();
-
-    this.context.beginPath();
-    this.context.arc(this.bottomRight[0], this.bottomRight[1], 100, 0, 2 * Math.PI, false);
-    this.context.fillStyle = 'lime';
-    this.context.fill();
-
-    this.context.beginPath();
-    this.context.arc(this.cameraX.center[0], this.cameraX.center[1], 50, 0, 2 * Math.PI, false);
-    this.context.fillStyle = 'white';
-    this.context.fill();
-
-    let g2 = this.canvasToGrid(this.topLeft);
-    let c2 = this.gridToCanvas(g2);
-    let m2 = this.gridToMap(g2);
-    let g3 = this.mapToGrid(m2);
-    let c3 = this.gridToCanvas(g3);
-
-    this.context.lineWidth = 10;
-    this.context.beginPath();
-    this.context.arc(c2[0], c2[1], 50, 0, 2 * Math.PI, false);
-    this.context.strokeStyle = 'yellow';
-    this.context.stroke();
-
-    this.context.beginPath();
-    this.context.arc(c3[0], c3[1], 60, 0, 2 * Math.PI, false);
-    this.context.strokeStyle = 'orange';
-    this.context.stroke();
   }
 
   positionCamera() {
@@ -328,17 +175,6 @@ export default class Glinda {
       var w = 256;
       var h = 256;
       this.context.drawImage(this.tiles, srcX, srcY, w, h, destX, destY, w, h);
-
-      if (false) {
-        this.context.beginPath();
-        // draw diamond, from left, to top, to right, to bottom, and back
-        this.context.moveTo(0, this.halfH);
-        this.context.lineTo(this.halfW, 0);
-        this.context.lineTo(this.width, this.halfH);
-        this.context.lineTo(this.halfW, this.height);
-        this.context.closePath();
-        this.context.fill();
-      }
     });
 
     this.tree.draw(this.context, [c[0] -0, c[1] -0]);

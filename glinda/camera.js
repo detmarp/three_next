@@ -60,9 +60,19 @@ export default class Camera {
   onChanged(touches, type) {
     console.log(`Hey type: ${type}, touches: ${JSON.stringify(touches)}`);
     if (type == 'start') {
+      if (touches.length == 1) {
+        this.startDrag = this.center;
+      }
       if (touches.length == 3) {
         this.debug = !this.debug;
       }
+    }
+
+    if (type == 'move' && touches.length == 1 && this.startDrag) {
+      let touch = touches[0];
+      let x = this.startDrag[0] + (touch.start[0] - touch.end[0]) / this.scale;
+      let y = this.startDrag[1] + (touch.start[1] - touch.end[1]) / this.scale;
+      this.center = [x, y];
     }
   }
 }

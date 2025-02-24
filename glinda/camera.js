@@ -57,7 +57,6 @@ export default class Camera {
   }
 
   onChanged(touches, type) {
-    console.log(`Hey type: ${type}, touches: ${JSON.stringify(touches)}`);
     if (type == 'start') {
       if (touches.length == 1) {
         this.startDrag = this.center;
@@ -84,7 +83,7 @@ export default class Camera {
         let endDistance = Math.hypot(touch1.end[0] - touch2.end[0], touch1.end[1] - touch2.end[1]);
         if (startDistance > 0) {
           let scale = this.startScale * endDistance / startDistance;
-          scale = Math.max(0.5, Math.min(scale, 15));
+          scale = Math.max(0.3, Math.min(scale, 10));
           this.scale = scale;
         }
       }

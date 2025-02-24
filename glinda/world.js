@@ -1,4 +1,5 @@
 import Sprite from './sprite.js';
+import Chooser from './chooser.js';
 
 export default class World {
   constructor(glinda) {
@@ -6,6 +7,7 @@ export default class World {
     this.map = new Map();
     this.sorted = [];
     this.dirty = true;
+    this.chooser = new Chooser(this.glinda);
   }
 
   add(x, y) {
@@ -107,6 +109,8 @@ export default class World {
   }
 
   _newTile(x, y) {
+    return this.chooser.choose(x, y);
+
     const rand = (n) => Math.floor(Math.random() * n);
     var tile = {}
     tile.x = x;

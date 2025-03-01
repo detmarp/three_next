@@ -15,7 +15,7 @@ export default class Program {
     this.glinda = new Glinda(this.context);
 
     window.addEventListener('resize', () => this.onResize());
-    this.addTouchListeners();
+    //this.addTouchListeners();
 
     this.onResize();
     this.doFrame();

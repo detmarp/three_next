@@ -4,7 +4,7 @@
 export default class Mytouch {
   constructor(canvas) {
     this.canvas = canvas;
-    this.count = 0;
+    this.mouseButtonCount = 0;
     this.buttonMask = 0;
     this.mouseStart = [0, 0];
     this.mousePosition = [0, 0];
@@ -79,7 +79,7 @@ export default class Mytouch {
     let mask = 1 << event.button;
     if (!(this.buttonMask & mask)) {
       this.buttonMask |= mask;
-      this.mouseChange(this.count + 1, event);
+      this.mouseChange(this.mouseButtonCount + 1, event);
     }
   }
 
@@ -88,7 +88,7 @@ export default class Mytouch {
     let mask = 1 << event.button;
     if (this.buttonMask & mask) {
       this.buttonMask &= ~mask;
-      this.mouseChange(this.count - 1, event);
+      this.mouseChange(this.mouseButtonCount - 1, event);
     }
   }
 
@@ -121,7 +121,7 @@ export default class Mytouch {
   mouseChange(count, event) {
     // We are using the mouse to simulate touch events.
 
-    if (count !== this.count) {
+    if (count !== this.mouseButtonCount) {
       // if the count changes, then send an end event
       this.onChanged(this.touches, 'end');
       this.touches = [];
@@ -134,11 +134,11 @@ export default class Mytouch {
     if (event) {
       const rect = this.canvas.getBoundingClientRect();
       let position = this._mousePosition(event);
-      if (count > 0 && this.count === 0) {
+      if (count > 0 && this.mouseButtonCount === 0) {
         this.mouseStart = position;
       }
     }
-    this.count = count;
+    this.mouseButtonCount = count;
 
     if (count && event) {
       this.mousePosition = this._mousePosition(event);

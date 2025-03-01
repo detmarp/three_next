@@ -23,22 +23,26 @@ export default class Camera {
   }
 
   update(dt) {
-    if (this.mytouch.count) {
+    let touchCount = this.mytouch.touches.length;
+    if (touchCount) {
+      console.log('aaa');
       this.dragged = [0,0];
       this.inertia = [0,0];
     }
     else {
+      console.log('bbb');
       if (this.lastcount) {
+      console.log('ccc');
         console.log('First release');
         this.inertia = this.dragged;
       }
     }
-    this.lastcount = this.mytouch.count;
+    this.lastcount = touchCount;
 
     this.dt = dt;
-    console.log('Center:', this.center);
-    console.log('Inertia:', this.inertia);
-    console.log('dt:', this.dt);
+    //console.log(`${this.center}  ${this.inertia}  ${this.dt} ${this.dragged}`);
+    //console.log('Inertia:', this.inertia);
+    //console.log('dt:', this.dt);
     this.center[0] += this.inertia[0] * this.dt;
     this.center[1] += this.inertia[1] * this.dt;
 
@@ -62,15 +66,12 @@ export default class Camera {
       this._dot(index, touch.start[0], touch.start[1]);
       this._dot(index, touch.end[0], touch.end[1]);
     });
-    if (this.mytouch.count > 0) {
-      //this._dot(this.mytouch.count - 1, this.mytouch.mousePosition[0], this.mytouch.mousePosition[1]);
-    }
 
     this.context.setTransform(prevTransform);
   }
 
   _dot(color, x, y) {
-    const colors = ['cyan', 'red', 'orange', 'yellow', 'lime', 'blue'];
+    const colors = ['orange', 'yellow', 'lime', 'cyan', 'blue'];
     this.context.strokeStyle = colors[Math.min(color, colors.length - 1)];
     const size = 0.05 * Math.max(this.context.canvas.width, this.context.canvas.height);
     this.context.setTransform(1, 0, 0, 1, 0, 0);

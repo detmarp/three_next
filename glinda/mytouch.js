@@ -112,7 +112,7 @@ export default class Mytouch {
 
 
   onChanged(touches, type) {
-    console.log(`${type}  ${JSON.stringify(touches)}`);
+    //console.log(`${type}  ${JSON.stringify(touches)}`);
     if (this.onChangeCallback) {
       this.onChangeCallback(touches, type);
     }

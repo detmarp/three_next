@@ -9,11 +9,12 @@ export default class Camera {
     this.center = [canvas.width / 2, canvas.height / 2];
     this.scale = 0.5;
     this.dragged = [0,0];
+    this.inertia = [0,0];
     this.dt = 1 / 60;
 
     this.debug = true;
 
-    this.update();
+    this.update(this.dt);
   }
 
   initEventListeners() {
@@ -22,7 +23,24 @@ export default class Camera {
   }
 
   update(dt) {
+    if (this.mytouch.count) {
+      this.dragged = [0,0];
+      this.inertia = [0,0];
+    }
+    else {
+      if (this.lastcount) {
+        console.log('First release');
+        this.inertia = this.dragged;
+      }
+    }
+    this.lastcount = this.mytouch.count;
+
     this.dt = dt;
+    console.log('Center:', this.center);
+    console.log('Inertia:', this.inertia);
+    console.log('dt:', this.dt);
+    this.center[0] += this.inertia[0] * this.dt;
+    this.center[1] += this.inertia[1] * this.dt;
 
     const canvas = this.context.canvas;
     const centerX = canvas.width / 2;

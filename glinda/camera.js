@@ -70,7 +70,7 @@ export default class Camera {
   }
 
   _dot(color, x, y) {
-    const colors = ['red', 'orange', 'yellow', 'lime', 'blue'];
+    const colors = ['cyan', 'red', 'orange', 'yellow', 'lime', 'blue'];
     this.context.strokeStyle = colors[Math.min(color, colors.length - 1)];
     const size = 0.05 * Math.max(this.context.canvas.width, this.context.canvas.height);
     this.context.setTransform(1, 0, 0, 1, 0, 0);

@@ -54,6 +54,10 @@ export default class Mytouch {
       }
     }
 
+    if (event.type === 'touchend' && event.touches.length === 0) {
+      this.onChanged([], 'none');
+    }
+
     if (event.type === 'touchend') {
       for (let i = 0; i < event.changedTouches.length; i++) {
         const touch = event.changedTouches[i];
@@ -108,6 +112,7 @@ export default class Mytouch {
 
 
   onChanged(touches, type) {
+    console.log(`${type}  ${JSON.stringify(touches)}`);
     if (this.onChangeCallback) {
       this.onChangeCallback(touches, type);
     }
@@ -120,6 +125,10 @@ export default class Mytouch {
       // if the count changes, then send an end event
       this.onChanged(this.touches, 'end');
       this.touches = [];
+    }
+
+    if (count === 0) {
+      this.onChanged([], 'none');
     }
 
     if (event) {

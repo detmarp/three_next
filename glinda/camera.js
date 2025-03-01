@@ -8,6 +8,8 @@ export default class Camera {
     const canvas = this.context.canvas;
     this.center = [canvas.width / 2, canvas.height / 2];
     this.scale = 0.5;
+    this.dragged = [0,0];
+    this.dt = 1 / 60;
 
     this.debug = true;
 
@@ -19,7 +21,9 @@ export default class Camera {
     this.mytouch.onChangeCallback = this.onChanged.bind(this);
   }
 
-  update() {
+  update(dt) {
+    this.dt = dt;
+
     const canvas = this.context.canvas;
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
@@ -27,6 +31,10 @@ export default class Camera {
     let x = centerX - this.center[0] * scale;
     let y = centerY - this.center[1] * scale;
     this.context.setTransform(scale, 0, 0, scale, x, y);
+
+    if (this.debug) {
+      //console.log('Inertia:', this.inertia);
+    }
   }
 
   debug_draw() {
@@ -74,6 +82,8 @@ export default class Camera {
         let touch = touches[0];
         let x = this.startDrag[0] + (touch.start[0] - touch.end[0]) / this.scale;
         let y = this.startDrag[1] + (touch.start[1] - touch.end[1]) / this.scale;
+        let delta = [x - this.center[0], y - this.center[1]];
+        this.dragged = [delta[0] / this.dt, delta[1] / this.dt];
         this.center = [x, y];
       }
       if (touches.length == 2 && this.startScale) {

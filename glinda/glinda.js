@@ -19,6 +19,7 @@ export default class Glinda {
       scale: 1.0
     };
     this.time = 0;
+    this.dt = 1/60;
 
     this.loaded = false;
     this._loadStuff();
@@ -28,7 +29,7 @@ export default class Glinda {
   }
 
   updateCameraTransform() {
-    this.camera.update();
+    this.camera.update(this.dt);
 
     const canvas = this.context.canvas;
     const centerX = canvas.width / 2;
@@ -48,6 +49,7 @@ export default class Glinda {
   }
 
   render(dt) {
+    this.dt = dt;
     this.updateCameraTransform();
 
     this.time += dt;

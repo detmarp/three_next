@@ -54,20 +54,26 @@ export default class Program {
   doFrame() {
     const currentTime = performance.now();
     let dt = 0;
-    if (this.lastFrameTime !== null) {
+    if (this.lastFrameTime === null) {
+      dt = 1 / 60;
+    } else {
       dt = (currentTime - this.lastFrameTime) / 1000;
     }
-    this.lastFrameTime = currentTime;
-    this.time += dt;
 
-    const saveTransform = this.context.getTransform();
-    this.context.setTransform(1, 0, 0, 1, 0, 0);
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.context.fillStyle = '#225511';
-    this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    this.context.setTransform(saveTransform);
+    if (dt > 0.008) {
+      dt = Math.min(dt, 0.1);
+      this.lastFrameTime = currentTime;
+      this.time += dt;
 
-    this.glinda.render(dt);
+      const saveTransform = this.context.getTransform();
+      this.context.setTransform(1, 0, 0, 1, 0, 0);
+      this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.context.fillStyle = '#225511';
+      this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      this.context.setTransform(saveTransform);
+
+      this.glinda.render(dt);
+    }
 
     requestAnimationFrame(() => this.doFrame());
   }

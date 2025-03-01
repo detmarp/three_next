@@ -22,7 +22,7 @@ export default class Chooser {
       weights[i] = weights[i] * 20 + 1;
     }
     let choice = this._pickWeighted(weights);
-    console.log(`${weights}  ${choice}`);
+    //console.log(`${weights}  ${choice}`);
 
     var tile = {}
     tile.x = x;

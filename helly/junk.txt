@@ -1,0 +1,1 @@
+Now, a defineType func (type, extentions, callback) - where type is a string (like "image" or "json" ), extensions is array of extension strings. callback is a callback for when the

@@ -50,8 +50,6 @@ export default class World {
   draw_world() {
     this.sort();
 
-  //});
-
     this._draw_ground(0);
     this._draw_ground(1);
     this._draw_ground(2, 0.3);
@@ -110,45 +108,5 @@ export default class World {
 
   _newTile(x, y) {
     return this.chooser.choose(x, y);
-
-    const rand = (n) => Math.floor(Math.random() * n);
-    var tile = {}
-    tile.x = x;
-    tile.y = y;
-    tile.map = [x, y];
-    tile.color = this._randomColor();
-    if (rand(4) === 0) {
-      tile.source = rand(2);
-    }
-    else {
-      tile.source = rand(2) + 2;
-    }
-    tile.layer = [];
-    tile.layer[0] = {
-      source: rand(2),
-    };
-    if (rand(4) > 0) {
-      tile.layer[1] = {
-        source: rand(3) + 2
-      };
-    }
-    if (rand(4) === 0) {
-      let x = 512 * rand(3);
-      tile.layer[2] = {
-        sprite: new Sprite(this.glinda.tiles, [x + 256, 256], [256, 256], [128, 128]),
-      };
-      tile.layer[3] = {
-        sprite: new Sprite(this.glinda.tiles, [x, 256], [256, 256], [128, 128]),
-      };
-    }
-    return tile;
-  }
-
-  _randomColor() {
-    const rand = (n) => Math.floor(Math.random() * n);
-    const hex = () => rand(256).toString(16).padStart(2, '0');
-    const insert = (a, b, n) => a.slice(0, n) + b + a.slice(n);
-    const rgb = insert(rand(2) ? '#ff00' : '#00ff', hex(), rand(3) * 2 + 1);
-    return rgb;
   }
 }

@@ -10,6 +10,8 @@ export default class Program {
 
   run() {
     this.setCanvas();
+    this.loadAssets();
+
     this.onResize();
 
     window.addEventListener('resize', () => this.onResize());
@@ -28,11 +30,11 @@ export default class Program {
     this.container.appendChild(this.canvas);
     this.context = this.canvas.getContext('2d');
     this.color = 'midnightblue';
+  }
 
+  loadAssets() {
     this.helly = new Helly(this.context);
-    this.helly.addEventListener('loadingdone', () => this.onLoadingDone());
-    this.helly.loadImage('data/tile00.png');
-    this.helly.loadJson('data/tile00.json');
+    this.helly.load('data/contents.json');
   }
 
   onResize() {

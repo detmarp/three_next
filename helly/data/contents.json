@@ -1,0 +1,14 @@
+{
+  "helly": {
+    "files": [
+      {
+        "type": "image",
+        "name": "tile00.png"
+      },
+      {
+        "type": "json",
+        "name": "tile00.json"
+      }
+    ]
+  }
+}

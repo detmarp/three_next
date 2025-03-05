@@ -1,3 +1,5 @@
+import HellyLoad from './hellyload.js';
+
 export default class Helly extends EventTarget {
   constructor(context) {
     super();
@@ -11,6 +13,30 @@ export default class Helly extends EventTarget {
     this.loading = 0;
     this.time = 0;
     this.dt = 0;
+
+    this.hellyLoad = new HellyLoad();
+    this.hellyLoad.onAllLoaded = () => {
+      console.log('All loaded');
+      this.dispatchEvent(new Event('loadingdone'));
+    }
+    this.hellyLoad.onError = (filename, error) => {
+      console.error(`ERROR: loading ${filename} - ${error}`);
+    }
+    this.hellyLoad.defineType('image', ['png', 'jpg', 'jpeg', 'gif'], (image, type, key) => {
+      console.log(`pretending to handle ccc ${image.type} ${type} ${key}`);
+      this.images.set(key, image);
+    });
+    this.hellyLoad.defineType('json', ['json'], (ob, type, baseFileName, fileName) => {
+      console.log(`pretending to handle bbb ${ob.type} ${type} ${baseFileName} ${fileName}`);
+      this.parentPath = fileName.substring(0, fileName.lastIndexOf('/'));
+      console.log(`ddd Parent path: ${this.parentPath}`);
+      this._onLoadJson(ob);
+    });
+  }
+
+  load(filename, type) {
+    console.log(`aaa ${filename} ${type}`);
+    this.hellyLoad.load(filename, type);
   }
 
   loadImage(filename) {
@@ -41,7 +67,7 @@ export default class Helly extends EventTarget {
         this.jsons.set(key, json);
         this.loadCount++;
         if (json && typeof json === 'object' && json.helly) {
-          this.parseHelly(json.helly);
+          this._parseHelly(json.helly);
         }
         this._onLoadingDone();
         return json;
@@ -50,6 +76,12 @@ export default class Helly extends EventTarget {
         this._onLoadingDone();
         throw error;
       });
+  }
+
+  _onLoadJson(ob) {
+    if (ob.helly) {
+      this._parseHelly(ob.helly);
+    }
   }
 
   _onLoadingDone() {
@@ -128,9 +160,17 @@ export default class Helly extends EventTarget {
     }
   }
 
-  parseHelly(hellyDef) {
-    let imageName = hellyDef.imageName;
+  _parseHelly(hellyDef) {
+    if (hellyDef.files) {
+      for (const file of hellyDef.files) {
+        if (file.name) {
+          let filename = this.parentPath + '/' + file.name;
+          this.load(filename, file.type);
+        }
+      }
+    }
     if (hellyDef.sprites) {
+      let imageName = hellyDef.imageName;
       for (const [key, value] of Object.entries(hellyDef.sprites)) {
         value.imageName = value.imageName || imageName;
         this.sprites.set(key, value);

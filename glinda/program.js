@@ -15,7 +15,6 @@ export default class Program {
     this.glinda = new Glinda(this.context);
 
     window.addEventListener('resize', () => this.onResize());
-    //this.addTouchListeners();
 
     this.onResize();
     this.doFrame();
@@ -39,16 +38,6 @@ export default class Program {
   onResize() {
     this.canvas.width = window.innerWidth - 20;
     this.canvas.height = window.innerHeight - 20;
-  }
-
-  addTouchListeners() {
-    this.canvas.addEventListener('touchstart', (event) => this.handleTouch(event));
-    this.canvas.addEventListener('touchmove', (event) => this.handleTouch(event));
-    this.canvas.addEventListener('touchend', (event) => this.handleTouch(event));
-  }
-
-  handleTouch(event) {
-    this.glinda.handleTouch(event);
   }
 
   doFrame() {

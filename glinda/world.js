@@ -26,7 +26,7 @@ export default class World {
   }
 
   sort() {
-      if (this.dirty) {
+    if (this.dirty) {
       this.sorted = Array.from(this.map.keys()).sort((a, b) => {
         var aa = this.map.get(a);
         var bb = this.map.get(b);
@@ -69,8 +69,12 @@ export default class World {
           var destY = c[1] - this.glinda.halfH + -128+96 - 48;
           var w = 256;
           var h = 256;
-          this.glinda.context.drawImage(this.glinda.tiles, srcX, srcY, w, h, destX, destY, w, h);
+          //this.glinda.context.drawImage(this.glinda.tiles, srcX, srcY, w, h, destX, destY, w, h);
         }
+        if (layer) {
+          this.glinda.helly.draw(layer.foobar, c);
+        }
+
         if (layer && layer.sprite) {
           if (alpha < 1.0) {
             this.glinda.context.globalAlpha = alpha;
@@ -98,6 +102,9 @@ export default class World {
         }
         if (layer && layer.sprite) {
           layer.sprite.draw(this.glinda.context, [c[0] -0, c[1] -0]);
+        }
+        if (layer) {
+          this.glinda.helly.draw(layer.foobar, c);
         }
     });
   }

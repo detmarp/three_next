@@ -1,0 +1,120 @@
+{
+  "helly": {
+    "imageName": "tile00",
+    "anims": {
+      "riverstr": {
+        "type": "flipbook",
+        "frames": ["rivers0", "rivers1", "rivers2" ],
+        "fps": 3,
+        "crossfade": true
+      },
+      "riverstr2": {
+        "type": "flipbook",
+        "frames": ["rivers0", "rivers1", "rivers2" ],
+        "fps": 3,
+        "crossfade": false
+      }
+    },
+    "sprites": {
+      "dirt0": {
+        "source": [0, 0],
+        "size": [256, 256],
+        "offset": [128, 128]
+      },
+      "dirt1": {
+        "source": [256, 0],
+        "size": [256, 256],
+        "offset": [128, 128]
+      },
+      "grass0": {
+        "source": [512, 0],
+        "size": [256, 256],
+        "offset": [128, 128]
+      },
+      "grass1": {
+        "source": [768, 0],
+        "size": [256, 256],
+        "offset": [128, 128]
+      },
+      "grass2": {
+        "source": [1024, 0],
+        "size": [256, 256],
+        "offset": [128, 128]
+      },
+      "treea": {
+        "source": [0, 256],
+        "size": [256, 256],
+        "offset": [128, 128]
+      },
+      "treeashadow": {
+        "source": [256, 256],
+        "size": [256, 256],
+        "offset": [128, 128],
+        "alpha": 0.4
+      },
+      "beasta": {
+        "source": [512, 256],
+        "size": [256, 256],
+        "offset": [128, 128]
+      },
+      "beastashadow": {
+        "source": [768, 256],
+        "size": [256, 256],
+        "offset": [128, 128],
+        "alpha": 0.4
+      },
+      "treeb": {
+        "source": [1024, 256],
+        "size": [256, 256],
+        "offset": [128, 128]
+      },
+      "treebshadow": {
+        "source": [1280, 256],
+        "size": [256, 256],
+        "offset": [128, 128],
+        "alpha": 0.4
+      },
+      "rivers0": {
+        "source": [0, 512],
+        "size": [256, 256],
+        "offset": [128, 128]
+      },
+      "rivers1": {
+        "source": [256, 512],
+        "size": [256, 256],
+        "offset": [128, 128]
+      },
+      "rivers2": {
+        "source": [512, 512],
+        "size": [256, 256],
+        "offset": [128, 128]
+      },
+      "beastb0": {
+        "source": [0, 768],
+        "size": [256, 256],
+        "offset": [128, 128]
+      },
+      "beastb1": {
+        "source": [256, 768],
+        "size": [256, 256],
+        "offset": [128, 128]
+      },
+      "beastb2": {
+        "source": [512, 768],
+        "size": [256, 256],
+        "offset": [128, 128]
+      },
+      "beastb3": {
+        "source": [768, 768],
+        "size": [256, 256],
+        "offset": [128, 128]
+      },
+      "beastbshadow": {
+        "source": [1024, 768],
+        "size": [256, 256],
+        "offset": [128, 128],
+        "alpha": 0.4
+      }
+    }
+  }
+}

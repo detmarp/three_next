@@ -33,32 +33,52 @@ export default class Chooser {
     if (choice === this.types.dirt) {
       tile.layer[0] = {
         source: this._rand(2),
+        foobar: this._fromList(['dirt0', 'dirt1']),
       };
       tile.type = this.types.dirt;
     }
     else if (choice === this.types.grass) {
       tile.layer = [
-        { source: this._rand(2) },
-        { source: this._rand(3) + 2 },
+        {
+          source: this._rand(2) ,
+        foobar: this._fromList(['dirt0', 'dirt1']),
+      },
+        {
+          source: this._rand(3) + 2 ,
+        foobar: this._fromList(['grass0', 'grass1', 'grass2']),
+      },
         ];
       tile.type = this.types.grass;
     }
     else {
       tile.layer = [
-        { source: this._rand(2) },
-        { source: this._rand(3) + 2 },
+        {
+          source: this._rand(2) ,
+        foobar: this._fromList(['dirt0', 'dirt1']),
+      },
+        {
+          source: this._rand(3) + 2 ,
+        foobar: this._fromList(['grass0', 'grass1', 'grass2']),
+      },
         ];
-      let x = 1024 * this._rand(2);
+      let xx = this._rand(2);
+      let x = 1024 * xx;
       tile.layer[2] = {
-        sprite: new Sprite(this.glinda.tiles, [x + 256, 256], [256, 256], [128, 128]),
+        //sprite: new Sprite(this.glinda.tiles, [x + 256, 256], [256, 256], [128, 128]),
+        foobar: ['treeashadow', 'treebshadow'][xx],
       };
       tile.layer[3] = {
-        sprite: new Sprite(this.glinda.tiles, [x, 256], [256, 256], [128, 128]),
+        //sprite: new Sprite(this.glinda.tiles, [x, 256], [256, 256], [128, 128]),
+        foobar: ['treea', 'treeb'][xx],
       };
       tile.type = this.types.tree;
     }
 
     return tile;
+  }
+
+  _fromList(list) {
+    return list[Math.floor(Math.random() * list.length)];
   }
 
   _pickWeighted(weights) {

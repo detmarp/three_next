@@ -1,6 +1,7 @@
 import World from './world.js';
 import Sprite from './sprite.js';
 import Camera from './camera.js';
+import Helly from './helly.js';
 
 export default class Glinda {
   constructor(context) {
@@ -83,6 +84,9 @@ export default class Glinda {
   }
 
   _loadStuff() {
+    this.helly = new Helly(this.context);
+    this.helly.load('data/contents.json');
+
     // Load the image
     this.tiles = new Image();
     this.tiles.src = 'glinda_tile_00.png';

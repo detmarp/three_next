@@ -12,8 +12,13 @@ export default class Iris {
     overlayDiv.style.height = '100%';
     canvas.parentNode.appendChild(overlayDiv);
 
-    this._addText('Hello, world!', 0, 0, 200, 200);
-    this._addText('bottom<br>right', 350, 700, 100, 100);
+    this._addText('score', 10, 10, 300, 200);
+    this._addText('resources', 320, 10, 120, 200);
+    for (let i = 0; i < 7; i++) {
+      this._addText(`card ${i}`, i * 60 + 10, 220, 54, 72);
+    }
+    this._addText('info', 10, 300, 430, 50);
+    this._addText('town', 10, 360, 430, 430);
   }
 
   _addText(text, x, y, w, h) {
@@ -37,7 +42,7 @@ export default class Iris {
     textElement.style.overflowWrap = 'break-word';
     textElement.textContent = text;
 
-    this.textElements.push(textElement); // Add text element to the list
+    this.textElements.push(textElement);
     overlayDiv.appendChild(textElement);
   }
 

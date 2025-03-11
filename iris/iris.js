@@ -11,7 +11,6 @@ export default class Iris {
     xxxDiv.style.left = '0';
     xxxDiv.style.width = '100%';
     xxxDiv.style.height = '100%';
-    xxxDiv.style.border = '2px solid yellow';
     xxxDiv.id = 'one';
 
     canvas.parentNode.appendChild(xxxDiv);
@@ -19,8 +18,8 @@ export default class Iris {
     overlayDiv.style.position = 'absolute';
     overlayDiv.style.top = `0px`;
     overlayDiv.style.left = `0px`;
-    xxxDiv.style.width = '100%';
-    xxxDiv.style.height = '100%';
+    overlayDiv.style.width = '100%';
+    overlayDiv.style.height = '100%';
     canvas.parentNode.appendChild(overlayDiv);
     const textNode = document.createTextNode('Twas brillig, and the slithy toves'
     +'Did gyre and gimble in the wabe;'

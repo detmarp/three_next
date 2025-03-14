@@ -1,0 +1,25 @@
+{
+  "helly": {
+  "imageName": "towns",
+  "anims": {
+    "riverstr": {
+      "type": "flipbook",
+      "frames": ["rivers0", "rivers1", "rivers2" ],
+      "fps": 3,
+      "crossfade": true
+    },
+    "riverstr2": {
+      "type": "flipbook",
+      "frames": ["rivers0", "rivers1", "rivers2" ],
+      "fps": 3,
+      "crossfade": false
+    }
+  },
+  "sprites": {
+    "board": {
+      "source": [5, 5],
+      "size": [440, 330]
+      }
+    }
+  }
+}

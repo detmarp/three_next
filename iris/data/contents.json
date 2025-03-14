@@ -1,0 +1,14 @@
+{
+  "helly": {
+    "files": [
+      {
+        "type": "image",
+        "name": "towns.png"
+      },
+      {
+        "type": "json",
+        "name": "towns.json"
+      }
+    ]
+  }
+}

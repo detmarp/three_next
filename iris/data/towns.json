@@ -1,24 +1,48 @@
 {
   "helly": {
-  "imageName": "towns",
-  "anims": {
-    "riverstr": {
-      "type": "flipbook",
-      "frames": ["rivers0", "rivers1", "rivers2" ],
-      "fps": 3,
-      "crossfade": true
+    "imageName": "towns",
+    "anims": {
+      "riverstr": {
+        "type": "flipbook",
+        "frames": ["rivers0", "rivers1", "rivers2" ],
+        "fps": 3,
+        "crossfade": true
+      },
+      "riverstr2": {
+        "type": "flipbook",
+        "frames": ["rivers0", "rivers1", "rivers2" ],
+        "fps": 3,
+        "crossfade": false
+      }
     },
-    "riverstr2": {
-      "type": "flipbook",
-      "frames": ["rivers0", "rivers1", "rivers2" ],
-      "fps": 3,
-      "crossfade": false
-    }
-  },
-  "sprites": {
-    "board": {
-      "source": [5, 5],
-      "size": [440, 330]
+    "sprites": {
+      "board": {
+        "source": [5, 5],
+        "size": [440, 330]
+      },
+      "building00": {
+        "source": [512, 0],
+        "size": [128, 128],
+        "offset": [64, 64]
+      },
+      "building01": {
+        "source": [640, 0],
+        "size": [128, 128],
+        "offset": [64, 64]
+      },
+      "resource00": {
+        "source": [512, 256],
+        "size": [128, 128],
+        "offset": [64, 64]
+      },
+      "resource01": {
+        "source": [640, 256],
+        "size": [128, 128],
+        "offset": [64, 64]
+      },
+      "card00": {
+        "source": [0, 512],
+        "size": [128, 256]
       }
     }
   }

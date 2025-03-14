@@ -84,6 +84,12 @@ export default class Iris {
     }
 
     this.helly.draw('board', [5, 455]);
+    this.helly.draw('building00', [5 + 440 * 1/8, 455 + 330 * 1/8]);
+    this.helly.draw('building01', [5 + 440 * 3/8, 455 + 330 * 3/8]);
+    this.helly.draw('resource00', [5 + 440 * 5/8, 455 + 330 * 3/8]);
+    this.helly.draw('resource01', [5 + 440 * 3/8, 455 + 330 * 5/8]);
+    this.helly.draw('resource01', [5 + 440 * 5/8, 455 + 330 * 5/8]);
+    this.helly.draw('card00', [15, 15]);
 
     this.areas._debugDraw(this.context);
   }

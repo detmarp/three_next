@@ -17,9 +17,6 @@ export default class Iris {
     this.bottomDiv.style.pointerEvents = 'none';
     this.canvas.parentNode.appendChild(this.bottomDiv);
 
-    let color1 = '#dcdcdc';
-    let color2 = '#a9a9a9';
-    //overlayDiv.style.background = `linear-gradient(135deg, ${color1}, ${color2})`
 
     this.areas = new Areas(this);
 

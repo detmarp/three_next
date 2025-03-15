@@ -11,53 +11,106 @@ export default class GameMode {
         label: 'card',
       },
       tilearea: {
+        bounds: [9 - 4, 455 - 3, 108 * 4, 81 * 4],
       },
-      tiles: [
-        { bounds: [9, 455, 108, 81] },
-        { bounds: [9 + 108, 455, 108, 81] }
-      ]
+      tiles: [],
+      cards: [],
+      game: {
+        bounds: [5, 292, 218, 144],
+      },
+      score: {
+        bounds: [226, 292, 220, 144],
+      },
     };
 
+    // layout for 16 town tiles
+    {
+      const w = 108;
+      const h = 81;
+      const left = 9;
+      const top = 455;
+      for (let row = 0; row < 4; row++) {
+        for (let col = 0; col < 4; col++) {
+          const x = left + col * w;
+          const y = top + row * h;
+          this.layout.tiles.push({ bounds: [x, y, w, h] });
+        }
+      }
+    }
+
+    // layout for cards
+    {
+      const w = 66;
+      const h = 60;
+      const left = 9;
+      const top = 48;
+      let i = 0;
+      for (let row = 0; row < 4; row++) {
+        for (let col = 0; col < 2; col++) {
+          const x = left + col * w;
+          const y = top + row * h;
+          let card = {
+            bounds: [x, y, w, h],
+            id: i
+          };
+          this.layout.cards.push(card);
+          i++;
+        }
+      }
+    }
+
+    // areas for 16 tiles
     this.layout.tiles.forEach(tile => {
       this.iris.areas.add(tile.bounds);
     });
 
-    this.iris.addText(this.layout.card.label, this.layout.card.bounds);
+    // cards
+    this.layout.cards.forEach(card => {
+      card.text = this.iris.addText(`${card.id}`, card.bounds);
+      let onCLick = () => {
+        this._setCard(card.id);
+      };
+      this.iris.areas.add(card.bounds, onCLick);
+    });
+
+    // card area
+    this.layout.card.text = this.iris.addText(this.layout.card.label, this.layout.card.bounds);
     this.iris.areas.add(this.layout.card.bounds);
+
+    // other areas
+    this.iris.addText('game', this.layout.game.bounds);
+    this.iris.addText('score', this.layout.score.bounds);
+
+    this._setCard(0);
+  }
+
+  _setCard(i) {
+    this.layout.card.text.textContent = `card ${i}`;
+  }
+
+  _center(bounds) {
+    return [
+      bounds[0] + bounds[2] / 2,
+      bounds[1] + bounds[3] / 2,
+    ];
   }
 
   render(dt) {
-    /*
-    const radius = 100;
-    const x = 0;
-    const y = 0;
-
-    const cellSize = 50;
-    const cols = 8;
-    const rows = 15;
-
-    // for (let row = 0; row < rows; row++) {
-    //   for (let col = 0; col < cols; col++) {
-    //     const cellX = col * cellSize;
-    //     const cellY = row * cellSize;
-
-    //     this.context.strokeStyle = 'red';
-    //     this.context.lineWidth = 1;
-    //     this.context.strokeRect(cellX, cellY, cellSize, cellSize);
-    //   }
-    // }
-
-    this.helly.draw('board', [5, 455]);
-    this.helly.draw('building00', [5 + 440 * 1/8, 455 + 330 * 1/8]);
-    this.helly.draw('building01', [5 + 440 * 3/8, 455 + 330 * 3/8]);
-    this.helly.draw('resource00', [5 + 440 * 5/8, 455 + 330 * 3/8]);
-    this.helly.draw('resource01', [5 + 440 * 3/8, 455 + 330 * 5/8]);
-    this.helly.draw('resource01', [5 + 440 * 5/8, 455 + 330 * 5/8]);
-    */
     this.iris.helly.draw('card00', this.layout.card.bounds);
+
+    this.iris.helly.draw('board', this.layout.tilearea.bounds);
 
     if (this.iris.areas.start) {
       this.iris.helly.draw('building00', this.iris.areas.position);
     }
+
+    this.iris.helly.draw('building00', this._center(this.layout.tiles[0].bounds));
+    this.iris.helly.draw('building01', this._center(this.layout.tiles[5].bounds));
+    this.iris.helly.draw('resource00', this._center(this.layout.tiles[6].bounds));
+    this.iris.helly.draw('resource01', this._center(this.layout.tiles[10].bounds));
+
+    this.iris.helly.draw('resource00', [350, 100]);
+    this.iris.helly.draw('resource01', [390, 150]);
+    this.iris.helly.draw('resource00', [350, 200]);
   }
 }

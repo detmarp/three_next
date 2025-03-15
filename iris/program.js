@@ -12,7 +12,7 @@ export default class Program {
       gradientStart: '#0e2c42', // Dark Blue
       gradientEnd: '#4a5298', // Light Blue
       boundsBackground: '#d3d3e3', // Light Metallic Gray
-      canvasBackground: '#003366' // Dark Blue
+      canvasBackground: '#554433'
     };
   }
 

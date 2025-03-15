@@ -35,6 +35,9 @@ export default class Areas {
 
       case 'touching':
         if (type === 'none') {
+          if (this.start === this.end && this.start.onClick) {
+            this.start.onClick();
+          }
           this._resetState('idle');
         }
         else if (type === 'move') {
@@ -53,13 +56,13 @@ export default class Areas {
       break;
     }
     if (lastState !== this.state) {
-      console.log(`${this.state} ${this.start} ${this.end}`);
+      //console.log(`${this.state} ${this.start} ${this.end}`);
     }
   }
 
   _findArea(position) {
     for (let i = this.list.length - 1; i >= 0; i--) {
-      const [x, y, w, h] = this.list[i];
+      const [x, y, w, h] = this.list[i].bounds;
       if (position[0] >= x && position[0] <= x + w &&
         position[1] >= y && position[1] <= y + h) {
         return i;
@@ -74,14 +77,17 @@ export default class Areas {
     this.position = null;
   }
 
-  add(bounds) {
-    this.list.push(bounds);
+  add(bounds, onCLick) {
+    this.list.push({
+      bounds: bounds,
+      onClick: onCLick
+    });
   }
 
   _debugDraw(ctx) {
     this.list.forEach(area => {
-      const [x, y, w, h] = area;
-      var color = 'gray';
+      const [x, y, w, h] = area.bounds;
+      var color;
       if (area === this.start && area === this.end) {
         color = 'orange';
       } else if (area === this.start) {
@@ -89,9 +95,11 @@ export default class Areas {
       } else if (area === this.end) {
         color = 'yellow';
       }
-      ctx.lineWidth = 6;
-      ctx.strokeStyle = color;
-      ctx.strokeRect(x, y, w, h);
+      if (color) {
+        ctx.lineWidth = 6;
+        ctx.strokeStyle = color;
+        ctx.strokeRect(x, y, w, h);
+      }
     });
   }
 }

@@ -6,55 +6,90 @@ export default class Areas {
     this.myTouch = new Mytouch(iris.canvas);
     this.myTouch.onChangeCallback = this.onChanged.bind(this);
     this.list = []
-    this.state = 'idle';
+    this._resetState('idle');
   }
 
   onChanged(touches, type) {
-    console.log('Touches:', touches, 'Type:', type);
+    //console.log('Touches:', touches, 'Type:', type);
     let lastState = this.state;
+
+    let current;
+    if (touches.length > 0) {
+      const pos = this.iris.windowToDiv(touches[0].end);
+      const areaIndex = this._findArea(pos);
+      current = this.list[areaIndex];
+    }
+
     switch (this.state) {
       case 'idle':
       if (type === 'start') {
-        if (touches.length === 1) {
+        if (touches.length === 1 && current) {
           this.state = 'touching';
+          this.start = current;
+          this.end = current;
         } else {
-          this.state = 'bad';
+          this._resetState('bad');
         }
       }
       break;
 
       case 'touching':
         if (type === 'none') {
-          this.state = 'idle';
+          this._resetState('idle');
         }
         else if (type === 'move') {
-          console.log('Dragging:', touches);
+          //console.log('Dragging:', touches);
+          this.end = current;
         }
         else if (touches.length > 1) {
-          this.state = 'bad';
+          this._resetState('bad');
         }
         break;
 
       case 'bad':
       if (type === 'none') {
-        this.state = 'idle';
+        this._resetState('idle');
       }
       break;
     }
     if (lastState !== this.state) {
-      console.log('State:', this.state);
+      console.log(`${this.state} ${this.start} ${this.end}`);
     }
   }
 
-  add(area) {
-    this.list.push(area);
+  _findArea(position) {
+    for (let i = this.list.length - 1; i >= 0; i--) {
+      const [x, y, w, h] = this.list[i];
+      if (position[0] >= x && position[0] <= x + w &&
+        position[1] >= y && position[1] <= y + h) {
+        return i;
+      }
+    }
+  }
+
+  _resetState(state) {
+    this.state = state;
+    this.start = null;
+    this.end = null;
+  }
+
+  add(bounds) {
+    this.list.push(bounds);
   }
 
   _debugDraw(ctx) {
-    ctx.strokeStyle = 'magenta';
     this.list.forEach(area => {
       const [x, y, w, h] = area;
-      ctx.lineWidth = 4;
+      var color = 'gray';
+      if (area === this.start && area === this.end) {
+        color = 'orange';
+      } else if (area === this.start) {
+        color = 'red';
+      } else if (area === this.end) {
+        color = 'yellow';
+      }
+      ctx.lineWidth = 6;
+      ctx.strokeStyle = color;
       ctx.strokeRect(x, y, w, h);
     });
   }

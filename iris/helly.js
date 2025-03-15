@@ -25,19 +25,19 @@ export default class Helly extends EventTarget {
       console.error(`ERROR: loading ${filename} - ${error}`);
     }
     this.hellyLoad.defineType('image', ['png', 'jpg', 'jpeg', 'gif'], (image, type, key) => {
-      console.log(`pretending to handle ccc ${image.type} ${type} ${key}`);
+      //console.log(`pretending to handle ccc ${image.type} ${type} ${key}`);
       this.images.set(key, image);
     });
     this.hellyLoad.defineType('json', ['json'], (ob, type, baseFileName, fileName) => {
-      console.log(`pretending to handle bbb ${ob.type} ${type} ${baseFileName} ${fileName}`);
+      //console.log(`pretending to handle bbb ${ob.type} ${type} ${baseFileName} ${fileName}`);
       this.parentPath = fileName.substring(0, fileName.lastIndexOf('/'));
-      console.log(`ddd Parent path: ${this.parentPath}`);
+      //console.log(`ddd Parent path: ${this.parentPath}`);
       this._onLoadJson(ob);
     });
   }
 
   load(filename, type) {
-    console.log(`aaa ${filename} ${type}`);
+    //console.log(`aaa ${filename} ${type}`);
     this.hellyLoad.load(filename, type);
   }
 

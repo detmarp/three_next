@@ -15,8 +15,8 @@ export default class Areas {
 
     let current;
     if (touches.length > 0) {
-      const pos = this.iris.windowToDiv(touches[0].end);
-      const areaIndex = this._findArea(pos);
+      this.position = this.iris.windowToDiv(touches[0].end);
+      const areaIndex = this._findArea(this.position);
       current = this.list[areaIndex];
     }
 
@@ -71,6 +71,7 @@ export default class Areas {
     this.state = state;
     this.start = null;
     this.end = null;
+    this.position = null;
   }
 
   add(bounds) {

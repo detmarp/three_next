@@ -56,7 +56,8 @@ export default class GameMode {
     */
     this.iris.helly.draw('card00', this.layout.card.bounds);
 
-    this.iris.helly.draw('building00', [200, 200]);
-
+    if (this.iris.areas.start) {
+      this.iris.helly.draw('building00', this.iris.areas.position);
+    }
   }
 }

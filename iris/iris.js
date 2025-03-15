@@ -16,18 +16,35 @@ export default class Iris {
     overlayDiv.style.pointerEvents = 'none';
     this.canvas.parentNode.appendChild(overlayDiv);
 
+    let color1 = '#dcdcdc';
+    let color2 = '#a9a9a9';
+    //overlayDiv.style.background = `linear-gradient(135deg, ${color1}, ${color2})`
+
     this.areas = new Areas(this);
 
-    this._addText('score', 10, 10, 300, 200);
-    this._addText('resources', 320, 10, 120, 200);
-    for (let i = 0; i < 7; i++) {
-      this._addText(`card ${i}`, i * 60 + 10, 220, 54, 72);
-    }
-    this._addText('info', 10, 300, 430, 50);
-    this._addText('town', 10, 360, 430, 430);
+    let title = this._addText(`Tiny Towns`, (450 - 320)/2, 5, 320, 40);
+    const link = document.createElement('link');
+    link.href = 'https://fonts.googleapis.com/css2?family=Lilita+One&display=swap';
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
+    title.style.fontFamily = 'Lilita One';
+    title.style.textAlign = 'center';
+    title.style.color = 'brown';
+    title.style.backgroundColor = '#f5f5dc';
+    title.style.display = 'flex';
+    title.style.alignItems = 'center';
+    title.style.justifyContent = 'center';
 
-    this.areas.add([10, 300, 200, 200]);
-    this.areas.add([10, 360, 430, 430]);
+    for (let y = 0; y < 4; y++) {
+      for (let x = 0; x < 2; x++) {
+        let i = y * 2 + x;
+        this._addText(`card ${i}`, x * 72 + 5, y * 60 + 48, 64, 54);
+      }
+    }
+    this._addText('card', 153, 48, 144, 240);
+    this._addText('resources', 153 + 144 + 4, 48, 144, 240);
+    this._addText('game', 5, 292, 218, 144);
+    this._addText('score', 226, 292, 220, 144);
 
     this.helly = new Helly(this.context);
     this.helly.load('data/contents.json');
@@ -57,6 +74,8 @@ export default class Iris {
 
     this.textElements.push(textElement);
     overlayDiv.appendChild(textElement);
+
+    return textElement;
   }
 
   render(dt) {
@@ -72,16 +91,16 @@ export default class Iris {
     const cols = 8;
     const rows = 15;
 
-    for (let row = 0; row < rows; row++) {
-      for (let col = 0; col < cols; col++) {
-        const cellX = col * cellSize;
-        const cellY = row * cellSize;
+    // for (let row = 0; row < rows; row++) {
+    //   for (let col = 0; col < cols; col++) {
+    //     const cellX = col * cellSize;
+    //     const cellY = row * cellSize;
 
-        this.context.strokeStyle = 'red';
-        this.context.lineWidth = 1;
-        this.context.strokeRect(cellX, cellY, cellSize, cellSize);
-      }
-    }
+    //     this.context.strokeStyle = 'red';
+    //     this.context.lineWidth = 1;
+    //     this.context.strokeRect(cellX, cellY, cellSize, cellSize);
+    //   }
+    // }
 
     this.helly.draw('board', [5, 455]);
     this.helly.draw('building00', [5 + 440 * 1/8, 455 + 330 * 1/8]);
@@ -89,7 +108,7 @@ export default class Iris {
     this.helly.draw('resource00', [5 + 440 * 5/8, 455 + 330 * 3/8]);
     this.helly.draw('resource01', [5 + 440 * 3/8, 455 + 330 * 5/8]);
     this.helly.draw('resource01', [5 + 440 * 5/8, 455 + 330 * 5/8]);
-    this.helly.draw('card00', [15, 15]);
+    this.helly.draw('card00', [153, 48]);
 
     this.areas._debugDraw(this.context);
   }

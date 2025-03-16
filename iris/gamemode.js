@@ -7,20 +7,20 @@ export default class GameMode {
   _setup() {
     this.layout = {
       card: {
-        bounds: [153, 48, 144, 240],
+        bounds: [153, 532, 144, 240],
         label: 'card',
       },
       tilearea: {
-        bounds: [9 - 4, 455 - 3, 108 * 4, 81 * 4],
+        bounds: [9 - 4, 200 - 3, 108 * 4, 81 * 4],
       },
       tiles: [],
       cards: [],
       resources: [],
       game: {
-        bounds: [5, 292, 218, 144],
+        bounds: [5, 48, 218, 144],
       },
       score: {
-        bounds: [226, 292, 220, 144],
+        bounds: [226, 48, 220, 144],
       },
     };
 
@@ -29,7 +29,7 @@ export default class GameMode {
       const w = 108;
       const h = 81;
       const left = 9;
-      const top = 455;
+      const top = 200;
       for (let row = 0; row < 4; row++) {
         for (let col = 0; col < 4; col++) {
           const x = left + col * w;
@@ -44,7 +44,7 @@ export default class GameMode {
       const w = 66;
       const h = 60;
       const left = 9;
-      const top = 48;
+      const top = 532;
       let i = 0;
       for (let row = 0; row < 4; row++) {
         for (let col = 0; col < 2; col++) {
@@ -65,7 +65,7 @@ export default class GameMode {
       const w = 66;
       const h = 48;
       const left = 350;
-      const top = 48;
+      const top = 532;
       let i = 0;
       for (let row = 0; row < 5; row++) {
         for (let col = 0; col < 1; col++) {

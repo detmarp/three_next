@@ -1,19 +1,19 @@
 import Helly from './helly.js';
 import Areas from './areas.js';
 import GameMode from './gamemode.js';
+import Settings from './settings.js';
 
 export default class Iris {
   constructor() {
   }
 
   load1(callback) {
-    // Simulate loading with a timeout
-    setTimeout(() => {
-      // Loading is done, call the callback function
-      if (callback && typeof callback === 'function') {
+    this.settings = new Settings();
+    this.settings.load(() => {
+      if (callback) {
         callback();
       }
-    }, 1000); // Simulate a 1-second loading time
+    });
   }
 
   init(context) {

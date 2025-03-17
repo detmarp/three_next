@@ -1,24 +1,24 @@
 import Iris from './iris.js';
+import GameLoop from './gameloop.js';
 
 export default class Program {
   constructor(container) {
     this.container = container;
     this.canvas = null;
     this.context = null;
-    this.glinda = null;
-    this.lastFrameTime = null;
 
     this.colors = {
-      gradientStart: '#0e2c42', // Dark Blue
-      gradientEnd: '#4a5298', // Light Blue
-      boundsBackground: '#d3d3e3', // Light Metallic Gray
+      gradientStart: '#6e6c62',
+      gradientEnd: '#bab2b8',
+      boundsBackground: '#d3d3e3',
       canvasBackground: '#554433'
     };
   }
 
   load() {
     this.iris = new Iris();
-    this.showLoading1();
+    this._showLoading1();
+
     this.iris.load1(() => {
       this.load2();
     });
@@ -28,7 +28,7 @@ export default class Program {
     this.run();
   }
 
-  showLoading1() {
+  _showLoading1() {
     while (this.container.firstChild) {
       this.container.removeChild(this.container.firstChild);
     }
@@ -46,7 +46,6 @@ export default class Program {
     message.style.justifyContent = 'center';
     message.style.alignItems = 'center';
     message.innerText = 'Loading...';
-
     this.container.appendChild(message);
   }
 
@@ -54,11 +53,14 @@ export default class Program {
     this.setDOM();
     this.iris.init(this.context);
 
-
     window.addEventListener('resize', () => this.onResize());
 
     this.onResize();
-    this.doFrame();
+
+    this.gameLoop = new GameLoop(dt => {
+      this._doFrame(dt);
+    });
+    this.gameLoop.run();
   }
 
   setDOM() {
@@ -66,7 +68,6 @@ export default class Program {
       this.container.removeChild(this.container.firstChild);
     }
 
-    // Create a radial gradient background with a larger center color area
     const gradient = document.createElement('div');
     gradient.style.position = 'absolute';
     gradient.style.top = '0';
@@ -76,7 +77,7 @@ export default class Program {
     gradient.style.background = `radial-gradient(circle at center, ${this.colors.gradientStart} 50%, ${this.colors.gradientEnd} 100%)`;
     this.container.appendChild(gradient);
 
-    this.boundsMargin = 2;
+    this.boundsMargin = 0;
 
     this.bounds = document.createElement('div');
     this.bounds.style.position = 'absolute';
@@ -84,13 +85,9 @@ export default class Program {
     this.bounds.style.left = `${this.boundsMargin}px`;
     this.bounds.style.right = `${this.boundsMargin}px`;
     this.bounds.style.bottom = `${this.boundsMargin}px`;
-    this.bounds.style.backgroundColor = this.colors.boundsBackground;
+    //this.bounds.style.backgroundColor = this.colors.boundsBackground;
     this.container.appendChild(this.bounds);
 
-    this.setCanvas();
-  }
-
-  setCanvas() {
     this.bounds.innerHTML = '';
     this.canvas = document.createElement('canvas');
     this.canvas.style.position = 'absolute';
@@ -136,30 +133,14 @@ export default class Program {
     this.bounds.style.transform = 'translate(-50%, -50%)';
   }
 
-  doFrame() {
-    const currentTime = performance.now();
-    let dt = 0;
-    if (this.lastFrameTime === null) {
-      dt = 1 / 60;
-    } else {
-      dt = (currentTime - this.lastFrameTime) / 1000;
-    }
+  _doFrame(dt) {
+    const saveTransform = this.context.getTransform();
+    this.context.setTransform(1, 0, 0, 1, 0, 0);
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.context.fillStyle = this.colors.canvasBackground;
+    this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    this.context.setTransform(saveTransform);
 
-    if (dt > 0.008) {
-      dt = Math.min(dt, 0.1);
-      this.lastFrameTime = currentTime;
-      this.time += dt;
-
-      const saveTransform = this.context.getTransform();
-      this.context.setTransform(1, 0, 0, 1, 0, 0);
-      this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      this.context.fillStyle = this.colors.canvasBackground;
-      this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-      this.context.setTransform(saveTransform);
-
-      this.iris.render(dt);
-    }
-
-    requestAnimationFrame(() => this.doFrame());
+    this.iris.render(dt);
   }
 }

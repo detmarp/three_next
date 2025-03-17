@@ -16,9 +16,44 @@ export default class Program {
     };
   }
 
+  load() {
+    this.iris = new Iris();
+    this.showLoading1();
+    this.iris.load1(() => {
+      this.load2();
+    });
+  }
+
+  load2() {
+    this.run();
+  }
+
+  showLoading1() {
+    while (this.container.firstChild) {
+      this.container.removeChild(this.container.firstChild);
+    }
+    const message = document.createElement('div');
+    message.style.position = 'absolute';
+    message.style.top = '50%';
+    message.style.left = '50%';
+    message.style.transform = 'translate(-50%, -50%)';
+    message.style.color = '#222222';
+    message.style.fontFamily = 'sans-serif';
+    message.style.backgroundColor = '#eeeeee';
+    message.style.width = '100%';
+    message.style.height = '100%';
+    message.style.display = 'flex';
+    message.style.justifyContent = 'center';
+    message.style.alignItems = 'center';
+    message.innerText = 'Loading...';
+
+    this.container.appendChild(message);
+  }
+
   run() {
     this.setDOM();
-    this.iris = new Iris(this.context);
+    this.iris.init(this.context);
+
 
     window.addEventListener('resize', () => this.onResize());
 

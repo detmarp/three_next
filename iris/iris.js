@@ -3,7 +3,20 @@ import Areas from './areas.js';
 import GameMode from './gamemode.js';
 
 export default class Iris {
-  constructor(context) {
+  constructor() {
+  }
+
+  load1(callback) {
+    // Simulate loading with a timeout
+    setTimeout(() => {
+      // Loading is done, call the callback function
+      if (callback && typeof callback === 'function') {
+        callback();
+      }
+    }, 1000); // Simulate a 1-second loading time
+  }
+
+  init(context) {
     this.context = context;
     this.textElements = [];
 
@@ -93,8 +106,17 @@ export default class Iris {
 
   windowToDiv(window) {
     const rect = this.canvas.getBoundingClientRect();
-    const x = ((window[0]) / rect.width) * this.canvas.width;
-    const y = ((window[1]) / rect.height) * this.canvas.height;
+    let x, y;
+
+    if (true) {
+      x = ((window[0] - rect.left) / rect.width) * this.canvas.width;
+      y = ((window[1] - rect.top) / rect.height) * this.canvas.height;
+    } else {
+      x = ((window[0] - rect.left) / rect.width) * this.canvas.width;
+      y = ((window[1] - rect.top) / rect.height) * this.canvas.height;
+    }
+
+    console.log(`${window} -> ${x}, ${y}`);
     return [x, y];
   }
 

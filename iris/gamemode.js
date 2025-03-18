@@ -136,12 +136,16 @@ export default class GameMode {
     this.iris.helly.draw('board', this.layout.tilearea.bounds);
 
     for (let i = 0; i < 16; i++) {
-      let board = this.towns.board.tiles[1];
+      let board = this.towns.board.tiles[i];
       let square = this.layout.tiles[i];
-      const b = `building${String(i).padStart(2, '0')}`;
-      this.iris.helly.draw(b, this._center(square.bounds));
-      const r = `resource${String(i).padStart(2, '0')}`;
-      this.iris.helly.draw(r, this._center(square.bounds));
+      if (board.building) {
+        const b = this._buildingToSprite(board.building);
+        this.iris.helly.draw(b, this._center(square.bounds));
+      }
+      if (board.resource) {
+        const r = this._resourceToSprite(board.resource);
+        this.iris.helly.draw(r, this._center(square.bounds));
+      }
     }
 
     this.layout.resources.forEach(resource => {
@@ -157,5 +161,26 @@ export default class GameMode {
     if (this.iris.areas.start) {
       this.iris.helly.draw('building00', this.iris.areas.position);
     }
+  }
+
+  _buildingToSprite(building) {
+    const map = { 'red': 'building00', 'blue': 'building01',
+      'yellow': 'building02', 'orange': 'building03', 'black': 'building04',
+      'gray': 'building05', 'green': 'building06', 'pink': 'building07'
+     };
+    if (building in map) {
+      return map[building];
+    }
+    return 'error';
+  }
+
+  _resourceToSprite(resource) {
+    const map = { 'wheat': 'resource00', 'stone': 'resource01',
+      'brick': 'resource02', 'wood': 'resource03', 'glass': 'resource04'
+     };
+    if (resource in map) {
+      return map[resource];
+    }
+    return 'error';
   }
 }

@@ -104,19 +104,14 @@ export default class Iris {
     return textElement;
   }
 
-  windowToDiv(window) {
+  windowToDiv(screen) {
     const rect = this.canvas.getBoundingClientRect();
     let x, y;
 
-    if (true) {
-      x = ((window[0] - rect.left) / rect.width) * this.canvas.width;
-      y = ((window[1] - rect.top) / rect.height) * this.canvas.height;
-    } else {
-      x = ((window[0] - rect.left) / rect.width) * this.canvas.width;
-      y = ((window[1] - rect.top) / rect.height) * this.canvas.height;
-    }
+    x = ((screen[0]) / rect.width) * this.canvas.width;
+    y = ((screen[1]) / rect.height) * this.canvas.height;
 
-    console.log(`${window} -> ${x}, ${y}`);
+    //console.log(`${screen} -> ${x}, ${y}`);
     return [x, y];
   }
 

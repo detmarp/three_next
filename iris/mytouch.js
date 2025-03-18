@@ -34,14 +34,15 @@ export default class Mytouch {
   onTouch(event) {
     event.preventDefault();
 
+    const rect = this.canvas.getBoundingClientRect();
     let touches = [];
 
     for (let i = 0; i < event.touches.length; i++) {
       const touch = event.touches[i];
       if (!this.fingerStarts.has(touch.identifier)) {
-        this.fingerStarts.set(touch.identifier, [touch.clientX, touch.clientY]);
+        this.fingerStarts.set(touch.identifier, [touch.clientX - rect.left, touch.clientY - rect.top]);
       }
-      let p = [touch.clientX, touch.clientY];
+      let p = [touch.clientX - rect.left, touch.clientY - rect.top];
       let start = this.fingerStarts.get(touch.identifier);
       touches.push({
         start: start ? start : p,

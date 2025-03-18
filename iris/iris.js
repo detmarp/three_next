@@ -30,7 +30,6 @@ export default class Iris {
     this.bottomDiv.style.pointerEvents = 'none';
     this.canvas.parentNode.appendChild(this.bottomDiv);
 
-
     this.areas = new Areas(this);
 
     const link = document.createElement('link');
@@ -96,7 +95,7 @@ export default class Iris {
     textElement.style.justifyContent = 'flex-start';
     textElement.style.whiteSpace = 'normal';
     textElement.style.overflowWrap = 'break-word';
-    textElement.textContent = text;
+    textElement.innerHTML = text;
     textElement.style.pointerEvents = 'none';
 
     this.textElements.push(textElement);

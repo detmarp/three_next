@@ -1,3 +1,5 @@
+import Towns from './towns.js';
+
 export default class GameMode {
   constructor(iris) {
     this.iris = iris;
@@ -109,10 +111,12 @@ export default class GameMode {
     });
 
     // other areas
-    this.iris.addText('game', this.layout.game.bounds);
+    this.iris.addText('game<br>no-rules mode', this.layout.game.bounds);
     this.iris.addText('score', this.layout.score.bounds);
 
     this._setCard(0);
+
+    this.towns = new Towns();
   }
 
   _setCard(i) {
@@ -131,13 +135,18 @@ export default class GameMode {
 
     this.iris.helly.draw('board', this.layout.tilearea.bounds);
 
-    this.iris.helly.draw('building00', this._center(this.layout.tiles[0].bounds));
-    this.iris.helly.draw('building01', this._center(this.layout.tiles[5].bounds));
-    this.iris.helly.draw('resource00', this._center(this.layout.tiles[6].bounds));
-    this.iris.helly.draw('resource01', this._center(this.layout.tiles[10].bounds));
+    for (let i = 0; i < 16; i++) {
+      let board = this.towns.board.tiles[1];
+      let square = this.layout.tiles[i];
+      const b = `building${String(i).padStart(2, '0')}`;
+      this.iris.helly.draw(b, this._center(square.bounds));
+      const r = `resource${String(i).padStart(2, '0')}`;
+      this.iris.helly.draw(r, this._center(square.bounds));
+    }
 
     this.layout.resources.forEach(resource => {
-      this.iris.helly.draw('resource00', this._center(resource.bounds));
+      const resourceId = `resource${String(resource.id).padStart(2, '0')}`;
+      this.iris.helly.draw(resourceId, this._center(resource.bounds));
     });
 
     //this.iris.helly.draw('resource00', [350, 100]);

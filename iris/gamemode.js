@@ -87,6 +87,7 @@ export default class GameMode {
             bounds: [x, y, w, h],
             id: i,
             piece: names[i],
+            type: 'resource',
           };
           this.layout.resources.push(resource);
           i++;
@@ -122,6 +123,7 @@ export default class GameMode {
       };
       let area = this.iris.areas.addBounds(resource.bounds, onClick, this._onDragResource.bind(this));
       area.piece = resource.piece;
+      area.type = resource.type;
     });
 
     // other areas
@@ -164,7 +166,10 @@ export default class GameMode {
 
     this.layout.resources.forEach(resource => {
       const resourceId = `resource${String(resource.id).padStart(2, '0')}`;
-      this.iris.helly.draw(resourceId, this._center(resource.bounds));
+      let start = this.iris.areas.start;
+      if (!start || start.type !== 'resource' || start.piece !== resource.piece) {
+        this.iris.helly.draw(resourceId, this._center(resource.bounds));
+      }
     });
 
     // cursor

@@ -86,8 +86,8 @@ export default class Iris {
     textElement.style.height = `${(h / 800) * 100}%`;
     textElement.style.overflow = 'hidden';
     textElement.style.textOverflow = 'ellipsis';
-    textElement.style.border = '1px solid yellow';
-    textElement.style.color = 'lime';
+    //textElement.style.border = '1px solid yellow';
+    textElement.style.color = '#222222';
     textElement.style.display = 'flex';
     textElement.style.boxSizing = 'border-box';
     textElement.style.textAlign = 'left';

@@ -10,7 +10,6 @@ export default class Areas {
   }
 
   onChanged(touches, type) {
-    //console.log('Touches:', touches, 'Type:', type);
     let lastState = this.state;
 
     let current;
@@ -27,6 +26,8 @@ export default class Areas {
           this.state = 'touching';
           this.start = current;
           this.end = current;
+            this.canClick = Boolean(this.start.onClick);
+          this.canDrag = (this.start.onDrag && this.start.onDrag('start', this.start));
         } else {
           this._resetState('bad');
         }
@@ -35,13 +36,15 @@ export default class Areas {
 
       case 'touching':
         if (type === 'none') {
-          if (this.start === this.end && this.start.onClick) {
+          if (this.canClick && (this.start === this.end)) {
             this.start.onClick();
+          }
+          else if(this.canDrag) {
+            this.start.onDrag('drop', this.end);
           }
           this._resetState('idle');
         }
         else if (type === 'move') {
-          //console.log('Dragging:', touches);
           this.end = current;
         }
         else if (touches.length > 1) {
@@ -75,13 +78,18 @@ export default class Areas {
     this.start = null;
     this.end = null;
     this.position = null;
+    this.canClick = false;
+    this.canDrag = false;
   }
 
-  add(bounds, onCLick) {
-    this.list.push({
+  addBounds(bounds, onCLick, onDrag) {
+    let area = {
       bounds: bounds,
-      onClick: onCLick
-    });
+      onClick: onCLick,
+      onDrag: onDrag
+    };
+    this.list.push(area);
+    return area;
   }
 
   _debugDraw(ctx) {
@@ -92,7 +100,7 @@ export default class Areas {
         color = 'orange';
       } else if (area === this.start) {
         color = 'red';
-      } else if (area === this.end) {
+      } else if (this.canDrag && area === this.end) {
         color = 'yellow';
       }
       if (color) {

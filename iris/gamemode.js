@@ -3,6 +3,9 @@ import Towns from './towns.js';
 export default class GameMode {
   constructor(iris) {
     this.iris = iris;
+    this.colors = {
+      background: '#ccdd99'
+    };
     this._setup();
   }
 
@@ -36,7 +39,13 @@ export default class GameMode {
         for (let col = 0; col < 4; col++) {
           const x = left + col * w;
           const y = top + row * h;
-          this.layout.tiles.push({ bounds: [x, y, w, h] });
+          this.layout.tiles.push(
+            {
+              type: 'tile',
+              bounds: [x, y, w, h],
+              id: row * 4 + col,
+             }
+          );
         }
       }
     }
@@ -69,13 +78,15 @@ export default class GameMode {
       const left = 350;
       const top = 532;
       let i = 0;
+      const names = ['wheat', 'stone', 'brick', 'wood', 'glass'];
       for (let row = 0; row < 5; row++) {
         for (let col = 0; col < 1; col++) {
             const x = left + (row % 2 === 0 ? -1/3 * w : 1/3 * w);
           const y = top + row * h;
           let resource = {
             bounds: [x, y, w, h],
-            id: i
+            id: i,
+            piece: names[i],
           };
           this.layout.resources.push(resource);
           i++;
@@ -85,7 +96,9 @@ export default class GameMode {
 
     // areas for 16 tiles
     this.layout.tiles.forEach(tile => {
-      this.iris.areas.add(tile.bounds);
+      let area = this.iris.areas.addBounds(tile.bounds, null, this._onDragBoard.bind(this));
+      area.type = tile.type;
+      area.id = tile.id;
     });
 
     // cards
@@ -94,12 +107,12 @@ export default class GameMode {
       let onCLick = () => {
         this._setCard(card.id);
       };
-      this.iris.areas.add(card.bounds, onCLick);
+      this.iris.areas.addBounds(card.bounds, onCLick);
     });
 
     // card area
     this.layout.card.text = this.iris.addText(this.layout.card.label, this.layout.card.bounds);
-    this.iris.areas.add(this.layout.card.bounds);
+    this.iris.areas.addBounds(this.layout.card.bounds, null, this._onDragCard.bind(this));
 
     // resources
     this.layout.resources.forEach(resource => {
@@ -107,7 +120,8 @@ export default class GameMode {
       let onClick = () => {
         //this._setCard(resource.id);
       };
-      this.iris.areas.add(resource.bounds, onClick);
+      let area = this.iris.areas.addBounds(resource.bounds, onClick, this._onDragResource.bind(this));
+      area.piece = resource.piece;
     });
 
     // other areas
@@ -153,13 +167,9 @@ export default class GameMode {
       this.iris.helly.draw(resourceId, this._center(resource.bounds));
     });
 
-    //this.iris.helly.draw('resource00', [350, 100]);
-    //this.iris.helly.draw('resource01', [390, 150]);
-    //this.iris.helly.draw('resource00', [350, 200]);
-
     // cursor
-    if (this.iris.areas.start) {
-      this.iris.helly.draw('building00', this.iris.areas.position);
+    if (this.iris.areas.start && this.dragMeeple) {
+      this.iris.helly.draw(this.dragMeeple.sprite, this.iris.areas.position);
     }
   }
 
@@ -182,5 +192,58 @@ export default class GameMode {
       return map[resource];
     }
     return 'error';
+  }
+
+  _getMeeple(name) {
+    const resources = {
+      wheat: 'resource00',
+      stone: 'resource01',
+      brick: 'resource02',
+      wood: 'resource03',
+      glass: 'resource04',
+    };
+    if (name in resources) {
+      return {
+        name: name,
+        type: 'resource',
+        sprite: resources[name],
+      };
+    }
+    if (name == 'red') {
+      return {
+        name: name,
+        type: 'building',
+        sprite: 'building00',
+      };
+    }
+    return {
+      name: 'none',
+      type: 'none',
+      sprite: 'error',
+    };
+  }
+
+  _onDragBoard(action, area) {
+    console.log(`Drag board ${action} ${JSON.stringify(area)}`);
+  }
+
+  _onDragCard(action, area) {
+    console.log(`Drag board ${action} ${JSON.stringify(area)}`);
+    if (action === 'start') {
+      return true;
+    }
+  }
+
+  _onDragResource(action, area) {
+    console.log(`Drag board ${action} ${JSON.stringify(area)}`);
+    if (action === 'start') {
+      this.dragMeeple = this._getMeeple(area.piece);
+      return true;
+    }
+    if (action === 'drop') {
+      if (area.type === 'tile') {
+        this.towns.board.tiles[area.id].resource = this.dragMeeple.name;
+      }
+    }
   }
 }

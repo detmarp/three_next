@@ -11,7 +11,7 @@ export default class Program {
       gradientStart: '#6e6c62',
       gradientEnd: '#bab2b8',
       boundsBackground: '#d3d3e3',
-      canvasBackground: '#554433'
+      canvasBackground: '#bbaa66'
     };
   }
 

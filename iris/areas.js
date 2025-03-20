@@ -74,6 +74,9 @@ export default class Areas {
   }
 
   _resetState(state) {
+    if (this.start && this.start.onDrag) {
+      this.start.onDrag('end', this.end);
+    }
     this.state = state;
     this.start = null;
     this.end = null;

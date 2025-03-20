@@ -230,6 +230,14 @@ export default class GameMode {
 
   _onDragBoard(action, area) {
     console.log(`Drag board ${action} ${JSON.stringify(area)}`);
+    if (action === 'start') {
+      let meeple = this._pickMeeple(area.id);
+      if (meeple) {
+        this.dragMeeple = meeple;
+        return true;
+      }
+    }
+    this._anyAction(action, area);
   }
 
   _onDragCard(action, area) {
@@ -237,6 +245,7 @@ export default class GameMode {
     if (action === 'start') {
       return true;
     }
+    this._anyAction(action, area);
   }
 
   _onDragResource(action, area) {
@@ -245,10 +254,34 @@ export default class GameMode {
       this.dragMeeple = this._getMeeple(area.piece);
       return true;
     }
+    this._anyAction(action, area);
+  }
+
+  _anyAction(action, area) {
     if (action === 'drop') {
-      if (area.type === 'tile') {
-        this.towns.board.tiles[area.id].resource = this.dragMeeple.name;
+      if (area && area.type === 'tile') {
+        this._placeMeeple(this.dragMeeple, area.id);
       }
     }
+    if (action === 'end') {
+      this._endAction();
+    }
+  }
+
+  _endAction() {
+    this.dragMeeple = null;
+  }
+
+  _pickMeeple(tile) {
+    let resource = this.towns.board.tiles[tile].resource;
+    if (resource) {
+      this.towns.board.tiles[tile].resource = null;
+      let meeple = this._getMeeple(resource);
+      return meeple;
+    }
+  }
+
+  _placeMeeple(meeple, tile) {
+    this.towns.board.tiles[tile].resource = meeple.name;
   }
 }

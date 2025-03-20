@@ -15,25 +15,25 @@ export default class GameMode {
         name: 'red',
       },
       {
-        name: 'green',
-      },
-      {
-        name: 'pink',
-      },
-      {
         name: 'blue',
-      },
-      {
-        name: 'gray',
-      },
-      {
-        name: 'black',
       },
       {
         name: 'yellow',
       },
       {
         name: 'orange',
+      },
+      {
+        name: 'black',
+      },
+      {
+        name: 'gray',
+      },
+      {
+        name: 'green',
+      },
+      {
+        name: 'pink',
       },
     ];
 
@@ -237,6 +237,17 @@ export default class GameMode {
       wood: 'resource03',
       glass: 'resource04',
     };
+    const buildings = {
+      red: 'building00',
+      blue: 'building01',
+      yellow: 'building02',
+      orange: 'building03',
+      black: 'building04',
+      gray: 'building05',
+      green: 'building06',
+      pink: 'building07',
+    };
+
     if (name in resources) {
       return {
         name: name,
@@ -244,18 +255,11 @@ export default class GameMode {
         sprite: resources[name],
       };
     }
-    if (name == 'red') {
+    if (name in buildings) {
       return {
         name: name,
         type: 'building',
-        sprite: 'building00',
-      };
-    }
-    if (name == 'green') {
-      return {
-        name: name,
-        type: 'building',
-        sprite: 'building01',
+        sprite: buildings[name],
       };
     }
     return {
@@ -317,9 +321,19 @@ export default class GameMode {
       let meeple = this._getMeeple(resource);
       return meeple;
     }
+    let building = this.towns.board.tiles[tile].building;
+    if (building) {
+      this.towns.board.tiles[tile].building = null;
+      let meeple = this._getMeeple(building);
+      return meeple;
+    }
   }
 
   _placeMeeple(meeple, tile) {
+    let oldTile = this.towns.board.tiles[tile];
+    if (oldTile.building || oldTile.resource) {
+      return;
+    }
     if (meeple.type === 'building') {
       this.towns.board.tiles[tile].building = meeple.name;
     }

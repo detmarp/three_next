@@ -10,6 +10,33 @@ export default class GameMode {
   }
 
   _setup() {
+    this.cards = [
+      {
+        name: 'red',
+      },
+      {
+        name: 'green',
+      },
+      {
+        name: 'pink',
+      },
+      {
+        name: 'blue',
+      },
+      {
+        name: 'gray',
+      },
+      {
+        name: 'black',
+      },
+      {
+        name: 'yellow',
+      },
+      {
+        name: 'orange',
+      },
+    ];
+
     this.layout = {
       card: {
         bounds: [153, 532, 144, 240],
@@ -136,7 +163,8 @@ export default class GameMode {
   }
 
   _setCard(i) {
-    this.layout.card.text.textContent = `card ${i}`;
+    this.selectedCard = this.cards[i];
+    this.layout.card.text.textContent = this.selectedCard.name;
   }
 
   _center(bounds) {
@@ -168,7 +196,9 @@ export default class GameMode {
       const resourceId = `resource${String(resource.id).padStart(2, '0')}`;
       let start = this.iris.areas.start;
       if (!start || start.type !== 'resource' || start.piece !== resource.piece) {
-        this.iris.helly.draw(resourceId, this._center(resource.bounds));
+        let center = this._center(resource.bounds);
+        center[1] += 10;
+        this.iris.helly.draw(resourceId, center);
       }
     });
 
@@ -221,6 +251,13 @@ export default class GameMode {
         sprite: 'building00',
       };
     }
+    if (name == 'green') {
+      return {
+        name: name,
+        type: 'building',
+        sprite: 'building01',
+      };
+    }
     return {
       name: 'none',
       type: 'none',
@@ -241,8 +278,9 @@ export default class GameMode {
   }
 
   _onDragCard(action, area) {
-    console.log(`Drag board ${action} ${JSON.stringify(area)}`);
+    console.log(`Drag card ${action} ${JSON.stringify(area)}`);
     if (action === 'start') {
+      this.dragMeeple = this._getMeeple(this.selectedCard.name);
       return true;
     }
     this._anyAction(action, area);
@@ -259,7 +297,7 @@ export default class GameMode {
 
   _anyAction(action, area) {
     if (action === 'drop') {
-      if (area && area.type === 'tile') {
+      if (area && area.type === 'tile' && this.dragMeeple) {
         this._placeMeeple(this.dragMeeple, area.id);
       }
     }
@@ -282,6 +320,11 @@ export default class GameMode {
   }
 
   _placeMeeple(meeple, tile) {
-    this.towns.board.tiles[tile].resource = meeple.name;
+    if (meeple.type === 'building') {
+      this.towns.board.tiles[tile].building = meeple.name;
+    }
+    if (meeple.type === 'resource') {
+      this.towns.board.tiles[tile].resource = meeple.name;
+    }
   }
 }

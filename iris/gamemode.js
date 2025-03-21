@@ -135,7 +135,9 @@ export default class GameMode {
       let onCLick = () => {
         this._setCard(card.id);
       };
-      this.iris.areas.addBounds(card.bounds, onCLick);
+      let area = this.iris.areas.addBounds(card.bounds, onCLick, this._onDragCards.bind(this));
+      area.piece = this.cards[card.id].name;
+      area.type = 'card';
     });
 
     // card area
@@ -200,6 +202,11 @@ export default class GameMode {
         center[1] += 10;
         this.iris.helly.draw(resourceId, center);
       }
+    });
+
+    this.layout.cards.forEach(card => {
+      let start = this.iris.areas.start;
+      this.iris.helly.draw(`bicon${String(card.id).padStart(2, '0')}`, this._center(card.bounds));
     });
 
     // cursor
@@ -285,6 +292,15 @@ export default class GameMode {
     console.log(`Drag card ${action} ${JSON.stringify(area)}`);
     if (action === 'start') {
       this.dragMeeple = this._getMeeple(this.selectedCard.name);
+      return true;
+    }
+    this._anyAction(action, area);
+  }
+
+  _onDragCards(action, area) {
+    console.log(`Drag cards ${action} ${JSON.stringify(area)}`);
+    if (action === 'start') {
+      this.dragMeeple = this._getMeeple(area.piece);
       return true;
     }
     this._anyAction(action, area);

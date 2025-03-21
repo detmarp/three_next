@@ -60,6 +60,46 @@
         "size": [128, 128],
         "offset": [64, 64]
       },
+      "bicon07": {
+        "source": [256, 512],
+        "size": [32, 32],
+        "offset": [16, 16]
+      },
+      "bicon03": {
+        "source": [288, 512],
+        "size": [32, 32],
+        "offset": [16, 16]
+      },
+      "bicon06": {
+        "source": [320, 512],
+        "size": [32, 32],
+        "offset": [16, 16]
+      },
+      "bicon02": {
+        "source": [352, 512],
+        "size": [32, 32],
+        "offset": [16, 16]
+      },
+      "bicon01": {
+        "source": [384, 512],
+        "size": [32, 32],
+        "offset": [16, 16]
+      },
+      "bicon05": {
+        "source": [416, 512],
+        "size": [32, 32],
+        "offset": [16, 16]
+      },
+      "bicon00": {
+        "source": [448, 512],
+        "size": [32, 32],
+        "offset": [16, 16]
+      },
+      "bicon04": {
+        "source": [480, 512],
+        "size": [32, 32],
+        "offset": [16, 16]
+      },
       "resource00": {
         "source": [512, 256],
         "size": [128, 128],

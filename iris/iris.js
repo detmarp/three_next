@@ -8,6 +8,7 @@ export default class Iris {
   }
 
   load1(callback) {
+    // load step called by Program
     this.settings = new Settings();
     this.settings.load(() => {
       if (callback) {
@@ -49,18 +50,6 @@ export default class Iris {
     title.style.justifyContent = 'center';
     title.style.borderRadius = '6px';
 
-/*
-    for (let y = 0; y < 4; y++) {
-      for (let x = 0; x < 2; x++) {
-        let i = y * 2 + x;
-        this.addText(`card ${i}`, [x * 72 + 5, y * 60 + 48, 64, 54]);
-      }
-    }
-    this.addText('card', [153, 48, 144, 240]);
-    this.addText('resources', [153 + 144 + 4, 48, 144, 240]);
-    this.addText('game', [5, 292, 218, 144]);
-    this.addText('score', [226, 292, 220, 144]);
-*/
     this.helly = new Helly(this.context);
     this.helly.load('data/contents.json');
 
@@ -106,11 +95,8 @@ export default class Iris {
   windowToDiv(screen) {
     const rect = this.canvas.getBoundingClientRect();
     let x, y;
-
     x = ((screen[0]) / rect.width) * this.canvas.width;
     y = ((screen[1]) / rect.height) * this.canvas.height;
-
-    //console.log(`${screen} -> ${x}, ${y}`);
     return [x, y];
   }
 
@@ -118,9 +104,7 @@ export default class Iris {
     this.textElements.forEach(textElement => {
       textElement.style.fontSize = textElement.offsetWidth / 10 + 'px';
     });
-
     this.mode.render(dt);
-
     this.areas._debugDraw(this.context);
   }
 }

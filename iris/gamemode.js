@@ -1,4 +1,5 @@
 import Towns from './towns.js';
+import Pattern from './pattern.js';
 
 export default class GameMode {
   constructor(iris) {
@@ -13,27 +14,57 @@ export default class GameMode {
     this.cards = [
       {
         name: 'red',
+        shape: [
+          "yy",
+          "bb",
+        ],
       },
       {
         name: 'blue',
+        shape: [
+          "-y",
+          "rc",
+        ],
       },
       {
         name: 'yellow',
+        shape: [
+          "-g-",
+          "bcb"
+        ],
       },
       {
         name: 'orange',
+        shape: [
+          "--c",
+          "gcg"
+        ],
       },
       {
         name: 'black',
+        shape: [
+          "b---",
+          "rggr"
+        ],
       },
       {
         name: 'gray',
+        shape: [
+          "bg",
+        ],
       },
       {
         name: 'green',
+        shape: [
+          "rrc",
+        ],
       },
       {
         name: 'pink',
+        shape: [
+          "yb",
+          "rb",
+        ],
       },
     ];
 
@@ -167,6 +198,7 @@ export default class GameMode {
   _setCard(i) {
     this.selectedCard = this.cards[i];
     this.layout.card.text.textContent = this.selectedCard.name;
+    this.pattern = new Pattern(this.iris.context);
   }
 
   _center(bounds) {
@@ -177,7 +209,21 @@ export default class GameMode {
   }
 
   render(dt) {
+    // Reset drawing settings
+    const ctx = this.iris.context;
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = '#000';
+    ctx.fillStyle = '#000';
+    ctx.setLineDash([]);
+    ctx.globalAlpha = 1.0;
+    ctx.font = '10px sans-serif';
+
     this.iris.helly.draw('card00', this.layout.card.bounds);
+    let shape = this.selectedCard.shape
+    let pattern = new Pattern(shape);
+    let position = this._center(this.layout.card.bounds);
+    position[1] += 34;
+    pattern.draw(this.iris.context, position);
 
     this.iris.helly.draw('board', this.layout.tilearea.bounds);
 

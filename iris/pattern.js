@@ -11,6 +11,17 @@ export default class Pattern {
     };
   }
 
+  rotate() {
+    const newShape = [];
+    for (let i = 0; i < this.shape[0].length; i++) {
+      newShape.push([]);
+      for (let j = this.shape.length - 1; j >= 0; j--) {
+        newShape[i].push(this.shape[j][i]);
+      }
+    }
+    this.shape = newShape;
+  }
+
   draw(context, position) {
     const w = Math.max(...this.shape.map(row => row.length));
     const h = this.shape.length;

@@ -173,7 +173,10 @@ export default class GameMode {
 
     // card area
     this.layout.card.text = this.iris.addText(this.layout.card.label, this.layout.card.bounds);
-    this.iris.areas.addBounds(this.layout.card.bounds, null, this._onDragCard.bind(this));
+    let onClick = () => {
+      this.pattern.rotate();
+    }
+    this.iris.areas.addBounds(this.layout.card.bounds, onClick, this._onDragCard.bind(this));
 
     // resources
     this.layout.resources.forEach(resource => {
@@ -198,7 +201,7 @@ export default class GameMode {
   _setCard(i) {
     this.selectedCard = this.cards[i];
     this.layout.card.text.textContent = this.selectedCard.name;
-    this.pattern = new Pattern(this.iris.context);
+    this.pattern = new Pattern(this.selectedCard.shape);
   }
 
   _center(bounds) {
@@ -220,10 +223,9 @@ export default class GameMode {
 
     this.iris.helly.draw('card00', this.layout.card.bounds);
     let shape = this.selectedCard.shape
-    let pattern = new Pattern(shape);
     let position = this._center(this.layout.card.bounds);
     position[1] += 34;
-    pattern.draw(this.iris.context, position);
+    this.pattern.draw(this.iris.context, position);
 
     this.iris.helly.draw('board', this.layout.tilearea.bounds);
 

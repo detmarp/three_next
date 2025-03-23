@@ -27,9 +27,8 @@ export default class Pattern {
     const h = this.shape.length;
     const max = Math.max(w, h);
     const size = 19;
-    position[0] -= w * size / 2
-    position[1] -= h * size / 2
-    const [x, y] = position;
+    const x = position[0] - w * size / 2;
+    const y = position[1] - h * size / 2;
 
     this.shape.forEach((row, rowIndex) => {
       [...row].forEach((char, charIndex) => {

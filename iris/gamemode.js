@@ -1,5 +1,5 @@
 import Towns from './towns.js';
-import Pattern from './pattern.js';
+import DrawCard from './drawcard.js';
 
 export default class GameMode {
   constructor(iris) {
@@ -7,6 +7,7 @@ export default class GameMode {
     this.colors = {
       background: '#ccdd99'
     };
+    this.drawCard = new DrawCard(this.iris);
     this._setup();
   }
 
@@ -70,7 +71,7 @@ export default class GameMode {
 
     this.layout = {
       card: {
-        bounds: [153, 532, 144, 240],
+        bounds: this.drawCard.getBounds([153, 532]),
         label: 'card',
       },
       tilearea: {
@@ -172,11 +173,11 @@ export default class GameMode {
     });
 
     // card area
-    this.layout.card.text = this.iris.addText(this.layout.card.label, this.layout.card.bounds);
+    this.drawCard.setupText();
     let onClick = () => {
-      this.pattern.rotate();
+      this.drawCard.rotate();
     }
-    this.iris.areas.addBounds(this.layout.card.bounds, onClick, this._onDragCard.bind(this));
+    this.iris.areas.addBounds(this.drawCard.bounds, onClick, this._onDragCard.bind(this));
 
     // resources
     this.layout.resources.forEach(resource => {
@@ -193,15 +194,14 @@ export default class GameMode {
     this.iris.addText('game<br>no-rules mode', this.layout.game.bounds);
     this.iris.addText('score', this.layout.score.bounds);
 
-    this._setCard(0);
-
     this.towns = new Towns();
+
+    this._setCard(0);
   }
 
   _setCard(i) {
     this.selectedCard = this.cards[i];
-    this.layout.card.text.textContent = this.selectedCard.name;
-    this.pattern = new Pattern(this.selectedCard.shape);
+    this.drawCard.setCard(this.towns.deck.theater);
   }
 
   _center(bounds) {
@@ -221,11 +221,10 @@ export default class GameMode {
     ctx.globalAlpha = 1.0;
     ctx.font = '10px sans-serif';
 
-    this.iris.helly.draw('card00', this.layout.card.bounds);
+    this.drawCard.draw(this.towns.deck.theater);
     let shape = this.selectedCard.shape
     let position = this._center(this.layout.card.bounds);
     position[1] += 34;
-    this.pattern.draw(this.iris.context, position);
 
     this.iris.helly.draw('board', this.layout.tilearea.bounds);
 
@@ -256,6 +255,30 @@ export default class GameMode {
       let start = this.iris.areas.start;
       this.iris.helly.draw(`bicon${String(card.id).padStart(2, '0')}`, this._center(card.bounds));
     });
+
+    if (false) {
+      // board matches
+      let fakeTiles = [
+        [ 2, 3, 7 ],
+        [ 9, 12, 13, 14 ],
+      ];
+      let fakeCards = [ 1, 4];
+      let count = fakeTiles.length;
+      let pulse = 1.0;
+      let i = Math.floor(this.iris.time / pulse) % count
+      let t = fakeTiles[i];
+      let c = fakeCards[i];
+      let duty = 0.8;
+      if (this.iris.time % pulse < pulse * duty) {
+        t.forEach(id => {
+          const tile = this.layout.tiles[id];
+          ctx.strokeStyle = 'cyan';
+          ctx.lineWidth = 6;
+          ctx.strokeRect(...tile.bounds);
+        });
+        ctx.strokeRect(...this.layout.cards[c].bounds);
+      }
+    }
 
     // cursor
     if (this.iris.areas.start && this.dragMeeple) {

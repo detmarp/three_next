@@ -24,7 +24,7 @@ export default class Gameloop {
       this.lastFrameTime = currentTime;
       this.time += dt;
       this.frame++;
-      this.update(dt);
+      this.update(this.time, dt);
     }
 
     requestAnimationFrame(() => this._doFrame());

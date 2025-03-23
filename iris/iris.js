@@ -5,6 +5,8 @@ import Settings from './settings.js';
 
 export default class Iris {
   constructor() {
+    this.time = 0;
+    this.dt = 1/60;
   }
 
   load1(callback) {
@@ -100,7 +102,10 @@ export default class Iris {
     return [x, y];
   }
 
-  render(dt) {
+  render(time, dt) {
+    this.time = time;
+    this.dt = dt;
+
     this.textElements.forEach(textElement => {
       textElement.style.fontSize = textElement.offsetWidth / 10 + 'px';
     });

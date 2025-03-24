@@ -60,42 +60,42 @@
         "size": [128, 128],
         "offset": [64, 64]
       },
-      "bicon07": {
+      "b_pink": {
         "source": [256, 512],
         "size": [32, 32],
         "offset": [16, 16]
       },
-      "bicon03": {
+      "b_orange": {
         "source": [288, 512],
         "size": [32, 32],
         "offset": [16, 16]
       },
-      "bicon06": {
+      "b_green": {
         "source": [320, 512],
         "size": [32, 32],
         "offset": [16, 16]
       },
-      "bicon02": {
+      "b_yellow": {
         "source": [352, 512],
         "size": [32, 32],
         "offset": [16, 16]
       },
-      "bicon01": {
+      "b_blue": {
         "source": [384, 512],
         "size": [32, 32],
         "offset": [16, 16]
       },
-      "bicon05": {
+      "b_gray": {
         "source": [416, 512],
         "size": [32, 32],
         "offset": [16, 16]
       },
-      "bicon00": {
+      "b_red": {
         "source": [448, 512],
         "size": [32, 32],
         "offset": [16, 16]
       },
-      "bicon04": {
+      "b_black": {
         "source": [480, 512],
         "size": [32, 32],
         "offset": [16, 16]

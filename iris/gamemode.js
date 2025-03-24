@@ -7,73 +7,14 @@ export default class GameMode {
     this.colors = {
       background: '#ccdd99'
     };
-    this.drawCard = new DrawCard(this.iris);
+
     this._setup();
   }
 
   _setup() {
-    this.cards = [
-      {
-        name: 'red',
-        shape: [
-          "yy",
-          "bb",
-        ],
-      },
-      {
-        name: 'blue',
-        shape: [
-          "-y",
-          "rc",
-        ],
-      },
-      {
-        name: 'yellow',
-        shape: [
-          "-g-",
-          "bcb"
-        ],
-      },
-      {
-        name: 'orange',
-        shape: [
-          "--c",
-          "gcg"
-        ],
-      },
-      {
-        name: 'black',
-        shape: [
-          "b---",
-          "rggr"
-        ],
-      },
-      {
-        name: 'gray',
-        shape: [
-          "bg",
-        ],
-      },
-      {
-        name: 'green',
-        shape: [
-          "rrc",
-        ],
-      },
-      {
-        name: 'pink',
-        shape: [
-          "yb",
-          "rb",
-        ],
-      },
-    ];
+    this.towns = new Towns();
 
     this.layout = {
-      card: {
-        bounds: this.drawCard.getBounds([153, 532]),
-        label: 'card',
-      },
       tilearea: {
         bounds: [9 - 4, 200 - 3, 108 * 4, 81 * 4],
       },
@@ -168,11 +109,14 @@ export default class GameMode {
         this._setCard(card.id);
       };
       let area = this.iris.areas.addBounds(card.bounds, onCLick, this._onDragCards.bind(this));
-      area.piece = this.cards[card.id].name;
+      area.piece = this.towns.hand[card.id].card.category;
       area.type = 'card';
     });
 
     // card area
+    this.drawCard = new DrawCard(this.iris);
+    this.drawCard.getBounds([153, 532]),
+
     this.drawCard.setupText();
     let onClick = () => {
       this.drawCard.rotate();
@@ -194,14 +138,12 @@ export default class GameMode {
     this.iris.addText('game<br>no-rules mode', this.layout.game.bounds);
     this.iris.addText('score', this.layout.score.bounds);
 
-    this.towns = new Towns();
-
     this._setCard(0);
   }
 
   _setCard(i) {
-    this.selectedCard = this.cards[i];
-    this.drawCard.setCard(this.towns.deck.theater);
+    this.selectedCard = this.towns.hand[i].card;
+    this.drawCard.setCard(this.selectedCard);
   }
 
   _center(bounds) {
@@ -222,9 +164,6 @@ export default class GameMode {
     ctx.font = '10px sans-serif';
 
     this.drawCard.draw(this.towns.deck.theater);
-    let shape = this.selectedCard.shape
-    let position = this._center(this.layout.card.bounds);
-    position[1] += 34;
 
     this.iris.helly.draw('board', this.layout.tilearea.bounds);
 
@@ -251,9 +190,9 @@ export default class GameMode {
       }
     });
 
-    this.layout.cards.forEach(card => {
-      let start = this.iris.areas.start;
-      this.iris.helly.draw(`bicon${String(card.id).padStart(2, '0')}`, this._center(card.bounds));
+    this.layout.cards.forEach(c => {
+      let card = this.towns.hand[c.id].card;
+      this.iris.helly.draw(`b_${card.category}`, this._center(c.bounds));
     });
 
     if (false) {

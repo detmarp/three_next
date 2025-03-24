@@ -8,10 +8,10 @@ export default class Program {
     this.context = null;
 
     this.colors = {
-      gradientStart: '#6e6c62',
-      gradientEnd: '#bab2b8',
+      gradientStart: '#666',
+      gradientEnd: '#bbb',
       boundsBackground: '#d3d3e3',
-      canvasBackground: '#bbaa66'
+      canvasBackground: '#a63' //'#bbaa66'
     };
   }
 

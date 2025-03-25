@@ -133,6 +133,41 @@
       "card00": {
         "source": [0, 768],
         "size": [144, 240]
+      },
+      "critter0": {
+        "source": [256, 768],
+        "size": [64, 64],
+        "offset": [32, 58]
+      },
+      "critter1": {
+        "source": [320, 768],
+        "size": [64, 64],
+        "offset": [32, 58]
+      },
+      "critter2": {
+        "source": [384, 768],
+        "size": [64, 64],
+        "offset": [32, 58]
+      },
+      "critter3": {
+        "source": [448, 768],
+        "size": [64, 64],
+        "offset": [32, 58]
+      },
+      "critter4": {
+        "source": [512, 768],
+        "size": [64, 64],
+        "offset": [32, 58]
+      },
+      "critter5": {
+        "source": [576, 768],
+        "size": [64, 64],
+        "offset": [32, 58]
+      },
+      "critter6": {
+        "source": [640, 768],
+        "size": [64, 64],
+        "offset": [32, 58]
       }
     }
   }

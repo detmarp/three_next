@@ -1,5 +1,6 @@
 import Towns from './towns.js';
 import DrawCard from './drawcard.js';
+import Critters from './critters.js';
 
 export default class GameMode {
   constructor(iris) {
@@ -139,6 +140,7 @@ export default class GameMode {
     this.iris.addText('score', this.layout.score.bounds);
 
     this._setCard(0);
+    this.critters = new Critters(this.iris);
   }
 
   _setCard(i) {
@@ -218,6 +220,8 @@ export default class GameMode {
         ctx.strokeRect(...this.layout.cards[c].bounds);
       }
     }
+
+    this.critters.render(dt);
 
     // cursor
     if (this.iris.areas.start && this.dragMeeple) {

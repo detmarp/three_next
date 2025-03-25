@@ -109,7 +109,7 @@ export default class Iris {
     this.textElements.forEach(textElement => {
       textElement.style.fontSize = textElement.offsetWidth / 10 + 'px';
     });
-    this.mode.render(dt);
+    this.mode.render(time, dt);
     this.areas._debugDraw(this.context);
   }
 }

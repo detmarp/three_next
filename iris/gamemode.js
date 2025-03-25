@@ -155,7 +155,7 @@ export default class GameMode {
     ];
   }
 
-  render(dt) {
+  render(time, dt) {
     // Reset drawing settings
     const ctx = this.iris.context;
     ctx.lineWidth = 1;
@@ -221,7 +221,7 @@ export default class GameMode {
       }
     }
 
-    this.critters.render(dt);
+    this.critters.render(time, dt);
 
     // cursor
     if (this.iris.areas.start && this.dragMeeple) {

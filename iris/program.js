@@ -57,8 +57,8 @@ export default class Program {
 
     this.onResize();
 
-    this.gameLoop = new GameLoop(dt => {
-      this._doFrame(dt);
+    this.gameLoop = new GameLoop((time, dt) => {
+      this._doFrame(time, dt);
     });
     this.gameLoop.run();
   }
@@ -133,7 +133,7 @@ export default class Program {
     this.bounds.style.transform = 'translate(-50%, -50%)';
   }
 
-  _doFrame(dt) {
+  _doFrame(time, dt) {
     const saveTransform = this.context.getTransform();
     this.context.setTransform(1, 0, 0, 1, 0, 0);
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -141,6 +141,6 @@ export default class Program {
     this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
     this.context.setTransform(saveTransform);
 
-    this.iris.render(dt);
+    this.iris.render(time, dt);
   }
 }

@@ -6,4 +6,8 @@ export default class TownsBoard {
   _clear() {
     this.tiles = new Array(16).fill(null).map(() => ({}));
   }
+
+  countUsed() {
+    return this.tiles.filter(tile => tile.building || tile.resource).length;
+  }
 }

@@ -8,7 +8,7 @@ export default class DrawCard {
   }
 
   getSprites(time, dt) {
-    let target = this.iris.mode.towns.board.countUsed() + 4;
+    let target = this.iris.mode.towns.board.countUsed() * 2 + 1;
 
     if (this.critters.length < target) {
       this.critters.push(this._makeCritter());

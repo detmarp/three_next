@@ -184,30 +184,6 @@ export default class GameMode {
       this.iris.helly.draw(`b_${card.category}`, this._center(c.bounds));
     });
 
-    if (false) {
-      // board matches
-      let fakeTiles = [
-        [ 2, 3, 7 ],
-        [ 9, 12, 13, 14 ],
-      ];
-      let fakeCards = [ 1, 4];
-      let count = fakeTiles.length;
-      let pulse = 1.0;
-      let i = Math.floor(this.iris.time / pulse) % count
-      let t = fakeTiles[i];
-      let c = fakeCards[i];
-      let duty = 0.8;
-      if (this.iris.time % pulse < pulse * duty) {
-        t.forEach(id => {
-          const tile = this.layout.tiles[id];
-          ctx.strokeStyle = 'cyan';
-          ctx.lineWidth = 6;
-          ctx.strokeRect(...tile.bounds);
-        });
-        ctx.strokeRect(...this.layout.cards[c].bounds);
-      }
-    }
-
     // Get all the board objects, sort them, then draw them
     let things = [];
     for (let i = 0; i < 16; i++) {

@@ -67,6 +67,19 @@ export default class Program {
     this.helly.draw('riverstr', this._gridToWorld([2, 8]));
     this.helly.draw('riverstr2', this._gridToWorld([4, 8]));
 
+    this.helly.draw('redx', [500, 500]);
+    this.helly.draw('greenr', [500, 500]);
+    this.helly.draw('redx', [550, 500]);
+    this.helly.draw('greenr', [550, 500], { hflip: true });
+    this.helly.draw('redx', [600, 500]);
+    this.helly.draw('greenr', [600, 500], { scale: 0.75, alpha: 0.5 });
+    this.helly.draw('redx', [650, 500]);
+    this.helly.draw('greenr', [650, 500], { hflip: true, scale: 0.75 });
+    this.helly.draw('redx', [700, 500]);
+    this.helly.draw('greenr', [700, 500], { scale: 0.5 });
+    this.helly.draw('redx', [750, 500]);
+    this.helly.draw('greenr', [750, 500], { scale: 0.5, rotate: 0.2 });
+
     requestAnimationFrame((timestamp) => this.doFrame(timestamp));
   }
 

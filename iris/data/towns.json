@@ -134,38 +134,53 @@
         "source": [0, 768],
         "size": [144, 240]
       },
-      "critter0": {
+      "critter00": {
         "source": [256, 768],
         "size": [64, 64],
         "offset": [32, 58]
       },
-      "critter1": {
+      "critter01": {
         "source": [320, 768],
         "size": [64, 64],
         "offset": [32, 58]
       },
-      "critter2": {
+      "critter02": {
         "source": [384, 768],
         "size": [64, 64],
         "offset": [32, 58]
       },
-      "critter3": {
+      "critter03": {
         "source": [448, 768],
         "size": [64, 64],
         "offset": [32, 58]
       },
-      "critter4": {
+      "critter04": {
         "source": [512, 768],
         "size": [64, 64],
         "offset": [32, 58]
       },
-      "critter5": {
+      "critter05": {
         "source": [576, 768],
         "size": [64, 64],
         "offset": [32, 58]
       },
-      "critter6": {
+      "critter06": {
         "source": [640, 768],
+        "size": [64, 64],
+        "offset": [32, 58]
+      },
+      "critter07": {
+        "source": [704, 768],
+        "size": [64, 64],
+        "offset": [32, 58]
+      },
+      "critter08": {
+        "source": [256, 832],
+        "size": [64, 64],
+        "offset": [32, 58]
+      },
+      "critter09": {
+        "source": [320, 832],
         "size": [64, 64],
         "offset": [32, 58]
       }

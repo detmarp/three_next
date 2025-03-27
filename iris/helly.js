@@ -1,4 +1,4 @@
-// Version 2025-03-04
+// Version 2025-03-26
 
 import HellyLoad from './hellyload.js';
 
@@ -98,18 +98,19 @@ export default class Helly extends EventTarget {
     this.time += dt;
   }
 
-  draw(drawable, position, alpha) {
+  draw(drawable, position, meta) {
     if (typeof drawable === 'string') {
       if (this.sprites.has(drawable)) {
-        this.drawSprite(this.sprites.get(drawable), position, alpha);
+        this.drawSprite(this.sprites.get(drawable), position, meta);
         return;
       }
       if (this.anims.has(drawable)) {
-        this.drawAnim(this.anims.get(drawable), position, alpha);
+        this.drawAnim(this.anims.get(drawable), position, meta);
         return;
       }
     }
 
+    position = position || this._getMetaData(null, meta, 'position') || [0, 0];
     if (drawable !== null && typeof drawable === 'object') {
       if (drawable.type === 'image') {
         this.context.drawImage(this.images.get(drawable.image), ...position);
@@ -125,28 +126,44 @@ export default class Helly extends EventTarget {
     this.context.fillRect(...position, ...size);
   }
 
-  drawSprite(sprite, position = [0,0], alpha) {
+  drawSprite(sprite, position, meta) {
     if (!sprite.image && sprite.imageName) {
       sprite.image = this.images.get(sprite.imageName);
       return;
     }
+    position = position || this._getMetaData(sprite, meta, 'position') || [0, 0];
     if (!sprite.image) {
       this.drawColor(position, sprite.size);
       return;
     }
-    alpha = alpha || sprite.alpha || 1;
-    this.context.globalAlpha = alpha;
-    const source = sprite.source;
+
+    let alpha = this._getMetaData(sprite, meta, 'alpha') ?? 1;
+    let scale = this._getMetaData(sprite, meta, 'scale') ?? 1;
+    let scalex = scale;
+    let scaley = scale;
+    if (this._getMetaData(sprite, meta, 'hflip')) scalex *= -1;
     let offset = sprite.offset || [0, 0];
+    let angle = this._getMetaData(sprite, meta, 'rotate') || 0;
+
+    const source = sprite.source;
+
+    let destSize = [sprite.size[0] * scalex, sprite.size[1] * scaley];
+
+    this.context.save();
+    this.context.globalAlpha = alpha;
+    this.context.translate(...position);
+    this.context.scale(scalex, scaley);
+    this.context.rotate(angle);
     this.context.drawImage(sprite.image,
       ...source,
       ...sprite.size,
-      position[0] - offset[0], position[1] - offset[1],
-      ...sprite.size);
-    this.context.globalAlpha = 1;
-    }
+      ...[-offset[0], -offset[1]],
+      ...sprite.size
+    );
+    this.context.restore();
+  }
 
-  drawAnim(anim, position = [0,0], alpha) {
+  drawAnim(anim, position, meta) {
     let n = anim.frames.length;
     let fps = anim.fps || 10;
     let duration = 1 / fps;
@@ -158,7 +175,16 @@ export default class Helly extends EventTarget {
     this.draw(frame, position);
     if (anim.crossfade) {
       let nextFrame = anim.frames[j];
-      this.draw(nextFrame, position, f);
+      this.draw(nextFrame, position, {alpha: f});
+    }
+  }
+
+  _getMetaData(item, meta, key) {
+    if (item && item.type === 'object' && key in item) {
+      return item[key];
+    }
+    if (meta && key in meta) {
+      return meta[key];
     }
   }
 

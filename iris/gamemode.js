@@ -169,19 +169,6 @@ export default class GameMode {
 
     this.iris.helly.draw('board', this.layout.tilearea.bounds);
 
-    for (let i = 0; i < 16; i++) {
-      let board = this.towns.board.tiles[i];
-      let square = this.layout.tiles[i];
-      if (board.building) {
-        const b = this._buildingToSprite(board.building);
-        this.iris.helly.draw(b, this._center(square.bounds));
-      }
-      if (board.resource) {
-        const r = this._resourceToSprite(board.resource);
-        this.iris.helly.draw(r, this._center(square.bounds));
-      }
-    }
-
     this.layout.resources.forEach(resource => {
       const resourceId = `resource${String(resource.id).padStart(2, '0')}`;
       let start = this.iris.areas.start;
@@ -221,7 +208,28 @@ export default class GameMode {
       }
     }
 
-    this.critters.render(time, dt);
+    // Get all the board objects, sort them, then draw them
+    let things = [];
+    for (let i = 0; i < 16; i++) {
+      let board = this.towns.board.tiles[i];
+      let square = this.layout.tiles[i];
+      if (board.building) {
+        const b = this._buildingToSprite(board.building);
+        things.push([b, { position: this._center(square.bounds)}]);
+      }
+      if (board.resource) {
+        const r = this._resourceToSprite(board.resource);
+        things.push([r, { position:   this._center(square.bounds)}]);
+      }
+    }
+    let critters = this.critters.getSprites(time, dt);
+    critters.forEach(critter => {
+      things.push(critter);
+    });
+    things.sort((a, b) => a[1].position[1] - b[1].position[1]);
+    things.forEach(([sprite, meta]) => {
+      this.iris.helly.draw(sprite, null, meta);
+    });
 
     // cursor
     if (this.iris.areas.start && this.dragMeeple) {

@@ -137,7 +137,8 @@ export default class GameMode {
 
     // other areas
     this.iris.addText('game<br>no-rules mode', this.layout.game.bounds);
-    this.iris.addText('score', this.layout.score.bounds);
+    this.score = this.iris.addText('', this.layout.score.bounds);
+    this._showScore();
 
     this._setCard(0);
     this.critters = new Critters(this.iris);
@@ -333,14 +334,18 @@ export default class GameMode {
     if (resource) {
       this.towns.board.tiles[tile].resource = null;
       let meeple = this._getMeeple(resource);
+      this._showScore();
       return meeple;
     }
     let building = this.towns.board.tiles[tile].building;
     if (building) {
       this.towns.board.tiles[tile].building = null;
       let meeple = this._getMeeple(building);
+      this._showScore();
       return meeple;
     }
+
+    this._showScore();
   }
 
   _placeMeeple(meeple, tile) {
@@ -354,5 +359,23 @@ export default class GameMode {
     if (meeple.type === 'resource') {
       this.towns.board.tiles[tile].resource = meeple.name;
     }
+
+    this._showScore();
+  }
+
+  _showScore() {
+    let s = this.towns.getScore();
+    let score =
+      `score:${s.total}<br>` +
+      `red:${s.red} ` +
+      `blue:${s.blue}<br>` +
+      `yellow:${s.yellow} ` +
+      `orange:${s.orange}<br>` +
+      `black:${s.black} ` +
+      `gray:${s.gray}<br>` +
+      `green:${s.green} ` +
+      `pink:${s.pink}<br>` +
+      `unused:${s.unused}<br>`;
+    this.score.innerHTML = score;
   }
 }

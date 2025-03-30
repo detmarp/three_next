@@ -21,44 +21,52 @@
         "size": [440, 330]
       },
       "building00": {
+        "_hint": "red",
         "source": [512, 0],
         "size": [128, 128],
         "offset": [64, 64]
       },
       "building01": {
+        "_hint": "blue",
         "source": [640, 0],
         "size": [128, 128],
         "offset": [64, 64]
       },
       "building02": {
+        "_hint": "yellow",
         "source": [768, 0],
-        "size": [128, 128],
+        "size": [128, 96],
         "offset": [64, 64]
       },
       "building03": {
+        "_hint": "green",
         "source": [896, 0],
-        "size": [128, 128],
+        "size": [128, 96],
         "offset": [64, 64]
       },
       "building04": {
+        "_hint": "black",
         "source": [512, 128],
         "size": [128, 128],
         "offset": [64, 64]
       },
       "building05": {
+        "_hint": "gray",
         "source": [640, 128],
         "size": [128, 128],
         "offset": [64, 64]
       },
       "building06": {
-        "source": [768, 128],
+        "_hint": "orange",
+        "source": [768, 96],
         "size": [128, 128],
-        "offset": [64, 64]
+        "offset": [64, 96]
       },
       "building07": {
-        "source": [896, 128],
+        "_hint": "pink",
+        "source": [896, 96],
         "size": [128, 128],
-        "offset": [64, 64]
+        "offset": [64, 96]
       },
       "b_pink": {
         "source": [256, 512],
@@ -183,6 +191,15 @@
         "source": [320, 832],
         "size": [64, 64],
         "offset": [32, 58]
+      },
+      "critter10": {
+        "source": [384, 832],
+        "size": [64, 64],
+        "offset": [32, 58]
+      },
+      "logo": {
+        "source": [256, 576],
+        "size": [83, 52]
       }
     }
   }

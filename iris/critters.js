@@ -41,7 +41,7 @@ export default class DrawCard {
     let delta = [side ? 1 : -1, 0];
     let c = {
       position: [x, y],
-      type: Math.floor(Math.random() * 10),
+      type: Math.floor(Math.random() * 11),
       speed: this.speed + Math.random() * 0.2 - 0.1,
       delta: delta,
     };
@@ -133,7 +133,7 @@ export default class DrawCard {
   }
 
   _toWorld(grid) {
-    const top = 204;
+    const top = 144;
     const left = 12;
     const w = 106;
     const h = 80;

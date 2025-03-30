@@ -3,11 +3,11 @@ export default class Pattern {
   constructor(shape) {
     this.shape = shape;
     this.colors = {
-      y: '#eecc00',
-      r: 'red',
-      c: '#1155dd',
-      g: 'gray',
-      b: 'brown',
+      y: '#fab535',
+      r: '#f65f44',
+      c: '#006f9c', // cyan
+      g: '#8d8270',
+      b: '#482f2a', // brown
     };
   }
 
@@ -26,7 +26,7 @@ export default class Pattern {
     const w = Math.max(...this.shape.map(row => row.length));
     const h = this.shape.length;
     const max = Math.max(w, h);
-    const size = 19;
+    const size = 23;
     const x = position[0] - w * size / 2;
     const y = position[1] - h * size / 2;
 

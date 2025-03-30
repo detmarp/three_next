@@ -4,8 +4,9 @@ export default class DrawCard {
   constructor(iris) {
     this.iris = iris;
     this.context = iris.context;
-    this.w = 144;
-    this.h = 240;
+    this.scale = 1.3;
+    this.w = 144 * this.scale;
+    this.h = 240 * this.scale;
   }
 
   getBounds(position) {
@@ -21,16 +22,21 @@ export default class DrawCard {
   }
 
   draw(card) {
-    this.iris.helly.draw('card00', this.bounds);
-    let center = this._center(this.bounds, [0, 30]);
+    let meta = {
+      position: this.bounds,
+      scale: this.scale,
+    };
+    this.iris.helly.draw('card00', null, meta);
+    let center = this._center(this.bounds, [0, 43]);
     this.pattern.draw(this.context, center);
   }
 
   setupText() {
     let upper = [...this.bounds];
+    upper[0] += 4;
+    upper[1] += 4;
     this.text1 = this.iris.addText('', upper);
-    let lower = [...this.bounds];
-    lower[1] += 200;
+    let lower = [this.bounds[0] + 5, this.bounds[1] + 258, this.w, this.h];
     this.text2 = this.iris.addText('', lower);
   }
 

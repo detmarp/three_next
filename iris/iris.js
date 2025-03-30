@@ -35,22 +35,22 @@ export default class Iris {
 
     this.areas = new Areas(this);
 
-    const link = document.createElement('link');
-    link.href = 'https://fonts.googleapis.com/css2?family=Lilita+One&display=swap';
-    link.rel = 'stylesheet';
-    document.head.appendChild(link);
+    //const link = document.createElement('link');
+    //link.href = 'https://fonts.googleapis.com/css2?family=Lilita+One&display=swap';
+    //link.rel = 'stylesheet';
+    //document.head.appendChild(link);
 
     this._reset();
 
-    let title = this.addText(`Tiny Towns`, [(450 - 320)/2, 5, 320, 40]);
-    title.style.fontFamily = 'Lilita One';
-    title.style.textAlign = 'center';
-    title.style.color = 'brown';
-    title.style.backgroundColor = '#f5f5dc';
-    title.style.display = 'flex';
-    title.style.alignItems = 'center';
-    title.style.justifyContent = 'center';
-    title.style.borderRadius = '6px';
+    //let title = this.addText(`Tiny Towns`, [(450 - 320)/2, 5, 320, 40]);
+    //title.style.fontFamily = 'Lilita One';
+    //title.style.textAlign = 'center';
+    //title.style.color = 'brown';
+    //title.style.backgroundColor = '#f5f5dc';
+    //title.style.display = 'flex';
+    //title.style.alignItems = 'center';
+    //title.style.justifyContent = 'center';
+    //title.style.borderRadius = '6px';
 
     this.helly = new Helly(this.context);
     this.helly.load('data/contents.json');
@@ -106,10 +106,47 @@ export default class Iris {
     this.time = time;
     this.dt = dt;
 
+    // Reset drawing settings
+    this.context.lineWidth = 1;
+    this.context.strokeStyle = '#000';
+    this.context.fillStyle = '#000';
+    this.context.setLineDash([]);
+    this.context.globalAlpha = 1.0;
+    this.context.font = '10px sans-serif';
+
+    this._fillBackground();
+
     this.textElements.forEach(textElement => {
       textElement.style.fontSize = textElement.offsetWidth / 11 + 'px';
     });
     this.mode.render(time, dt);
     this.areas._debugDraw(this.context);
+  }
+
+  _fillBackground() {
+    this.colors = {
+      top: '#bc831c',
+      gradient1a: '#3570b7',
+      gradient1b: '#a2dded',
+      gradient2a: '#e5ebf0',
+      gradient2b: '#eef',
+    };
+    const y0 = 40
+    const y1 = 165;
+
+    const gradient0 = this.context.createLinearGradient(0, 0, 0, y1);
+    gradient0.addColorStop(0, this.colors.gradient1a);
+    gradient0.addColorStop(1, this.colors.gradient1b);
+    this.context.fillStyle = gradient0;
+    this.context.fillRect(0, 0, this.canvas.width, y1);
+
+    this.context.fillStyle = this.colors.top;
+    this.context.fillRect(0, 0, this.canvas.width / 2, y0);
+
+    const gradient1 = this.context.createLinearGradient(0, y1, 0, this.canvas.height);
+    gradient1.addColorStop(0, this.colors.gradient2a);
+    gradient1.addColorStop(1, this.colors.gradient2b);
+    this.context.fillStyle = gradient1;
+    this.context.fillRect(0, y1, this.canvas.width, this.canvas.height - y1);
   }
 }

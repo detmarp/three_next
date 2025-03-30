@@ -6,7 +6,8 @@ export default class GameMode {
   constructor(iris) {
     this.iris = iris;
     this.colors = {
-      background: '#ccdd99'
+      background: '#ccdd99',
+      scoreBackground: '#edc',
     };
 
     this._setup();
@@ -17,7 +18,7 @@ export default class GameMode {
 
     this.layout = {
       tilearea: {
-        bounds: [9 - 4, 200 - 3, 108 * 4, 81 * 4],
+        bounds: [5, 140, 108 * 4, 81 * 4],
       },
       tiles: [],
       cards: [],
@@ -26,7 +27,7 @@ export default class GameMode {
         bounds: [5, 48, 218, 144],
       },
       score: {
-        bounds: [226, 48, 220, 144],
+        bounds: [270, 10, 220, 144],
       },
     };
 
@@ -35,7 +36,7 @@ export default class GameMode {
       const w = 108;
       const h = 81;
       const left = 9;
-      const top = 200;
+      const top = 140;
       for (let row = 0; row < 4; row++) {
         for (let col = 0; col < 4; col++) {
           const x = left + col * w;
@@ -53,15 +54,20 @@ export default class GameMode {
 
     // layout for cards
     {
-      const w = 66;
-      const h = 60;
-      const left = 9;
-      const top = 532;
+      const w = 78;
+      const h = 68;
+      const left = 8;
+      const top = 480;
       let i = 0;
       for (let row = 0; row < 4; row++) {
         for (let col = 0; col < 2; col++) {
+          let id = row * 2 + col;
+          let stagger = (col % 2 === 0) ? 15 : 0;
+          if (id == 7) {
+            stagger += 25;
+          }
           const x = left + col * w;
-          const y = top + row * h;
+          const y = top + row * h + stagger;
           let card = {
             bounds: [x, y, w, h],
             id: i
@@ -75,14 +81,15 @@ export default class GameMode {
     // layout for resources
     {
       const w = 66;
-      const h = 48;
-      const left = 350;
-      const top = 532;
+      const h = 54;
+      const left = 370;
+      const top = 490;
+      const stagger = 7;
       let i = 0;
       const names = ['wheat', 'stone', 'brick', 'wood', 'glass'];
       for (let row = 0; row < 5; row++) {
         for (let col = 0; col < 1; col++) {
-            const x = left + (row % 2 === 0 ? -1/3 * w : 1/3 * w);
+            const x = left + (row % 2 === 0 ? -stagger : stagger);
           const y = top + row * h;
           let resource = {
             bounds: [x, y, w, h],
@@ -105,7 +112,7 @@ export default class GameMode {
 
     // cards
     this.layout.cards.forEach(card => {
-      card.text = this.iris.addText(`${card.id}`, card.bounds);
+      //card.text = this.iris.addText(`${card.id}`, card.bounds);
       let onCLick = () => {
         this._setCard(card.id);
       };
@@ -116,7 +123,7 @@ export default class GameMode {
 
     // card area
     this.drawCard = new DrawCard(this.iris);
-    this.drawCard.getBounds([153, 532]),
+    this.drawCard.getBounds([175, 480]),
 
     this.drawCard.setupText();
     let onClick = () => {
@@ -126,7 +133,7 @@ export default class GameMode {
 
     // resources
     this.layout.resources.forEach(resource => {
-      resource.text = this.iris.addText(`${resource.id}`, resource.bounds);
+      //resource.text = this.iris.addText(`${resource.id}`, resource.bounds);
       let onClick = () => {
         //this._setCard(resource.id);
       };
@@ -137,7 +144,14 @@ export default class GameMode {
 
     // other areas
     this.iris.addText('game<br>no-rules mode', this.layout.game.bounds);
-    this.score = this.iris.addText('', this.layout.score.bounds);
+
+    const scoreTextBounds = [225 - 200, 5, 400, 60];
+    this.scoreText = this.iris.addText('00', scoreTextBounds);
+    this.scoreText.style.textAlign = 'center';
+    this.scoreText.style.display = 'block';
+    this.scoreText.style.margin = '0 auto';
+
+    this.score2 = this.iris.addText('', this.layout.score.bounds);
     this._showScore();
 
     this._setCard(0);
@@ -149,22 +163,23 @@ export default class GameMode {
     this.drawCard.setCard(this.selectedCard);
   }
 
-  _center(bounds) {
+  _center(bounds, offset = [0,0]) {
     return [
-      bounds[0] + bounds[2] / 2,
-      bounds[1] + bounds[3] / 2,
+      bounds[0] + bounds[2] / 2 + offset[0],
+      bounds[1] + bounds[3] / 2 + offset[1]
     ];
   }
 
   render(time, dt) {
-    // Reset drawing settings
-    const ctx = this.iris.context;
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = '#000';
-    ctx.fillStyle = '#000';
-    ctx.setLineDash([]);
-    ctx.globalAlpha = 1.0;
-    ctx.font = '10px sans-serif';
+    this.iris.helly.draw('logo', [2, 2]);
+
+    const centerX = this.layout.tilearea.bounds[0] + this.layout.tilearea.bounds[2] / 2;
+    const centerY = 20;
+    const radius = 40;
+    this.iris.context.beginPath();
+    this.iris.context.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+    this.iris.context.fillStyle = this.colors.scoreBackground;
+    this.iris.context.fill();
 
     this.drawCard.draw(this.towns.deck.theater);
 
@@ -182,7 +197,14 @@ export default class GameMode {
 
     this.layout.cards.forEach(c => {
       let card = this.towns.hand[c.id].card;
-      this.iris.helly.draw(`b_${card.category}`, this._center(c.bounds));
+      let meeple = this._getMeeple(card.category);
+      let start = this.iris.areas.start;
+      if (start && start.type === 'card' && start.piece === card.category) {
+        // dont draw when dragging start area is this one
+        return;
+      }
+      //this.iris.helly.draw(`b_${card.category}`, this._center(c.bounds));
+      this.iris.helly.draw(meeple.sprite, this._center(c.bounds, [0, 25]));
     });
 
     // Get all the board objects, sort them, then draw them
@@ -216,8 +238,8 @@ export default class GameMode {
 
   _buildingToSprite(building) {
     const map = { 'red': 'building00', 'blue': 'building01',
-      'yellow': 'building02', 'orange': 'building03', 'black': 'building04',
-      'gray': 'building05', 'green': 'building06', 'pink': 'building07'
+      'yellow': 'building02', 'green': 'building03', 'black': 'building04',
+      'gray': 'building05', 'orange': 'building06', 'pink': 'building07'
      };
     if (building in map) {
       return map[building];
@@ -247,10 +269,10 @@ export default class GameMode {
       red: 'building00',
       blue: 'building01',
       yellow: 'building02',
-      orange: 'building03',
+      green: 'building03',
       black: 'building04',
       gray: 'building05',
-      green: 'building06',
+      orange: 'building06',
       pink: 'building07',
     };
 
@@ -365,8 +387,11 @@ export default class GameMode {
 
   _showScore() {
     let s = this.towns.getScore();
-    let score =
-      `score:${s.total}<br>` +
+
+    let score1 = `${s.total}`;
+    this.scoreText.innerHTML = score1;
+
+    let score2 =
       `red:${s.red} ` +
       `blue:${s.blue}<br>` +
       `yellow:${s.yellow} ` +
@@ -376,6 +401,6 @@ export default class GameMode {
       `green:${s.green} ` +
       `pink:${s.pink}<br>` +
       `unused:${s.unused}<br>`;
-    this.score.innerHTML = score;
+    this.score2.innerHTML = score2;
   }
 }

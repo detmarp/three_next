@@ -134,12 +134,8 @@ export default class Program {
   }
 
   _doFrame(time, dt) {
-    const saveTransform = this.context.getTransform();
     this.context.setTransform(1, 0, 0, 1, 0, 0);
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.context.fillStyle = this.colors.canvasBackground;
-    this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    this.context.setTransform(saveTransform);
 
     this.iris.render(time, dt);
   }

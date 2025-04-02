@@ -1,4 +1,5 @@
 // A drawing helper for city card patterns
+// The square shapes on the card face
 export default class Pattern {
   constructor(shape) {
     this.shape = shape;

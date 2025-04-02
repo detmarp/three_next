@@ -1,6 +1,7 @@
 import Towns from './towns.js';
 import DrawCard from './drawcard.js';
 import Critters from './critters.js';
+import Placement from './placements.js';
 
 export default class GameMode {
   constructor(iris) {
@@ -152,10 +153,12 @@ export default class GameMode {
     this.scoreText.style.margin = '0 auto';
 
     this.score2 = this.iris.addText('', this.layout.score.bounds);
-    this._showScore();
 
     this._setCard(0);
     this.critters = new Critters(this.iris);
+    this.placement = new Placement(this.iris, this.towns);
+
+    this._showScore();
   }
 
   _setCard(i) {
@@ -230,6 +233,8 @@ export default class GameMode {
       this.iris.helly.draw(sprite, null, meta);
     });
 
+    this.placement.draw(time, dt);
+
     // cursor
     if (this.iris.areas.start && this.dragMeeple) {
       this.iris.helly.draw(this.dragMeeple.sprite, this.iris.areas.position);
@@ -298,7 +303,6 @@ export default class GameMode {
   }
 
   _onDragBoard(action, area) {
-    console.log(`Drag board ${action} ${JSON.stringify(area)}`);
     if (action === 'start') {
       let meeple = this._pickMeeple(area.id);
       if (meeple) {
@@ -310,7 +314,6 @@ export default class GameMode {
   }
 
   _onDragCard(action, area) {
-    console.log(`Drag card ${action} ${JSON.stringify(area)}`);
     if (action === 'start') {
       this.dragMeeple = this._getMeeple(this.selectedCard.name);
       return true;
@@ -319,7 +322,6 @@ export default class GameMode {
   }
 
   _onDragCards(action, area) {
-    console.log(`Drag cards ${action} ${JSON.stringify(area)}`);
     if (action === 'start') {
       this.dragMeeple = this._getMeeple(area.piece);
       return true;
@@ -328,7 +330,6 @@ export default class GameMode {
   }
 
   _onDragResource(action, area) {
-    console.log(`Drag board ${action} ${JSON.stringify(area)}`);
     if (action === 'start') {
       this.dragMeeple = this._getMeeple(area.piece);
       return true;
@@ -402,5 +403,7 @@ export default class GameMode {
       `pink:${s.pink}<br>` +
       `unused:${s.unused}<br>`;
     this.score2.innerHTML = score2;
+
+    this.placement.find();
   }
 }

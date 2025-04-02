@@ -90,7 +90,10 @@ export default class DrawCard {
     critter.position = [x, y];
     //this._setTarget(critter);
 
-    critter.hflip = critter.delta[0] < 0;
+    if (critter.delta[0]) {
+      // only set if actually walking horizontal
+      critter.hflip = critter.delta[0] < 0;
+    }
 
     if (x < -0.5 || x > 4.5) {
       // out of bounds

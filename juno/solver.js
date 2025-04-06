@@ -15,6 +15,25 @@ export default class Solver {
       { n: 9, template: [[1,1,1,0],[0,0,1,1]] },  // lightning
     ];
 
+    this.pieces.forEach(piece => {
+      piece.code = piece.n + 1;
+    });
+
+    this.pieces.forEach(piece => {
+      piece.shapes = [];
+      let set = new Set();
+      for (let turn = 0; turn < 4; turn++) {
+        for (let flip = 0; flip < 2; flip++) {
+          let shape = this._rotate(piece.template, turn, flip);
+          let code = JSON.stringify(shape);
+          if (!set.has(code)) {
+            set.add(code);
+            piece.shapes.push(shape);
+          }
+        }
+      }
+    });
+
     this._setup();
 
   }
@@ -110,12 +129,10 @@ export default class Solver {
   _rotate(template, turn, flip) {
     let shape = template.map(row => [...row]);
 
-    // Apply horizontal flip if needed
     if (flip) {
       shape = shape.map(row => row.reverse());
     }
 
-    // Apply rotations
     for (let t = 0; t < turn; t++) {
       shape = shape[0].map((_, colIndex) =>
         shape.map(row => row[colIndex])
@@ -183,12 +200,22 @@ export default class Solver {
   }
 
   tryNext() {
+    this._tryNextInternal();
+    this._tryNextInternal();
+    this._tryNextInternal();
+    this._tryNextInternal();
+    this._tryNextInternal();
+  }
+
+  _tryNextInternal() {
     if (this.hand.size === 0) {
       return;
     }
 
-    let count = 7 * 8 * 4 * 2;
     let p = Array.from(this.hand)[Math.floor(Math.random() * this.hand.size)];
+    let piece = this.pieces[p];
+    let count = 7 * 8 * piece.shapes.length;
+
     let n = Math.floor(Math.random() * count);
 
     for (var i = 0; i < count; i++) {
@@ -200,35 +227,47 @@ export default class Solver {
 
     // If no solution found, remove one, and try again
     this._tryRemove();
+    if (Math.random() < 0.2) {
+      this._tryRemove();
+    }
   }
 
   _tryRemove() {
-    if (this.played.size > 1) {
-      let q = Array.from(this.played)[Math.floor(Math.random() * this.played.size)];
-      this.played.delete(q);
-      this.hand.add(q);
-      let piece = this.pieces[q];
+    let n = this.played.size;
+    if (n > 0) {
+      let q = n - 1; // the last piece tried
+      if (Math.random() < 0.1) {
+        q = Math.floor(Math.random() * n);
+      }
+      let id = Array.from(this.played)[q];
+      this.played.delete(id);
+      this.hand.add(id);
+      let piece = this.pieces[id];
       this._remove(piece.shape, [piece.x, piece.y]);
     }
   }
 
   _tryThisOne(p, n) {
     let piece = this.pieces[p];
-    let x = n % 7;
-    let y = Math.floor(n / 7) % 8;
-    let turn = Math.floor(n / (7 * 8)) % 4;
-    let flip = Math.floor(n / (7 * 8 * 4)) % 2;
-
-    this._modify(piece, x, y, turn, flip);
+    let s = piece.shapes.length;
+    piece.shape = piece.shapes[n % s];
+    let pos = Math.floor(n / s);
+    let x = pos % 7;
+    let y = Math.floor(pos / 7);
+    piece.x = x;
+    piece.y = y;
 
     if (this._allUnused(piece)) {
       this.hand.delete(p);
       this.played.add(p);
       this._place(piece.shape, [piece.x, piece.y], piece.code);
 
-      let copy = new Set(this.unused);
-      if (this._noIslands(copy)) {
-        return true;
+      if (n != piece.lastN) {
+        let copy = new Set(this.unused);
+        if (this._noIslands(copy)) {
+          piece.lastN = n;
+          return true;
+        }
       }
 
       this._remove(piece.shape, [piece.x, piece.y]);

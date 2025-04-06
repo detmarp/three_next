@@ -53,6 +53,7 @@ export default class Solver {
     for (let p = 0; p < this.pieces.length; p++) {
       this.hand.add(p);
     }
+    this.played = new Set();
   }
 
   _clear() {
@@ -90,6 +91,22 @@ export default class Solver {
     });
   }
 
+  _remove(shape, xy) {
+    const [offsetX, offsetY] = xy;
+    shape.forEach((row, dy) => {
+      row.forEach((cell, dx) => {
+        if (cell === 1) {
+          const x = offsetX + dx;
+          const y = offsetY + dy;
+          if (x >= 0 && x < 7 && y >= 0 && y < 8) {
+            this.board[y][x] = 0;
+            this.unused.add(this._getid([x, y]));
+          }
+        }
+      });
+    });
+  }
+
   _rotate(template, turn, flip) {
     let shape = template.map(row => [...row]);
 
@@ -122,6 +139,39 @@ export default class Solver {
     return true;
   }
 
+  _noIslands(unused) {
+    const directions = [
+      [0, 1], [1, 0], [0, -1], [-1, 0] // Down, Right, Up, Left
+    ];
+
+    const floodFill = (start) => {
+      const queue = [start];
+      unused.delete(start);
+
+      while (queue.length > 0) {
+      const current = queue.shift();
+      const [x, y] = current.split('').map(Number);
+
+      for (const [dx, dy] of directions) {
+        const neighbor = `${x + dx}${y + dy}`;
+        if (unused.has(neighbor)) {
+        unused.delete(neighbor);
+        queue.push(neighbor);
+        }
+      }
+      }
+    };
+
+    if (unused.size === 0) {
+      return true;
+    }
+
+    const first = Array.from(unused)[0];
+    floodFill(first);
+
+    return unused.size === 0;
+  }
+
   _modify(piece, x, y, turn, flip) {
     let shape = this._rotate(piece.template, turn, flip);
     piece.shape = shape;
@@ -137,11 +187,33 @@ export default class Solver {
       return;
     }
 
-    let p = Array.from(this.hand)[Math.floor(Math.random() * this.hand.size)];
-    let piece = this.pieces[p];
-
     let count = 7 * 8 * 4 * 2;
+    let p = Array.from(this.hand)[Math.floor(Math.random() * this.hand.size)];
     let n = Math.floor(Math.random() * count);
+
+    for (var i = 0; i < count; i++) {
+      if (this._tryThisOne(p, n)) {
+        return;
+      }
+      n = (n + 1) % count;
+    }
+
+    // If no solution found, remove one, and try again
+    this._tryRemove();
+  }
+
+  _tryRemove() {
+    if (this.played.size > 1) {
+      let q = Array.from(this.played)[Math.floor(Math.random() * this.played.size)];
+      this.played.delete(q);
+      this.hand.add(q);
+      let piece = this.pieces[q];
+      this._remove(piece.shape, [piece.x, piece.y]);
+    }
+  }
+
+  _tryThisOne(p, n) {
+    let piece = this.pieces[p];
     let x = n % 7;
     let y = Math.floor(n / 7) % 8;
     let turn = Math.floor(n / (7 * 8)) % 4;
@@ -151,20 +223,19 @@ export default class Solver {
 
     if (this._allUnused(piece)) {
       this.hand.delete(p);
+      this.played.add(p);
       this._place(piece.shape, [piece.x, piece.y], piece.code);
+
+      let copy = new Set(this.unused);
+      if (this._noIslands(copy)) {
+        return true;
+      }
+
+      this._remove(piece.shape, [piece.x, piece.y]);
+      this.hand.add(p);
+      this.played.delete(p);
     }
 
-    /*
-    this._place(this.pieces[0], [0, 0], 1);
-    this._place(this.pieces[1], [4, 0], 2);
-    this._place(this.pieces[2], [1, 1], 3);
-    this._place(this.pieces[3], [2, 1], 4);
-    this._place(this.pieces[4], [0, 3], 5);
-    this._place(this.pieces[5], [2, 3], 6);
-    this._place(this.pieces[6], [4, 3], 7);
-    this._place(this.pieces[7], [5, 3], 8);
-    this._place(this.pieces[8], [1, 4], 9);
-    this._place(this.pieces[9], [2, 6], 10);
-    */
+    return false;
   }
 }

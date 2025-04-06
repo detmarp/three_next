@@ -34,7 +34,7 @@ export default class Program {
     for (let r = 0; r < 8; r++) {
       for (let c = 0; c < 7; c++) {
         const value = this.solver.board[r][c];
-        const color = value === 0 ? null : this.randomColors[value % this.randomColors.length];
+        const color = value < 1 ? null : this.randomColors[value % this.randomColors.length];
         let id = `${c}${r}`;
         this._setColor(id, color);
       }

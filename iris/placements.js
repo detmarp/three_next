@@ -31,54 +31,48 @@ export default class Placement {
     let i = 0;
     for (let card of hand) {
       let shape = card.shape.map(row => row.split(''));
-      let tiles = this._findRotations(board, shape);
-      if (tiles) {
+      this._findRotations(board, shape, tiles => {
         this.groups.push({
           tiles: tiles,
           building: card.building,
           card_index: i,
-        });
-      }
+        })
+      });
       i++;
     }
-    console.log(JSON.stringify(this.groups));
   }
 
-  _findRotations(board, shape) {
+  _findRotations(board, shape, onMatch) {
     for (var turn = 0; turn < 4; turn++) {
+      this._findShape(board, shape, onMatch);
       shape = shape[0].map((_, colIndex) => shape.map(row => row[colIndex]).reverse());
-      let tiles = this._findShape(board, shape);
-      if (tiles) {
-        return tiles;
-      }
     }
-    return null;
   }
 
-  _findShape(board, shape) {
+  _findShape(board, shape, onMatch) {
     let bw = board[0].length;
     let bh = board.length;
     let sw = shape[0].length;
     let sh = shape.length;
     for (let y = 0; y <= bh - sh; y++) {
       for (let x = 0; x <= bw - sw; x++) {
-      let matches = true;
-      let tiles = [];
-      for (let sy = 0; sy < sh; sy++) {
-        for (let sx = 0; sx < sw; sx++) {
-        if (shape[sy][sx] !== '-' && shape[sy][sx] !== board[y + sy][x + sx]) {
-          matches = false;
-          break;
+        let matches = true;
+        let tiles = [];
+        for (let sy = 0; sy < sh; sy++) {
+          for (let sx = 0; sx < sw; sx++) {
+            if (shape[sy][sx] !== '-' && shape[sy][sx] !== board[y + sy][x + sx]) {
+              matches = false;
+              break;
+            }
+            if (shape[sy][sx] !== '-') {
+              tiles.push((y + sy) * bw + (x + sx));
+            }
+          }
+          if (!matches) break;
         }
-        if (shape[sy][sx] !== '-') {
-          tiles.push((y + sy) * bw + (x + sx));
+        if (matches) {
+          onMatch(tiles);
         }
-        }
-        if (!matches) break;
-      }
-      if (matches) {
-        return tiles;
-      }
       }
     }
     return null;

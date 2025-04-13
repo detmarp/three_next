@@ -1,5 +1,15 @@
 import Iris from './iris.js';
 import GameLoop from './gameloop.js';
+import MyLoader from './myloader.js';
+import ScreenHome from './screenhome.js';
+import ScreenEditor from './screeneditor.js';
+import ScreenSettings from './screensettings.js';
+import ScreenNewGame from './screennewgame.js';
+
+// Pass in a top level container. We expect this to be the full screen.
+// Sets up a top-level this.bounds element
+// Gives it a canvas child
+// and a overlay child
 
 export default class Program {
   constructor(container) {
@@ -11,56 +21,62 @@ export default class Program {
       gradientStart: '#666',
       gradientEnd: '#bbb',
       boundsBackground: '#d3d3e3',
-      canvasBackground: '#a63' //'#bbaa66'
+      canvasBackground: '#a63'
     };
   }
 
   load() {
-    this.iris = new Iris();
-    this._showLoading1();
+    this.iris = new Iris(this);
 
-    this.iris.load1(() => {
-      this.load2();
+    let myLoader = new MyLoader();
+    myLoader.begin(() => {
+      this.iris.load1();
+      myLoader.end();
     });
-  }
 
-  load2() {
-    this.run();
-  }
-
-  _showLoading1() {
-    while (this.container.firstChild) {
-      this.container.removeChild(this.container.firstChild);
-    }
-    const message = document.createElement('div');
-    message.style.position = 'absolute';
-    message.style.top = '50%';
-    message.style.left = '50%';
-    message.style.transform = 'translate(-50%, -50%)';
-    message.style.color = '#222222';
-    message.style.fontFamily = 'sans-serif';
-    message.style.backgroundColor = '#eeeeee';
-    message.style.width = '100%';
-    message.style.height = '100%';
-    message.style.display = 'flex';
-    message.style.justifyContent = 'center';
-    message.style.alignItems = 'center';
-    message.innerText = 'Loading...';
-    this.container.appendChild(message);
+    myLoader.waitForAll(() => {
+      this.run();
+    });
   }
 
   run() {
     this.setDOM();
-    this.iris.init(this.context);
-
     window.addEventListener('resize', () => this.onResize());
-
     this.onResize();
-
     this.gameLoop = new GameLoop((time, dt) => {
       this._doFrame(time, dt);
     });
+
+    this.goto('home');
     this.gameLoop.run();
+  }
+
+  goto(mode) {
+    this.canvas.innerHTML = '';
+    this.overlay.innerHTML = '';
+
+    switch (mode) {
+      case 'game':
+        this.iris.init(this.context);
+        this.screen = this.iris;
+        break;
+      case 'settings':
+        this.screen = new ScreenSettings(this);
+        break;
+      case 'newgame':
+        this.screen = new ScreenNewGame(this);
+        break;
+      case 'editor':
+        this.screen = new ScreenEditor(this);
+        break;
+      default:
+        // home
+        this.screen = new ScreenHome(this);
+    }
+
+    //this.bindGameInput(this.canvas);
+    //this.bindGameInput(this.overlay);
+    this.makeOverlayInputFriendly(this.overlay);
   }
 
   setDOM() {
@@ -85,14 +101,26 @@ export default class Program {
     this.bounds.style.left = `${this.boundsMargin}px`;
     this.bounds.style.right = `${this.boundsMargin}px`;
     this.bounds.style.bottom = `${this.boundsMargin}px`;
-    //this.bounds.style.backgroundColor = this.colors.boundsBackground;
     this.container.appendChild(this.bounds);
 
     this.bounds.innerHTML = '';
+
     this.canvas = document.createElement('canvas');
     this.canvas.style.position = 'absolute';
+    this.canvas.className = 'iris-canvas';
     this.bounds.appendChild(this.canvas);
     this.context = this.canvas.getContext('2d');
+
+    this.overlay = document.createElement('div');
+    this.overlay.style.position = 'absolute';
+    this.overlay.style.top = '0';
+    this.overlay.style.left = '0';
+    this.overlay.style.width = '100%';
+    this.overlay.style.height = '100%';
+    this.overlay.className = 'iris-overlay';
+    this.overlay.style.pointerEvents = 'none';
+    this.bounds.appendChild(this.overlay);
+
     this.time = 0;
     this.scale = 1;
     this.offset = [-1, -1];
@@ -126,6 +154,12 @@ export default class Program {
     this.canvas.style.left = '50%';
     this.canvas.style.transform = 'translate(-50%, -50%)';
 
+    this.overlay.style.width = `${targetWidth * scale}px`;
+    this.overlay.style.height = `${targetHeight * scale}px`;
+    this.overlay.style.top = '50%';
+    this.overlay.style.left = '50%';
+    this.overlay.style.transform = 'translate(-50%, -50%)';
+
     this.bounds.style.width = `${targetWidth * scale + margin}px`;
     this.bounds.style.height = `${targetHeight * scale + margin}px`;
     this.bounds.style.top = '50%';
@@ -137,6 +171,31 @@ export default class Program {
     this.context.setTransform(1, 0, 0, 1, 0, 0);
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    this.iris.render(time, dt);
+    this.screen.render(time, dt);
   }
+
+  makeOverlayInputFriendly(overlayEl) {
+    // Make the overlay ignore all pointer events...
+    overlayEl.style.pointerEvents = 'none';
+
+    // ...except for interactive children
+    const allowTags = ['BUTTON', 'INPUT', 'TEXTAREA', 'SELECT', 'LABEL'];
+    allowTags.forEach(tag => {
+      const elems = overlayEl.querySelectorAll(tag);
+      elems.forEach(el => {
+        el.style.pointerEvents = 'auto';
+      });
+    });
+  }
+
+  bindGameInput(el) {
+    ['touchstart', 'touchmove', 'mousedown', 'mousemove', 'pointerdown', 'pointermove'].forEach(evt => {
+      el.addEventListener(evt, e => {
+        const tag = e.target.tagName;
+        const isUI = tag && tag.match(/BUTTON|INPUT|TEXTAREA|SELECT|LABEL/);
+        if (!isUI) e.preventDefault();
+      }, { passive: false });
+    });
+  }
+
 }

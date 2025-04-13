@@ -4,7 +4,8 @@ import GameMode from './gamemode.js';
 import Settings from './settings.js';
 
 export default class Iris {
-  constructor() {
+  constructor(program) {
+    this.program = program;
     this.time = 0;
     this.dt = 1/60;
   }
@@ -24,14 +25,6 @@ export default class Iris {
     this.textElements = [];
 
     this.canvas = context.canvas;
-    this.bottomDiv = document.createElement('div');
-    this.bottomDiv.style.position = 'absolute';
-    this.bottomDiv.style.top = `0px`;
-    this.bottomDiv.style.left = `0px`;
-    this.bottomDiv.style.width = '100%';
-    this.bottomDiv.style.height = '100%';
-    this.bottomDiv.style.pointerEvents = 'none';
-    this.canvas.parentNode.appendChild(this.bottomDiv);
 
     this.areas = new Areas(this);
 
@@ -59,16 +52,14 @@ export default class Iris {
   }
 
   _reset() {
-    while (this.bottomDiv.firstChild) {
-      this.bottomDiv.removeChild(this.bottomDiv.firstChild);
-    }
+    this.program.overlay.innerHTML = '';
     this.textElements = [];
   }
 
   addText(text, bounds) {
     const [x, y, w, h] = bounds;
     const textElement = document.createElement('div');
-    this.bottomDiv.appendChild(textElement);
+    this.program.overlay.appendChild(textElement);
 
     textElement.style.position = 'absolute';
     textElement.style.top = `${(y / 800) * 100}%`;

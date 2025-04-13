@@ -174,7 +174,11 @@ export default class GameMode {
   }
 
   render(time, dt) {
+    // logo, also exit button
     this.iris.helly.draw('logo', [2, 2]);
+    this.iris.areas.addBounds([2, 2, 80, 50], () => {
+      this.iris.program.goto('home')
+    });
 
     const centerX = this.layout.tilearea.bounds[0] + this.layout.tilearea.bounds[2] / 2;
     const centerY = 20;

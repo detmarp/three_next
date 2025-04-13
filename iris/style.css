@@ -1,11 +1,23 @@
-/* styles for desktop devices */
 body {
   font-family: 'Roboto', Arial, sans-serif;
-  touch-action: none;
-  user-select: none;
-  overscroll-behavior: none;
   overflow: hidden;
+
+  touch-action: none;        /* iris-style web game mode -- No gestures */
+  overscroll-behavior: none; /* iris-style web game mode -- No pull-to-refresh */
+  user-select: none;         /* iris-style web game mode -- No text selection */
 }
+
+.iris-canvas {
+  touch-action: none;        /* iris-style web game mode -- Disable gestures */
+}
+
+.iris-overlay {
+  touch-action: none;        /* iris-style web game mode -- Disable gestures */
+  overscroll-behavior: none; /* iris-style web game mode -- No pull-to-refresh */
+  user-select: none;         /* iris-style web game mode -- Prevent text selection */
+  pointer-events: auto;      /* iris-style web game mode -- Allow buttons to work */
+}
+
 @media only screen and (min-width: 992px) {
   body {
     font-size: 16px;

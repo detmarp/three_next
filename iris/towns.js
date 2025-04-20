@@ -2,7 +2,22 @@ import TownsBoard from './townsboard.js';
 import { makeDeck } from './townsdata.js';
 
 export default class Towns {
+
+  static create(saved) {
+    // Static creator, from saved game data
+    const towns = new Towns();
+    if (saved) {
+      towns.board.load(saved.board);
+      towns.deck = saved.deck;
+      towns.hand = saved.hand;
+      towns.score = saved.score;
+      towns.uuid = saved.uuid;
+    }
+    return towns;
+  }
+
   constructor() {
+    this.uuid = crypto.randomUUID();
     this.board = new TownsBoard();
     this.deck = makeDeck();
     this.hand = this._makeHand([
@@ -138,5 +153,15 @@ export default class Towns {
       }
     }
     return points;
+  }
+
+  getSave() {
+    let save = {
+      timestamp: Date.now(),
+      score: this.score.total,
+      version: 1,
+      uuid: this.uuid,
+    }
+    return save;
   }
 }

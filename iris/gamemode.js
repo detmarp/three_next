@@ -4,8 +4,10 @@ import Critters from './critters.js';
 import Placement from './placements.js';
 
 export default class GameMode {
-  constructor(iris) {
+  constructor(iris, towns) {
     this.iris = iris;
+    this.towns = towns;
+
     this.colors = {
       background: '#ccdd99',
       scoreBackground: '#edc',
@@ -15,7 +17,6 @@ export default class GameMode {
   }
 
   _setup() {
-    this.towns = new Towns();
 
     this.layout = {
       tilearea: {
@@ -159,6 +160,19 @@ export default class GameMode {
     this.placement = new Placement(this.iris, this.towns);
 
     this._showScore();
+
+    this.iris.areas.addBounds([2, 2, 80, 50], () => {
+      // FAKE exit wihtout ending
+      this._saveGame(false);
+      this.iris.program.goto('home')
+    });
+
+    this.iris.areas.addBounds([85, 2, 100, 40], () => {
+      // FAKE END GAME
+      this._saveGame(true);
+      this.iris.program.goto('home')
+    });
+
   }
 
   _setCard(i) {
@@ -176,9 +190,6 @@ export default class GameMode {
   render(time, dt) {
     // logo, also exit button
     this.iris.helly.draw('logo', [2, 2]);
-    this.iris.areas.addBounds([2, 2, 80, 50], () => {
-      this.iris.program.goto('home')
-    });
 
     const centerX = this.layout.tilearea.bounds[0] + this.layout.tilearea.bounds[2] / 2;
     const centerY = 20;
@@ -392,6 +403,7 @@ export default class GameMode {
 
   _showScore() {
     let s = this.towns.getScore();
+    this.score = s.total;
 
     let score1 = `${s.total}`;
     this.scoreText.innerHTML = score1;
@@ -409,5 +421,20 @@ export default class GameMode {
     this.score2.innerHTML = score2;
 
     this.placement.find();
+
+    this._saveGame(false);
+  }
+
+  _saveGame(over) {
+    let save = this._getSaveObject();
+    if (over) {
+      save.over = true;
+    }
+    this.iris.saveGame(save);
+  }
+
+  _getSaveObject() {
+    let save = this.towns.getSave();
+    return save;
   }
 }

@@ -5,6 +5,7 @@ import ScreenHome from './screenhome.js';
 import ScreenEditor from './screeneditor.js';
 import ScreenSettings from './screensettings.js';
 import ScreenNewGame from './screennewgame.js';
+import Towns from './towns.js';
 
 // Pass in a top level container. We expect this to be the full screen.
 // Sets up a top-level this.bounds element
@@ -57,8 +58,11 @@ export default class Program {
 
     switch (mode) {
       case 'game':
-        this.iris.init(this.context);
-        this.screen = this.iris;
+        {
+          let towns = this.towns = new Towns();
+          this.iris.init(this.context, towns);
+          this.screen = this.iris;
+        }
         break;
       case 'settings':
         this.screen = new ScreenSettings(this);
@@ -69,6 +73,13 @@ export default class Program {
       case 'editor':
         this.screen = new ScreenEditor(this);
         break;
+      case 'quickstart':
+        {
+          let towns = this.towns = new Towns();
+          this.iris.init(this.context, towns);
+          this.screen = this.iris;
+        }
+        break;
       default:
         // home
         this.screen = new ScreenHome(this);
@@ -77,6 +88,8 @@ export default class Program {
     //this.bindGameInput(this.canvas);
     //this.bindGameInput(this.overlay);
     this.makeOverlayInputFriendly(this.overlay);
+
+    this.iris.settings.save();
   }
 
   setDOM() {

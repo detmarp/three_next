@@ -18,7 +18,6 @@ export default class Helly extends EventTarget {
 
     this.hellyLoad = new HellyLoad();
     this.hellyLoad.onAllLoaded = () => {
-      console.log('All loaded');
       this.dispatchEvent(new Event('loadingdone'));
     }
     this.hellyLoad.onError = (filename, error) => {

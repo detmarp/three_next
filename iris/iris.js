@@ -20,7 +20,8 @@ export default class Iris {
     });
   }
 
-  init(context) {
+  init(context, towns) {
+    this.towns = towns;
     this.context = context;
     this.textElements = [];
 
@@ -48,7 +49,7 @@ export default class Iris {
     this.helly = new Helly(this.context);
     this.helly.load('data/contents.json');
 
-    this.mode = new GameMode(this);
+    this.mode = new GameMode(this, this.towns);
   }
 
   _reset() {
@@ -140,4 +141,39 @@ export default class Iris {
     this.context.fillStyle = gradient1;
     this.context.fillRect(0, y1, this.canvas.width, this.canvas.height - y1);
   }
+
+  saveGame(game) {
+    // if not over, then replace the curent game
+    // else, delete the current game, and add this to history, keyed on uuid
+    this.sierra = (this.sierra || 0) + 1
+    console.log('sss', this.sierra, game.over, game.uuid);
+    if (game.over) {
+      this.settings.data.current = null;
+      this._addGameHistory(game);
+    }
+    else {
+      this.settings.data.current = game;
+    }
+
+    this.settings.save();
+  }
+
+  _addGameHistory(game) {
+    if (!Array.isArray(this.settings.data.history)) {
+      this.settings.data.history = [];
+    }
+    let map = new Map(this.settings.data.history.map(game => [game.uuid || "0", game]));
+    game.timestamp = Date.now();
+    game.uuid = game.uuid || "0";
+    map.set(game.uuid, game);
+    this.settings.data.history = Array.from(map.values()).sort((a, b) => b.timestamp - a.timestamp);
+    if (this.settings.data.history.length >= 10) {
+      this.settings.data.history.pop();
+    }
+  }
+
+  saveCurrent(currentGame) {
+    this.saveGame(currentGame);
+  }
+
 }

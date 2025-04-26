@@ -1,4 +1,6 @@
 import TownsBoard from './townsboard.js';
+import TownsRand from './townsrand.js';
+import TownsPile from './townspile.js';
 import { makeDeck } from './townsdata.js';
 
 export default class Towns {
@@ -12,12 +14,19 @@ export default class Towns {
       towns.hand = saved.hand;
       towns.score = saved.score;
       towns.uuid = saved.uuid;
+      towns.seed = saved.seed;
+      towns.rand = TownsRand.fromObject(saved.rand);
+      towns.pile = TownsPile.fromObject(saved.pile);
     }
     return towns;
   }
 
   constructor() {
     this.uuid = crypto.randomUUID();
+    let seed = Math.floor(Math.random() * 1000000) + 100000;
+    this.rand = new TownsRand(seed);
+
+    this.pile = new TownsPile(this.rand);
     this.board = new TownsBoard();
     this.deck = makeDeck();
     this.hand = this._makeHand([
@@ -156,12 +165,31 @@ export default class Towns {
   }
 
   getSave() {
+    let hand = this.hand.reduce((map, item) => {
+      const category = this.deck[item.label].category;
+      if (!map[category]) {
+        map[category] = item.label;
+      }
+      return map;
+      }, {});
+
+    let board = this.board.tiles.map(tile => {
+      let items = [];
+      if (tile.building) items.push(tile.building);
+      if (tile.resource) items.push(tile.resource);
+      return items;
+    });
+
     let save = {
       timestamp: Date.now(),
       score: this.score.total,
       version: 1,
       uuid: this.uuid,
-    }
+      hand: hand,
+      board: board,
+      rand: this.rand.toObject(),
+      pile: this.pile.toObject(),
+    };
     return save;
   }
 }

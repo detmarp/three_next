@@ -5,6 +5,10 @@ export default class Areas {
     this.iris = iris;
     this.myTouch = new Mytouch(iris.canvas);
     this.myTouch.onChangeCallback = this.onChanged.bind(this);
+    this.clear();
+  }
+
+  clear() {
     this.list = []
     this._resetState('idle');
   }

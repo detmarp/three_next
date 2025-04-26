@@ -27,7 +27,9 @@ export default class Program {
   }
 
   load() {
-    this.iris = new Iris(this);
+    this.setDOM();
+
+    this.iris = new Iris(this, this.context);
 
     let myLoader = new MyLoader();
     myLoader.begin(() => {
@@ -41,7 +43,6 @@ export default class Program {
   }
 
   run() {
-    this.setDOM();
     window.addEventListener('resize', () => this.onResize());
     this.onResize();
     this.gameLoop = new GameLoop((time, dt) => {
@@ -60,7 +61,7 @@ export default class Program {
       case 'game':
         {
           let towns = this.towns = new Towns();
-          this.iris.init(this.context, towns);
+          this.iris.init(towns);
           this.screen = this.iris;
         }
         break;
@@ -76,7 +77,7 @@ export default class Program {
       case 'quickstart':
         {
           let towns = this.towns = new Towns();
-          this.iris.init(this.context, towns);
+          this.iris.init(towns);
           this.screen = this.iris;
         }
         break;

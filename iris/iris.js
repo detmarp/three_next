@@ -4,10 +4,15 @@ import GameMode from './gamemode.js';
 import Settings from './settings.js';
 
 export default class Iris {
-  constructor(program) {
+  constructor(program, context) {
     this.program = program;
     this.time = 0;
-    this.dt = 1/60;
+    this.dt = 1 / 60;
+
+    this.context = context;
+    this.canvas = context.canvas;
+
+    this.areas = new Areas(this);
   }
 
   load1(callback) {
@@ -20,14 +25,11 @@ export default class Iris {
     });
   }
 
-  init(context, towns) {
+  init(towns) {
     this.towns = towns;
-    this.context = context;
     this.textElements = [];
 
-    this.canvas = context.canvas;
-
-    this.areas = new Areas(this);
+    this.areas.clear();
 
     //const link = document.createElement('link');
     //link.href = 'https://fonts.googleapis.com/css2?family=Lilita+One&display=swap';
@@ -145,8 +147,6 @@ export default class Iris {
   saveGame(game) {
     // if not over, then replace the curent game
     // else, delete the current game, and add this to history, keyed on uuid
-    this.sierra = (this.sierra || 0) + 1
-    console.log('sss', this.sierra, game.over, game.uuid);
     if (game.over) {
       this.settings.data.current = null;
       this._addGameHistory(game);
@@ -171,9 +171,4 @@ export default class Iris {
       this.settings.data.history.pop();
     }
   }
-
-  saveCurrent(currentGame) {
-    this.saveGame(currentGame);
-  }
-
 }

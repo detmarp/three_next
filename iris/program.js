@@ -53,26 +53,35 @@ export default class Program {
     this.gameLoop.run();
   }
 
-  goto(mode) {
+  goto(mode, data) {
     this.canvas.innerHTML = '';
     this.overlay.innerHTML = '';
 
+    let isTextOverlay = false;
     switch (mode) {
       case 'game':
         {
-          let towns = this.towns = new Towns();
-          this.iris.init(towns);
+          if (data) {
+            this.towns = Towns.create(data);
+          }
+          else {
+            this.towns = new Towns();
+          }
+          this.iris.init(this.towns);
           this.screen = this.iris;
         }
         break;
       case 'settings':
         this.screen = new ScreenSettings(this);
+        isTextOverlay = true;
         break;
       case 'newgame':
         this.screen = new ScreenNewGame(this);
+        isTextOverlay = true;
         break;
       case 'editor':
         this.screen = new ScreenEditor(this);
+        isTextOverlay = true;
         break;
       case 'quickstart':
         {
@@ -84,14 +93,16 @@ export default class Program {
       default:
         // home
         this.screen = new ScreenHome(this);
+        isTextOverlay = true;
     }
 
-    //this.bindGameInput(this.canvas);
-    //this.bindGameInput(this.overlay);
-    this.makeOverlayInputFriendly(this.overlay);
-
     this.iris.settings.save();
-  }
+
+    if (isTextOverlay) {
+      this.iris.areas.clear();
+      this.makeOverlayInputFriendly(this.overlay);
+    }
+}
 
   setDOM() {
     while (this.container.firstChild) {

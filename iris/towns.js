@@ -4,23 +4,6 @@ import TownsPile from './townspile.js';
 import { makeDeck } from './townsdata.js';
 
 export default class Towns {
-
-  static create(saved) {
-    // Static creator, from saved game data
-    const towns = new Towns();
-    if (saved) {
-      towns.board.load(saved.board);
-      towns.deck = saved.deck;
-      towns.hand = saved.hand;
-      towns.score = saved.score;
-      towns.uuid = saved.uuid;
-      towns.seed = saved.seed;
-      towns.rand = TownsRand.fromObject(saved.rand);
-      towns.pile = TownsPile.fromObject(saved.pile);
-    }
-    return towns;
-  }
-
   constructor() {
     this.uuid = crypto.randomUUID();
     let seed = Math.floor(Math.random() * 1000000) + 100000;
@@ -191,5 +174,21 @@ export default class Towns {
       pile: this.pile.toObject(),
     };
     return save;
+  }
+
+  static create(saved) {
+    // Static creator, from saved game data
+    const towns = new Towns();
+    if (saved) {
+      towns.board = TownsBoard.fromObject(saved.board);
+      // TODO towns.deck = saved.deck;
+      // TODO towns.hand = saved.hand;
+      // TODO towns.score = saved.score;
+      towns.uuid = saved.uuid;
+      towns.seed = saved.seed;
+      towns.rand = TownsRand.fromObject(saved.rand);
+      towns.pile = TownsPile.fromObject(saved.pile);
+    }
+    return towns;
   }
 }

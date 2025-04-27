@@ -19,4 +19,19 @@ export default class TownsBoard {
   count(predicate) {
     return this.tiles.filter(predicate).length;
   }
+
+  static fromObject(obj) {
+    let board = new TownsBoard();
+    for (let i = 0; i < obj.length; i++) {
+      let tile = board.tiles[i];
+      for (let name of obj[i]) {
+        if (['wheat', 'brick', 'wood', 'glass', 'stone'].includes(name)) {
+          tile.resource = name;
+        } else {
+          tile.building = name;
+        }
+      }
+    }
+    return board;
+  }
 }

@@ -33,8 +33,10 @@ export default class TownsPile {
     };
   }
 
-  fromObject(obj) {
-    this.pool = obj.pool;
-    this.deck = obj.deck;
+  static fromObject(obj) {
+    let pile = new TownsPile(new TownsRand());
+    pile.pool = obj.pool;
+    pile.deck = obj.deck;
+    return pile;
   }
 }

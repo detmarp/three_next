@@ -36,6 +36,10 @@ export default class ScreenHome {
 
     this._text('Home screen');
 
+    this._button('New game', () => {
+      this._exitTo('newgame');
+    });
+
     this._button('Quick start', () => {
       this._exitTo('quickstart');
     });
@@ -51,17 +55,9 @@ export default class ScreenHome {
     this.parent.appendChild(this.history);
     this._updateHistory();
 
-    this._button('Continue game', () => {
-      this._exitTo('game');
-    });
-
-    this._button('Retry game', () => {
-      this._exitTo('game');
-    });
-
     this.historyUpdateInterval = setInterval(() => {
       this._updateHistory();
-    }, 1 * 1000);
+    }, 2 * 1000);
   }
 
   _stopUpdate() {
@@ -85,6 +81,8 @@ export default class ScreenHome {
         this._gameLine(this.history, game);
       }
     }
+
+    this.program.makeOverlayInputFriendly(this.program.overlay);
   }
 
   _ago(timestamp) {
@@ -112,10 +110,18 @@ export default class ScreenHome {
     container.appendChild(text);
 
     let button = document.createElement('button');
-    button.textContent = 'Load';
-    button.onclick = () => {
-      this._exitTo('game', game);
-    };
+    if (game.over) {
+      button.textContent = 'Retry';
+      button.onclick = () => {
+        this._exitTo('newgame', game);
+      };
+      }
+    else {
+      button.textContent = 'Continue';
+      button.onclick = () => {
+        this._exitTo('game', game);
+      };
+    }
     container.appendChild(button);
 
     element.appendChild(container);

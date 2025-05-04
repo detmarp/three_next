@@ -19,7 +19,7 @@ export default class Program {
     this.context = null;
 
     this.colors = {
-      gradientStart: '#666',
+      gradientStart: '#b96',
       gradientEnd: '#bbb',
       boundsBackground: '#d3d3e3',
       canvasBackground: '#a63'

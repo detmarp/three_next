@@ -1,4 +1,6 @@
 export default class ScreenHome {
+  static firstFrame = true;
+
   constructor(program) {
     this.program = program;
     this.parent = program.overlay;
@@ -129,5 +131,12 @@ export default class ScreenHome {
   }
 
   render(time, dt) {
+    if (ScreenHome.firstFrame) {
+      ScreenHome.firstFrame = false;
+      // auto continue?
+      if (this.program.iris.settings.data.autocontinue && this.program.iris.settings.data.current) {
+        this._exitTo('game', this.program.iris.settings.data.current);
+      }
+    }
   }
 }

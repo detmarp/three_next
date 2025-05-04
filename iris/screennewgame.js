@@ -33,13 +33,22 @@ export default class ScreenHome {
       this.program.goto('home');
     });
 
+    this._text('Cottage - cottage - blue - 1/1');
+    this._text('Theater - theater - yellow - 1/1');
+    this._text('Tavern - tavern - green - 1/1');
+    this._text('Chapel - chapel - orange - 1/1');
+    this._text('Factory - factory - black - 1/1');
+    this._text('Farm - farm - red - 1/1');
+    this._text('Well - well - gray - 1/1');
+    this._text('Architect\'s Guild - guild - pink - 1/1');
+
     this._button('Play', () => {
       this.program.goto('game');
     });
 
-    this._button('Game editor', () => {
-      this.program.goto('editor');
-    });
+    //this._button('Game editor', () => {
+    //  this.program.goto('editor');
+    //});
   }
 
   render(time, dt) {

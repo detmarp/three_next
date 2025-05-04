@@ -47,7 +47,8 @@ export default class Towns {
     }
 
     let unused = 0;
-    if (this.board.countUsed() == 16) {
+    let isOver = this.board.countUsed() == 16 || this.gameOver;
+    if (isOver) {
       unused = -this.board.count(tile => !tile.building);
     }
 
@@ -172,6 +173,7 @@ export default class Towns {
       board: board,
       rand: this.rand.toObject(),
       pile: this.pile.toObject(),
+      over: this.gameOver,
     };
     return save;
   }
@@ -188,6 +190,7 @@ export default class Towns {
       towns.seed = saved.seed;
       towns.rand = TownsRand.fromObject(saved.rand);
       towns.pile = TownsPile.fromObject(saved.pile);
+      towns.gameOver = saved.over;
     }
     return towns;
   }

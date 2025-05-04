@@ -1,7 +1,7 @@
-import Towns from './towns.js';
 import DrawCard from './drawcard.js';
 import Critters from './critters.js';
 import Placement from './placements.js';
+import DrawUtil from './drawutil.js';
 
 export default class GameMode {
   constructor(iris, towns) {
@@ -145,7 +145,7 @@ export default class GameMode {
     });
 
     // other areas
-    this.iris.addText('game<br>no-rules mode', this.layout.game.bounds);
+    this.gameinfoarea = this.iris.addText('', this.layout.game.bounds);
 
     const scoreTextBounds = [225 - 200, 5, 400, 60];
     this.scoreText = this.iris.addText('00', scoreTextBounds);
@@ -163,14 +163,14 @@ export default class GameMode {
 
     this.iris.areas.addBounds([2, 2, 80, 50], () => {
       // FAKE exit wihtout ending
-      this._saveGame(false);
+      this._saveGame();
       this.iris.program.goto('home')
     });
 
     this.iris.areas.addBounds([85, 2, 100, 40], () => {
       // FAKE END GAME
-      this._saveGame(true);
-      this.iris.program.goto('home')
+      this.towns.gameOver = !this.towns.gameOver;
+      this._saveGame();
     });
 
   }
@@ -188,6 +188,8 @@ export default class GameMode {
   }
 
   render(time, dt) {
+    let drawUtil = new DrawUtil(this.iris.context, time);
+
     // logo, also exit button
     this.iris.helly.draw('logo', [2, 2]);
 
@@ -210,6 +212,8 @@ export default class GameMode {
         let center = this._center(resource.bounds);
         center[1] += 10;
         this.iris.helly.draw(resourceId, center);
+
+        drawUtil.drawPickable(resource.bounds);
       }
     });
 
@@ -249,6 +253,10 @@ export default class GameMode {
     });
 
     this.placement.draw(time, dt);
+
+    let overText = this.towns.gameOver ? 'Game Over' : '';
+    let gameinfoarea = `game<br>no-rules mode<br>${overText}<br>`;
+    this.gameinfoarea.innerHTML = gameinfoarea;
 
     // cursor
     if (this.iris.areas.start && this.dragMeeple) {
@@ -315,6 +323,7 @@ export default class GameMode {
       type: 'none',
       sprite: 'error',
     };
+
   }
 
   _onDragBoard(action, area) {
@@ -422,7 +431,7 @@ export default class GameMode {
 
     this.placement.find();
 
-    this._saveGame(false);
+    this._saveGame();
   }
 
   _saveGame(over) {

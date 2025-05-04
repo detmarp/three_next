@@ -1,3 +1,5 @@
+import Rules from './rules.js';
+
 export default class ScreenHome {
   constructor(program) {
     this.program = program;
@@ -57,35 +59,40 @@ export default class ScreenHome {
 
     this._text('Settings');
 
-    this._text('setting');
-    this._text('setting');
-    this._text('setting');
-
     this._button('< back', () => {
       this.program.goto('home');
     });
 
+    this._text('----');
+
+    let autoContinueCheckbox = document.createElement('input');
+    autoContinueCheckbox.type = 'checkbox';
+    autoContinueCheckbox.checked = this.program.iris.settings.data.autocontinue || false;
+    autoContinueCheckbox.onchange = (e) => {
+      this.program.iris.settings.data.autocontinue = e.target.checked;
+      this.program.iris.settings.save();
+    };
+    let label = document.createElement('label');
+    label.textContent = ' Auto-continue last game';
+    label.prepend(autoContinueCheckbox);
+    this.parent.appendChild(label);
+    this.parent.appendChild(document.createElement('br'));
+    this.parent.appendChild(document.createElement('br'));
+
+    this._text('----');
+    this._text('Default rules');
+    this.rulesEditor = new Rules(this.program.iris.settings.data.rules);
+    this.rulesEditor.editor(this.parent, () => {
+      // rules updated
+      this.program.iris.settings.save();
+    });
+    this._text('----');
+
+    this._text('----');
     this._button('Hard delete', () => {
       this.program.iris.settings.delete();
       this.program.goto('home');
     });
-
-    this._text('line');
-    this._text('line');
-    this._text('line');
-    this._text('line');
-    this._text('line');
-    this._text('line');
-    this._text('line');
-    this._text('line');
-    this._text('line');
-    this._text('line');
-    this._text('line');
-    this._text('line');
-    this._text('line');
-    this._text('line');
-    this._text('line');
-    this._text('line');
   }
 
   render(time, dt) {

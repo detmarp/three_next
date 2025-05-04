@@ -11,7 +11,7 @@ export default class Settings {
       if (savedData) {
         this.data = JSON.parse(savedData);
         console.log('bbb Settings loaded:', JSON.stringify(this.data));
-  } else {
+    } else {
         this.defaults();
       }
     } catch (error) {
@@ -19,12 +19,16 @@ export default class Settings {
       console.log('ccc Settings default:', JSON.stringify(this.data));
       this.defaults();
     }
+
+    this.data.rules = this.data.rules || {};
+
     if (callback) callback();
   }
 
   defaults() {
     this.data = {
       mode: 'normal',
+      rules: {},
     };
   }
 

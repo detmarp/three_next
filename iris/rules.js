@@ -33,7 +33,7 @@ export default class Rules {
     if (this.editor) {
       this.editor.innerHTML = '';
       this._checkbox('Allow move after placing', 'allowmove');
-      this._checkbox('All resources', 'allresources');
+      this._checkbox('Play with all resources', 'allresources');
       this._checkbox('Free play', 'freeplay');
     }
   }

@@ -1,9 +1,7 @@
 // Find when buildings can be placed
 export default class Placement {
-  constructor(iris, towns) {
-    this.iris = iris;
+  constructor(towns) {
     this.towns = towns;
-    this.context = iris.context;
 
     this.period = 0.5;
     this.duty = 0.8;
@@ -76,9 +74,9 @@ export default class Placement {
       }
     }
     return null;
-}
+  }
 
-  draw(time, dt) {
+  draw(iris, time, dt) {
     let count = this.groups.length;
     if (count === 0) {
       return;
@@ -88,28 +86,28 @@ export default class Placement {
     let phase = Math.max(Math.min(i % 1, 1), 0);
     let group = this.groups[j];
     for (let tile of group.tiles) {
-      const bounds = this.iris.mode.layout.tiles[tile].bounds;
-      const position = this.iris.mode._center(bounds);
-      this._drawMarker(position, phase);
+      const bounds = iris.mode.oldlayout.tiles[tile].bounds;
+      const position = iris.mode._center(bounds);
+      this._drawMarker(iris.context, position, phase);
     }
     let c = group.card_index;
-    let bounds = this.iris.mode.layout.cards[c].bounds;
-    let center = this.iris.mode._center(bounds);
-    this._drawMarker(center, phase);
+    let bounds = iris.mode.oldlayout.cards[c].bounds;
+    let center = iris.mode._center(bounds);
+    this._drawMarker(iris.context, center, phase);
     //building.draw(this.context, center);
 
     for (let i = 0; i < count; i++) {
-      this._drawMarker(i, phase);
+      this._drawMarker(iris.context, i, phase);
     }
   }
 
-  _drawMarker(position, phase) {
+  _drawMarker(context, position, phase) {
     const pulse = Math.sin(phase * Math.PI);
     const radius = 20 + 10 * pulse;
-    this.context.beginPath();
-    this.context.arc(position[0], position[1], radius, 0, Math.PI * 2);
-    this.context.fillStyle = `rgba(0, 255, 0, ${0.5 + 0.5 * pulse})`; // Pulsing opacity
-    this.context.fill();
-    this.context.closePath();
+    context.beginPath();
+    context.arc(position[0], position[1], radius, 0, Math.PI * 2);
+    context.fillStyle = `rgba(0, 255, 0, ${0.5 + 0.5 * pulse})`; // Pulsing opacity
+    context.fill();
+    context.closePath();
   }
 }

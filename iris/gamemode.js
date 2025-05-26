@@ -1,7 +1,10 @@
 import DrawCard from './drawcard.js';
 import Critters from './critters.js';
-import Placement from './placements.js';
 import DrawUtil from './drawutil.js';
+import Meeple from './meeple.js';
+import GameLayout from './gamelayout.js';
+import GameScore from './gamescore.js';
+import GameState from './gamestate.js';
 
 export default class GameMode {
   constructor(iris, towns) {
@@ -14,11 +17,13 @@ export default class GameMode {
     };
 
     this._setup();
+    this.gameState = new GameState(this.towns);
   }
 
   _setup() {
+    this.layout = new GameLayout({});
 
-    this.layout = {
+    this.oldlayout = {
       tilearea: {
         bounds: [5, 140, 108 * 4, 81 * 4],
       },
@@ -43,7 +48,7 @@ export default class GameMode {
         for (let col = 0; col < 4; col++) {
           const x = left + col * w;
           const y = top + row * h;
-          this.layout.tiles.push(
+          this.oldlayout.tiles.push(
             {
               type: 'tile',
               bounds: [x, y, w, h],
@@ -74,7 +79,7 @@ export default class GameMode {
             bounds: [x, y, w, h],
             id: i
           };
-          this.layout.cards.push(card);
+          this.oldlayout.cards.push(card);
           i++;
         }
       }
@@ -99,21 +104,21 @@ export default class GameMode {
             piece: names[i],
             type: 'resource',
           };
-          this.layout.resources.push(resource);
+          this.oldlayout.resources.push(resource);
           i++;
         }
       }
     }
 
     // areas for 16 tiles
-    this.layout.tiles.forEach(tile => {
+    this.oldlayout.tiles.forEach(tile => {
       let area = this.iris.areas.addBounds(tile.bounds, null, this._onDragBoard.bind(this));
       area.type = tile.type;
       area.id = tile.id;
     });
 
     // cards
-    this.layout.cards.forEach(card => {
+    this.oldlayout.cards.forEach(card => {
       //card.text = this.iris.addText(`${card.id}`, card.bounds);
       let onCLick = () => {
         this._setCard(card.id);
@@ -134,7 +139,8 @@ export default class GameMode {
     this.iris.areas.addBounds(this.drawCard.bounds, onClick, this._onDragCard.bind(this));
 
     // resources
-    this.layout.resources.forEach(resource => {
+    let resourceIndex = 0;
+    this.oldlayout.resources.forEach(resource => {
       //resource.text = this.iris.addText(`${resource.id}`, resource.bounds);
       let onClick = () => {
         //this._setCard(resource.id);
@@ -142,10 +148,12 @@ export default class GameMode {
       let area = this.iris.areas.addBounds(resource.bounds, onClick, this._onDragResource.bind(this));
       area.piece = resource.piece;
       area.type = resource.type;
+      area.index = resourceIndex;
+      resourceIndex++;
     });
 
     // other areas
-    this.gameinfoarea = this.iris.addText('', this.layout.game.bounds);
+    this.gameinfoarea = this.iris.addText('', this.oldlayout.game.bounds);
 
     const scoreTextBounds = [225 - 200, 5, 400, 60];
     this.scoreText = this.iris.addText('00', scoreTextBounds);
@@ -153,26 +161,31 @@ export default class GameMode {
     this.scoreText.style.display = 'block';
     this.scoreText.style.margin = '0 auto';
 
-    this.score2 = this.iris.addText('', this.layout.score.bounds);
+    this.score2 = this.iris.addText('', this.oldlayout.score.bounds);
 
     this._setCard(0);
     this.critters = new Critters(this.iris);
-    this.placement = new Placement(this.iris, this.towns);
 
     this._showScore();
 
     this.iris.areas.addBounds([2, 2, 80, 50], () => {
-      // FAKE exit wihtout ending
+      // FAKE exit without ending
       this._saveGame();
       this.iris.program.goto('home')
     });
 
-    this.iris.areas.addBounds([85, 2, 100, 40], () => {
+    this.iris.areas.addBounds(this.layout.tempEndGame, () => {
       // FAKE END GAME
       this.towns.gameOver = !this.towns.gameOver;
       this._saveGame();
     });
 
+    this.iris.areas.addBounds(this.layout.endTurn, () => {
+      // End turn
+      console.log("hhh end turn clicked");
+    });
+    this.endTurnText = this.iris.addText('End Turn', this.layout.endTurn);
+    this.endTurnText.style.color = 'darkgreen';
   }
 
   _setCard(i) {
@@ -193,7 +206,7 @@ export default class GameMode {
     // logo, also exit button
     this.iris.helly.draw('logo', [2, 2]);
 
-    const centerX = this.layout.tilearea.bounds[0] + this.layout.tilearea.bounds[2] / 2;
+    const centerX = this.oldlayout.tilearea.bounds[0] + this.oldlayout.tilearea.bounds[2] / 2;
     const centerY = 20;
     const radius = 40;
     this.iris.context.beginPath();
@@ -203,21 +216,21 @@ export default class GameMode {
 
     this.drawCard.draw(this.towns.deck.theater);
 
-    this.iris.helly.draw('board', this.layout.tilearea.bounds);
+    this.iris.helly.draw('board', this.oldlayout.tilearea.bounds);
 
-    this.layout.resources.forEach(resource => {
-      const resourceId = `resource${String(resource.id).padStart(2, '0')}`;
-      let start = this.iris.areas.start;
-      if (!start || start.type !== 'resource' || start.piece !== resource.piece) {
-        let center = this._center(resource.bounds);
+    // Draw resources pool
+    this.gameState.resources.forEach((name, i) => {
+      if (name) {
+        let layout = this.oldlayout.resources[i];
+        let center = this._center(layout.bounds);
         center[1] += 10;
-        this.iris.helly.draw(resourceId, center);
-
-        drawUtil.drawPickable(resource.bounds);
+        let meeple = this._getMeeple(name);
+        this.iris.helly.draw(meeple.sprite, center);
+        //drawUtil.drawPickable(resource.bounds);
       }
-    });
+  });
 
-    this.layout.cards.forEach(c => {
+    this.oldlayout.cards.forEach(c => {
       let card = this.towns.hand[c.id].card;
       let meeple = this._getMeeple(card.category);
       let start = this.iris.areas.start;
@@ -233,7 +246,7 @@ export default class GameMode {
     let things = [];
     for (let i = 0; i < 16; i++) {
       let board = this.towns.board.tiles[i];
-      let square = this.layout.tiles[i];
+      let square = this.oldlayout.tiles[i];
       if (board.building) {
         const b = this._buildingToSprite(board.building);
         things.push([b, { position: this._center(square.bounds)}]);
@@ -252,7 +265,7 @@ export default class GameMode {
       this.iris.helly.draw(sprite, null, meta);
     });
 
-    this.placement.draw(time, dt);
+    this.gameState.placement.draw(this.iris, time, dt);
 
     let overText = this.towns.gameOver ? 'Game Over' : '';
     let gameinfoarea = `game<br>no-rules mode<br>${overText}<br>`;
@@ -355,8 +368,12 @@ export default class GameMode {
 
   _onDragResource(action, area) {
     if (action === 'start') {
-      this.dragMeeple = this._getMeeple(area.piece);
-      return true;
+      console.log('fff', JSON.stringify(area));
+      let resource = this.gameState.pickUp(area.index);
+      if (resource) {
+        this.dragMeeple = this._getMeeple(resource);
+        return true;
+      }
     }
     this._anyAction(action, area);
   }
@@ -373,6 +390,7 @@ export default class GameMode {
   }
 
   _endAction() {
+    this.gameState.cancel();
     this.dragMeeple = null;
   }
 
@@ -396,17 +414,7 @@ export default class GameMode {
   }
 
   _placeMeeple(meeple, tile) {
-    let oldTile = this.towns.board.tiles[tile];
-    if (oldTile.building || oldTile.resource) {
-      return;
-    }
-    if (meeple.type === 'building') {
-      this.towns.board.tiles[tile].building = meeple.name;
-    }
-    if (meeple.type === 'resource') {
-      this.towns.board.tiles[tile].resource = meeple.name;
-    }
-
+    this.gameState.place(tile);
     this._showScore();
   }
 
@@ -428,8 +436,6 @@ export default class GameMode {
       `pink:${s.pink}<br>` +
       `unused:${s.unused}<br>`;
     this.score2.innerHTML = score2;
-
-    this.placement.find();
 
     this._saveGame();
   }

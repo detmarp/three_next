@@ -34,7 +34,7 @@ export default class Settings {
 
   save() {
     localStorage.setItem('settings', JSON.stringify(this.data));
-    console.log('aaa Settings saved:', JSON.stringify(this.data));
+    //console.log('aaa Settings saved:', JSON.stringify(this.data));
   }
 
   delete() {

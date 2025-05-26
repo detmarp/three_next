@@ -1,6 +1,11 @@
 export default class ScreenHome {
   static firstFrame = true;
 
+  _releasenotes() {
+    this._text('Release notes');
+    this._text('2025-05-26 Continuing to move game state logic into gamestate.js');
+  }
+
   constructor(program) {
     this.program = program;
     this.parent = program.overlay;
@@ -9,10 +14,11 @@ export default class ScreenHome {
 
   _text(text, parent = this.parent) {
     let element = document.createElement('div');
+    text = text.replace(/^ +/g, match => '\u00A0'.repeat(match.length));
     element.textContent = text;
     element.style.marginBottom = '10px';
     parent.appendChild(element);
-    parent.appendChild(document.createElement('br'));
+    //parent.appendChild(document.createElement('br'));
     return element;
   }
 
@@ -60,6 +66,9 @@ export default class ScreenHome {
     this.historyUpdateInterval = setInterval(() => {
       this._updateHistory();
     }, 2 * 1000);
+
+    this._text('-----');
+    this._releasenotes();
   }
 
   _stopUpdate() {

@@ -3,11 +3,11 @@
     "files": [
       {
         "type": "image",
-        "name": "towns.png"
+        "name": "gameart.png"
       },
       {
         "type": "json",
-        "name": "towns.json"
+        "name": "gameart.json"
       }
     ]
   }

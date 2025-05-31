@@ -1,0 +1,34 @@
+[
+  {
+    "key": "gray1",
+    "name": "Gray 1",
+    "category": "gray",
+    "shape": [ "yg", "rc"],
+    "score": { "value": 1 },
+    "text": "Placeholder gray 1"
+  },
+  {
+    "key": "gray2",
+    "name": "Gray 2",
+    "category": "gray",
+    "shape": [ "yg", "rc"],
+    "score": { "value": 1 },
+    "text": "Placeholder gray 2"
+  },
+  {
+    "key": "gray3",
+    "name": "Gray 3",
+    "category": "gray",
+    "shape": [ "yg", "rc"],
+    "score": { "value": 1 },
+    "text": "Placeholder gray 3"
+  },
+  {
+    "key": "gray4",
+    "name": "Gray 4",
+    "category": "gray",
+    "shape": [ "yg", "rc"],
+    "score": { "value": 1 },
+    "text": "Placeholder gray 4"
+  }
+]

@@ -6,6 +6,7 @@ import ScreenEditor from './screeneditor.js';
 import ScreenSettings from './screensettings.js';
 import ScreenNewGame from './screennewgame.js';
 import Towns from './towns.js';
+import NewLoader from './newloader.js';
 
 // Pass in a top level container. We expect this to be the full screen.
 // Sets up a top-level this.bounds element
@@ -27,18 +28,28 @@ export default class Program {
   }
 
   load() {
-    this.setDOM();
-
-    this.iris = new Iris(this, this.context);
-
-    let myLoader = new MyLoader();
-    myLoader.begin(() => {
-      this.iris.load1();
-      myLoader.end();
+    let newLoader = new NewLoader();
+    newLoader.load('data/contents.json');
+    newLoader.load('data/towns.json');
+    newLoader.load('data/towns.png');
+    newLoader.wait(() => {
+      console.log(JSON.stringify(newLoader.assets));
+      console.log(Object.keys(newLoader.images));
     });
+    newLoader.wait(() => {
+      this.setDOM();
 
-    myLoader.waitForAll(() => {
-      this.run();
+      this.iris = new Iris(this, this.context);
+
+      let myLoader = new MyLoader();
+      myLoader.begin(() => {
+        this.iris.load1();
+        myLoader.end();
+      });
+
+      myLoader.waitForAll(() => {
+        this.run();
+      });
     });
   }
 

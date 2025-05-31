@@ -1,6 +1,6 @@
 {
   "helly": {
-    "imageName": "towns",
+    "imageName": "gameart",
     "anims": {
       "riverstr": {
         "type": "flipbook",

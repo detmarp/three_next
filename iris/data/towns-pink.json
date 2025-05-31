@@ -1,0 +1,34 @@
+[
+  {
+    "key": "pink1",
+    "name": "Pink 1",
+    "category": "pink",
+    "shape": [ "yg", "rc"],
+    "score": { "value": 1 },
+    "text": "Placeholder pink 1"
+  },
+  {
+    "key": "pink2",
+    "name": "Pink 2",
+    "category": "pink",
+    "shape": [ "yg", "rc"],
+    "score": { "value": 1 },
+    "text": "Placeholder pink 2"
+  },
+  {
+    "key": "pink3",
+    "name": "Pink 3",
+    "category": "pink",
+    "shape": [ "yg", "rc"],
+    "score": { "value": 1 },
+    "text": "Placeholder pink 3"
+  },
+  {
+    "key": "pink4",
+    "name": "Pink 4",
+    "category": "pink",
+    "shape": [ "yg", "rc"],
+    "score": { "value": 1 },
+    "text": "Placeholder pink 4"
+  }
+]

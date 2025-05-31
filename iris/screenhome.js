@@ -3,6 +3,7 @@ export default class ScreenHome {
 
   _releasenotes() {
     this._text('Release notes');
+    this._text('2025-05-31 New loader logic, WIP. Adding the full deck as json files, WIP.');
     this._text('2025-05-26 Continuing to move game state logic into gamestate.js');
   }
 

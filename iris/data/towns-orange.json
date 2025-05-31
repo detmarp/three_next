@@ -1,0 +1,34 @@
+[
+  {
+    "key": "orange1",
+    "name": "Orange 1",
+    "category": "orange",
+    "shape": [ "yg", "rc"],
+    "score": { "value": 1 },
+    "text": "Placeholder orange 1"
+  },
+  {
+    "key": "orange2",
+    "name": "Orange 2",
+    "category": "orange",
+    "shape": [ "yg", "rc"],
+    "score": { "value": 1 },
+    "text": "Placeholder orange 2"
+  },
+  {
+    "key": "orange3",
+    "name": "Orange 3",
+    "category": "orange",
+    "shape": [ "yg", "rc"],
+    "score": { "value": 1 },
+    "text": "Placeholder orange 3"
+  },
+  {
+    "key": "orange4",
+    "name": "Orange 4",
+    "category": "orange",
+    "shape": [ "yg", "rc"],
+    "score": { "value": 1 },
+    "text": "Placeholder orange 4"
+  }
+]

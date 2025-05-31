@@ -1,0 +1,34 @@
+[
+  {
+    "key": "green1",
+    "name": "Green 1",
+    "category": "green",
+    "shape": [ "yg", "rc"],
+    "score": { "value": 1 },
+    "text": "Placeholder green 1"
+  },
+  {
+    "key": "green2",
+    "name": "Green 2",
+    "category": "green",
+    "shape": [ "yg", "rc"],
+    "score": { "value": 1 },
+    "text": "Placeholder green 2"
+  },
+  {
+    "key": "green3",
+    "name": "Green 3",
+    "category": "green",
+    "shape": [ "yg", "rc"],
+    "score": { "value": 1 },
+    "text": "Placeholder green 3"
+  },
+  {
+    "key": "green4",
+    "name": "Green 4",
+    "category": "green",
+    "shape": [ "yg", "rc"],
+    "score": { "value": 1 },
+    "text": "Placeholder green 4"
+  }
+]

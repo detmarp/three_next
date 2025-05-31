@@ -1,0 +1,39 @@
+[
+  {
+    "key": "factory",
+    "category": "black",
+    "name": "Factory",
+    "shape": [
+      "b---",
+      "rggr"
+    ],
+    "score": {
+      "value": 0
+    },
+    "text": "When constructed, place 1 of the 5 resources on {black}. When another player names this resource, you may place a different resource instead."
+  },
+  {
+    "key": "black2",
+    "name": "Black 2",
+    "category": "black",
+    "shape": [ "yg", "rc"],
+    "score": { "value": 1 },
+    "text": "Placeholder black 2"
+  },
+  {
+    "key": "black3",
+    "name": "Black 3",
+    "category": "black",
+    "shape": [ "yg", "rc"],
+    "score": { "value": 1 },
+    "text": "Placeholder black 3"
+  },
+  {
+    "key": "black4",
+    "name": "Black 4",
+    "category": "black",
+    "shape": [ "yg", "rc"],
+    "score": { "value": 1 },
+    "text": "Placeholder black 4"
+  }
+]

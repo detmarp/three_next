@@ -1,0 +1,34 @@
+[
+  {
+    "key": "blue1",
+    "name": "Blue 1",
+    "category": "blue",
+    "shape": [ "yg", "rc"],
+    "score": { "value": 1 },
+    "text": "Placeholder blue 1"
+  },
+  {
+    "key": "blue2",
+    "name": "Blue 2",
+    "category": "blue",
+    "shape": [ "yg", "rc"],
+    "score": { "value": 1 },
+    "text": "Placeholder blue 2"
+  },
+  {
+    "key": "blue3",
+    "name": "Blue 3",
+    "category": "blue",
+    "shape": [ "yg", "rc"],
+    "score": { "value": 1 },
+    "text": "Placeholder blue 3"
+  },
+  {
+    "key": "blue4",
+    "name": "Blue 4",
+    "category": "blue",
+    "shape": [ "yg", "rc"],
+    "score": { "value": 1 },
+    "text": "Placeholder blue 4"
+  }
+]

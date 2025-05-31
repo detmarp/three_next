@@ -1,0 +1,34 @@
+[
+  {
+    "key": "red1",
+    "name": "Red 1",
+    "category": "red",
+    "shape": [ "yg", "rc"],
+    "score": { "value": 1 },
+    "text": "Placeholder red 1"
+  },
+  {
+    "key": "red2",
+    "name": "Red 2",
+    "category": "red",
+    "shape": [ "yg", "rc"],
+    "score": { "value": 1 },
+    "text": "Placeholder red 2"
+  },
+  {
+    "key": "red3",
+    "name": "Red 3",
+    "category": "red",
+    "shape": [ "yg", "rc"],
+    "score": { "value": 1 },
+    "text": "Placeholder red 3"
+  },
+  {
+    "key": "red4",
+    "name": "Red 4",
+    "category": "red",
+    "shape": [ "yg", "rc"],
+    "score": { "value": 1 },
+    "text": "Placeholder red 4"
+  }
+]

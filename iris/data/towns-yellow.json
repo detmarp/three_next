@@ -1,0 +1,34 @@
+[
+  {
+    "key": "yellow1",
+    "name": "Yellow 1",
+    "category": "yellow",
+    "shape": [ "yg", "rc"],
+    "score": { "value": 1 },
+    "text": "Placeholder yellow 1"
+  },
+  {
+    "key": "yellow2",
+    "name": "Yellow 2",
+    "category": "yellow",
+    "shape": [ "yg", "rc"],
+    "score": { "value": 1 },
+    "text": "Placeholder yellow 2"
+  },
+  {
+    "key": "yellow3",
+    "name": "Yellow 3",
+    "category": "yellow",
+    "shape": [ "yg", "rc"],
+    "score": { "value": 1 },
+    "text": "Placeholder yellow 3"
+  },
+  {
+    "key": "yellow4",
+    "name": "Yellow 4",
+    "category": "yellow",
+    "shape": [ "yg", "rc"],
+    "score": { "value": 1 },
+    "text": "Placeholder yellow 4"
+  }
+]

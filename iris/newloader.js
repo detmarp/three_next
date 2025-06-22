@@ -39,7 +39,7 @@ export default class newLoader {
       console.error(`Error inferring type for resource "${filename}" (${url}):`, error.message);
       this.assets[filename] = { error: error.message };
       if (typeof callback === 'function') {
-        await Promise.resolve(callback(this.assets));
+        await Promise.resolve(callback(this.assets[filename])); // Pass only the new asset
       }
       return Promise.resolve(null);
     }
@@ -49,18 +49,18 @@ export default class newLoader {
       return this._loadingPromises[filename];
     }
     if (this.assets[filename]) {
-        if (this.assets[filename].error) {
-            console.warn(`Resource "${filename}" previously failed to load.`);
-            if (typeof callback === 'function') {
-                await Promise.resolve(callback(this.assets));
-            }
-            return Promise.resolve(null);
-        }
-        console.warn(`Resource "${filename}" already exists in assets.`);
+      if (this.assets[filename].error) {
+        console.warn(`Resource "${filename}" previously failed to load.`);
         if (typeof callback === 'function') {
-            await Promise.resolve(callback(this.assets));
+          await Promise.resolve(callback(this.assets[filename])); // Pass only the existing asset
         }
-        return Promise.resolve(this.assets[filename].object);
+        return Promise.resolve(null);
+      }
+      console.warn(`Resource "${filename}" already exists in assets.`);
+      if (typeof callback === 'function') {
+        await Promise.resolve(callback(this.assets[filename])); // Pass only the existing asset
+      }
+      return Promise.resolve(this.assets[filename].object);
     }
 
     console.log(`Starting load for: "${filename}" (inferred type: ${type}) from ${url}`);
@@ -107,7 +107,7 @@ export default class newLoader {
       } finally {
         delete this._loadingPromises[filename];
         if (typeof callback === 'function') {
-          await Promise.resolve(callback(this.assets));
+          await Promise.resolve(callback(this.assets[filename])); // Pass only the new asset
         }
       }
     })();

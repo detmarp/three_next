@@ -47,7 +47,6 @@ export default class Iris {
     //title.style.alignItems = 'center';
     //title.style.justifyContent = 'center';
     //title.style.borderRadius = '6px';
-
     this.helly = new Helly(this.context);
     this.helly.load('data/contents.json');
 

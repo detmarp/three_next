@@ -18,6 +18,7 @@ export default class MyLoader {
         let result = func();
         if (callback) callback(result);
       } catch (error) {
+        console.error('eee Error in microTask:', error);
         if (callback) callback(error);
       }
     });

@@ -2,6 +2,7 @@ import Iris from './iris.js';
 import GameLoop from './gameloop.js';
 import MyLoader from './myloader.js';
 import ScreenHome from './screenhome.js';
+import ScreenHome2 from './screenhome2.js';
 import ScreenEditor from './screeneditor.js';
 import ScreenSettings from './screensettings.js';
 import ScreenNewGame from './screennewgame.js';
@@ -29,14 +30,18 @@ export default class Program {
 
   load() {
     let newLoader = new NewLoader();
-    newLoader.load('data/contents.json');
-    newLoader.load('data/towns.json');
-    newLoader.load('data/towns.png');
+    newLoader.load('data/towns-deck.json', assets => {
+      console.log('Loaded JSON asset:', JSON.stringify(assets));
+      assets.object.forEach(s => {
+        newLoader.load(`data/${s}`);
+      });
+    });
     newLoader.wait(() => {
       console.log(JSON.stringify(newLoader.assets));
       console.log(Object.keys(newLoader.images));
     });
     newLoader.wait(() => {
+      //return;
       this.setDOM();
 
       this.iris = new Iris(this, this.context);
@@ -103,7 +108,8 @@ export default class Program {
         break;
       default:
         // home
-        this.screen = new ScreenHome(this);
+        //this.screen = new ScreenHome(this);
+        this.screen = new ScreenHome2(this);
         isTextOverlay = true;
     }
 
@@ -215,11 +221,17 @@ export default class Program {
     overlayEl.style.pointerEvents = 'none';
 
     // ...except for interactive children
-    const allowTags = ['BUTTON', 'INPUT', 'TEXTAREA', 'SELECT', 'LABEL'];
+    const allowTags = ['BUTTON', 'INPUT', 'TEXTAREA', 'SELECT', 'LABEL', 'DIV'];
     allowTags.forEach(tag => {
       const elems = overlayEl.querySelectorAll(tag);
       elems.forEach(el => {
         el.style.pointerEvents = 'auto';
+
+        // Allow scrolling for scrollable elements
+        if (el.style.overflowY === 'auto' || el.style.overflowY === 'scroll') {
+          el.addEventListener('wheel', e => e.stopPropagation(), { passive: false });
+          el.addEventListener('touchmove', e => e.stopPropagation(), { passive: false });
+        }
       });
     });
   }
